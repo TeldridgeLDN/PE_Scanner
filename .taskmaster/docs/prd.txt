@@ -1,0 +1,536 @@
+# Product Requirements Document: PE Scanner
+**Project**: PE Scanner
+**Date**: November 29, 2025
+**Version**: 1.0
+**Status**: Initial Development
+
+---
+
+## 1. Executive Summary
+
+### 1.1 Project Overview
+PE Scanner is a Python-based portfolio analysis tool that identifies investment opportunities through P/E compression analysis. The system detects when market expectations (forward P/E) differ significantly from current valuations (trailing P/E), revealing potential undervalued or overvalued positions.
+
+### 1.2 Business Value
+- **Automated screening**: Identify high-value opportunities across ISA, SIPP, and Wishlist portfolios
+- **Data quality**: Automatic detection and correction of common data errors (UK stock pence/pounds conversions, stock splits)
+- **Manual verification**: Support for verifying suspicious signals with actual financial statements
+- **Action-oriented**: Clear buy/sell/hold signals with bear and bull case valuations
+
+### 1.3 Key Success Metrics
+- Successfully analyze 20+ stocks per portfolio in under 2 minutes
+- Achieve 95%+ accuracy in P/E calculations
+- Detect and correct 100% of UK stock data quality issues
+- Provide actionable recommendations with confidence scores
+
+---
+
+## 2. Background & Context
+
+### 2.1 Problem Statement
+Momentum Squared portfolio management system identified critical issues in November 2024:
+1. Yahoo Finance data quality problems (UK stocks, stock splits)
+2. Manual analysis of 50+ positions was time-consuming
+3. Need for systematic approach to identify compression opportunities
+4. Risk of acting on false signals from data errors
+
+### 2.2 Reference Implementation
+Based on corrected analysis from `/Users/tomeldridge/Momentum_Squared/analysis/PE_Compression_Analysis_Corrected_Nov2024.md`:
+- **Confirmed sell signal**: HOOD (Robinhood) with -113.70% to -228.77% compression
+- **False signal detection**: NFLX (Netflix) +89.91% compression was stock split data error
+- **UK data corrections**: BATS.L, BAB.L, BT-A.L, RR.L all required 100x P/E corrections
+
+### 2.3 Architecture Context
+PE Scanner follows PAI (Project AI Integration) and diet103 patterns:
+- **PAI Global Layer**: Cross-project orchestration and template reuse
+- **diet103 Local Layer**: Project-specific skills, hooks, and validation
+- **Integration**: Shares data pipeline patterns with Momentum_Squared
+
+---
+
+## 3. Technical Requirements
+
+### 3.1 Core Functionality
+
+#### 3.1.1 P/E Compression Calculation
+```python
+compression_pct = ((trailing_pe - forward_pe) / trailing_pe) × 100
+```
+- **Positive compression**: Market expects earnings growth (undervalued)
+- **Negative compression**: Market expects earnings decline (overvalued)
+- **Threshold**: ±20% compression triggers detailed analysis
+
+#### 3.1.2 Data Quality Validation
+**UK Stock Corrections**:
+- Auto-detect UK stocks by `.L` suffix
+- If forward P/E < 1.0, apply 100x correction (pence to pounds)
+- Validate correction against other data points
+
+**Stock Split Detection**:
+- Check if forward EPS implies >100% growth
+- Flag for manual verification if EPS growth exceeds realistic bounds
+- Cross-reference with known split dates
+
+**Data Quality Flags**:
+- Extreme downside projections (-95% to -100%) suggest unreliable data
+- Missing forward P/E or EPS data
+- Stale analyst estimates (>6 months old)
+
+#### 3.1.3 Fair Value Scenarios
+**Bear Case**: 17.5x P/E multiple
+```python
+bear_fair_value = forward_eps × 17.5
+bear_upside_pct = ((bear_fair_value - current_price) / current_price) × 100
+```
+
+**Bull Case**: 37.5x P/E multiple
+```python
+bull_fair_value = forward_eps × 37.5
+bull_upside_pct = ((bull_fair_value - current_price) / current_price) × 100
+```
+
+#### 3.1.4 Manual Verification Support
+**Verification Checklist**:
+1. Compare trailing EPS with actual financial statements
+2. Verify forward EPS with analyst consensus
+3. Check for recent stock splits or corporate actions
+4. Validate implied earnings growth rate is realistic
+5. Cross-reference with alternative data sources (Bloomberg, FactSet)
+
+**Output Format**:
+- Display actual vs. expected EPS
+- Show implied growth rate
+- Highlight data source mismatches
+- Provide verification status (✅/⚠️/❌)
+
+### 3.2 Portfolio Support
+
+#### 3.2.1 Portfolio Types
+1. **ISA**: Tax-free UK investment account
+2. **SIPP**: UK pension account
+3. **Wishlist**: Candidate positions for future investment
+
+#### 3.2.2 Portfolio Analysis Output
+- Ranked list by compression magnitude
+- Buy/Sell/Hold signal with confidence level
+- Bear/Bull upside percentages
+- Data quality warnings
+- Action recommendations with priority
+
+### 3.3 Technical Stack
+
+#### 3.3.1 Required Dependencies
+```python
+# Core analysis
+pandas>=2.0.0
+numpy>=1.24.0
+yfinance>=0.2.28  # Yahoo Finance data
+
+# Data validation
+pydantic>=2.0.0
+
+# Reporting
+tabulate>=0.9.0
+rich>=13.0.0  # Terminal formatting
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+```
+
+#### 3.3.2 Project Structure
+```
+PE_Scanner/
+├── .taskmaster/           # Task Master configuration
+│   ├── config.json
+│   ├── tasks/
+│   └── docs/
+├── src/
+│   ├── pe_scanner/
+│   │   ├── __init__.py
+│   │   ├── analysis/
+│   │   │   ├── compression.py      # P/E compression calculations
+│   │   │   ├── fair_value.py       # Bear/bull scenarios
+│   │   │   └── verification.py     # Manual verification helpers
+│   │   ├── data/
+│   │   │   ├── fetcher.py          # Yahoo Finance integration
+│   │   │   ├── validator.py        # Data quality checks
+│   │   │   └── corrector.py        # UK stocks, splits
+│   │   ├── portfolios/
+│   │   │   ├── loader.py           # CSV/JSON portfolio loading
+│   │   │   ├── ranker.py           # Ranking algorithms
+│   │   │   └── reporter.py         # Report generation
+│   │   └── cli.py                  # Command-line interface
+├── tests/                  # Test suite
+├── scripts/                # Analysis scripts
+├── portfolios/             # Portfolio data files
+│   ├── isa.csv
+│   ├── sipp.csv
+│   └── wishlist.csv
+├── outputs/                # Generated reports
+├── requirements.txt
+├── pyproject.toml
+└── README.md
+```
+
+### 3.4 Integration Requirements
+
+#### 3.4.1 Momentum_Squared Integration
+- Share portfolio CSV format
+- Reference same ticker symbols
+- Cross-validate with Workflow 9 underperformance analysis
+- Support import of master portfolio file
+
+#### 3.4.2 diet103 Hooks (from Orchestrator_Project)
+1. **Pre-Analysis Validator**: Verify portfolio data format
+2. **Data Quality Guardian**: Enforce data quality checks
+3. **Portfolio Sync Validator**: Prevent master file drift
+4. **Results Validator**: Verify report accuracy
+
+---
+
+## 4. User Experience
+
+### 4.1 Command-Line Interface
+
+#### 4.1.1 Basic Usage
+```bash
+# Analyze single portfolio
+pe-scanner analyze --portfolio ISA
+
+# Analyze all portfolios
+pe-scanner analyze --all
+
+# Manual verification mode
+pe-scanner verify --ticker HOOD
+
+# Export report
+pe-scanner analyze --portfolio SIPP --output reports/sipp_analysis.md
+```
+
+#### 4.1.2 Configuration
+```yaml
+# config.yaml
+data:
+  source: yahoo_finance
+  cache_ttl: 3600  # 1 hour
+  
+validation:
+  uk_stock_correction: true
+  stock_split_detection: true
+  extreme_growth_threshold: 100  # %
+  
+scenarios:
+  bear_pe: 17.5
+  bull_pe: 37.5
+  
+thresholds:
+  compression_signal: 20  # %
+  high_compression: 50    # %
+  extreme_compression: 80 # %
+```
+
+### 4.2 Report Format
+
+#### 4.2.1 Summary Report
+```markdown
+# P/E Compression Analysis - ISA Portfolio
+Date: 2025-11-29
+Analyzed: 17/20 positions
+
+## 🚨 IMMEDIATE ACTIONS
+### 🔴 SELL (1)
+- HOOD: -113.70% compression, -53% earnings expected ✅ VERIFIED
+
+### 🟢 BUY (4)
+1. ORA.PA: +70.69% compression, Bull: +214%
+2. BATS.L: +62.62% compression ⚠️ DATA QUALITY
+3. ENGI.PA: +7.73% compression, Bull: +280%
+4. MO: +2.06% compression, Bull: +240%
+
+## ⚠️ WARNINGS
+- 3 UK stocks show extreme downsides (data quality issue)
+- NFLX removed from consideration (stock split error)
+```
+
+#### 4.2.2 Detailed Analysis
+Each position includes:
+- Ticker symbol and company name
+- Current price and P/E ratios (trailing/forward)
+- Compression percentage and interpretation
+- Bear/Bull fair values and upside percentages
+- Data quality indicators
+- Action recommendation with confidence
+- Manual verification status
+
+---
+
+## 5. Implementation Phases
+
+### Phase 1: Core Analysis Engine (Week 1)
+**Deliverables**:
+- P/E compression calculation module
+- Yahoo Finance data fetcher
+- Basic UK stock correction logic
+- CSV portfolio loader
+- Console output of top 10 ranked positions
+
+**Success Criteria**:
+- Analyze ISA portfolio (17 positions) in <30 seconds
+- Correctly identify HOOD as sell signal
+- Apply UK stock corrections to BATS.L, BAB.L, BT-A.L, RR.L
+
+### Phase 2: Data Quality & Validation (Week 2)
+**Deliverables**:
+- Stock split detection algorithm
+- Extreme growth validation
+- Manual verification helpers
+- Data quality flags and warnings
+- Comprehensive test suite (80%+ coverage)
+
+**Success Criteria**:
+- Detect NFLX stock split data error
+- Flag all positions with >100% implied growth
+- Pass validation on 50+ test cases
+- Zero false positives on data quality corrections
+
+### Phase 3: Reporting & Integration (Week 3)
+**Deliverables**:
+- Markdown report generator
+- Bear/bull scenario calculations
+- Multi-portfolio support (ISA, SIPP, Wishlist)
+- CLI with all analysis options
+- Integration with Momentum_Squared portfolio format
+
+**Success Criteria**:
+- Generate publication-ready analysis reports
+- Support batch analysis of all portfolios
+- Successfully import master portfolio from Momentum_Squared
+- Complete integration with diet103 hooks
+
+### Phase 4: Advanced Features (Week 4)
+**Deliverables**:
+- Historical compression tracking
+- Trend analysis (compression changing over time)
+- Alert system for new opportunities
+- Interactive report with drill-down
+- Performance metrics and backtesting
+
+**Success Criteria**:
+- Track compression changes week-over-week
+- Identify emerging trends (compression increasing/decreasing)
+- Generate alerts for new high-compression positions
+- Validate strategy against historical data
+
+---
+
+## 6. Data Requirements
+
+### 6.1 Input Data
+
+#### 6.1.1 Portfolio Files
+```csv
+ticker,shares,cost_basis,current_price
+HOOD,100,25.50,114.30
+BATS.L,500,30.25,29.96
+ORA.PA,200,9.50,40.81
+```
+
+#### 6.1.2 Market Data (from Yahoo Finance)
+- Current price
+- Trailing P/E (TTM)
+- Forward P/E (FY1 estimate)
+- Trailing EPS (TTM)
+- Forward EPS (FY1 estimate)
+- Market cap
+- Last updated timestamp
+
+### 6.2 Output Data
+
+#### 6.2.1 Analysis Results
+```python
+{
+    "ticker": "HOOD",
+    "company_name": "Robinhood Markets Inc",
+    "current_price": 114.30,
+    "trailing_pe": 47.62,
+    "forward_pe": 156.58,
+    "compression_pct": -228.77,
+    "implied_growth_pct": -69.6,
+    "bear_fair_value": 12.78,
+    "bear_upside_pct": -88.82,
+    "bull_fair_value": 27.38,
+    "bull_upside_pct": -76.05,
+    "signal": "SELL",
+    "confidence": "high",
+    "data_quality": "verified",
+    "warnings": []
+}
+```
+
+---
+
+## 7. Testing Strategy
+
+### 7.1 Unit Tests
+- P/E compression calculations (various scenarios)
+- UK stock correction logic (detect and apply 100x)
+- Stock split detection (NFLX case)
+- Fair value scenarios (bear/bull)
+- Data validation (extreme growth, missing data)
+
+### 7.2 Integration Tests
+- End-to-end portfolio analysis
+- Yahoo Finance API integration
+- Report generation (all formats)
+- CLI command execution
+
+### 7.3 Validation Tests
+- Verify against manual calculations for HOOD
+- Verify UK corrections match expected results
+- Verify NFLX false signal is caught
+- Cross-check with Momentum_Squared analysis results
+
+### 7.4 Edge Cases
+- Missing data (no forward P/E)
+- Zero or negative P/E values
+- Extreme outliers (P/E > 1000)
+- Delisted or halted stocks
+- Duplicate tickers
+
+---
+
+## 8. Security & Privacy
+
+### 8.1 Data Privacy
+- No personally identifiable information stored
+- Portfolio data stored locally only
+- No cloud sync or external transmission
+- API keys stored in environment variables
+
+### 8.2 Data Validation
+- Input sanitization for all user data
+- API response validation
+- Error handling for malformed data
+- Rate limiting for API calls
+
+---
+
+## 9. Documentation
+
+### 9.1 User Documentation
+- README with quick start guide
+- Installation instructions
+- CLI usage examples
+- Configuration options reference
+- Troubleshooting guide
+
+### 9.2 Developer Documentation
+- Architecture overview
+- Module documentation (docstrings)
+- API reference
+- Contributing guidelines
+- Testing guide
+
+### 9.3 Analysis Documentation
+- Methodology explanation
+- Interpretation guidelines
+- Known limitations
+- Best practices
+- Example analyses
+
+---
+
+## 10. Future Enhancements
+
+### 10.1 Phase 5+ (Post-MVP)
+- **Web Interface**: Dashboard for interactive analysis
+- **Database Storage**: Historical data persistence
+- **Multi-source Data**: Bloomberg, FactSet integration
+- **Machine Learning**: Predict data quality issues
+- **Portfolio Optimization**: Suggest rebalancing actions
+- **Real-time Alerts**: Email/SMS notifications
+- **Sector Analysis**: Industry-specific compression benchmarks
+- **International Markets**: Support for non-US/UK exchanges
+
+---
+
+## 11. Success Metrics
+
+### 11.1 Technical Metrics
+- Analysis speed: <2 minutes for 20-stock portfolio
+- Data accuracy: 95%+ correct P/E calculations
+- Test coverage: 80%+ code coverage
+- Error rate: <1% false positives/negatives
+
+### 11.2 Business Metrics
+- Actionable recommendations: 5+ per analysis
+- Time savings: 90% reduction vs. manual analysis
+- Decision confidence: 80%+ of signals acted upon
+- Portfolio performance: Track returns from PE Scanner recommendations
+
+---
+
+## Appendix A: Glossary
+
+- **P/E Compression**: Reduction in P/E ratio from trailing to forward, indicating expected earnings growth
+- **Trailing P/E**: Price/Earnings ratio based on past 12 months actual earnings (TTM)
+- **Forward P/E**: Price/Earnings ratio based on estimated next 12 months earnings
+- **TTM**: Trailing Twelve Months
+- **ISA**: Individual Savings Account (UK tax-free investment)
+- **SIPP**: Self-Invested Personal Pension (UK)
+- **Bear Case**: Conservative valuation scenario (17.5x P/E)
+- **Bull Case**: Optimistic valuation scenario (37.5x P/E)
+
+---
+
+## Appendix B: Reference Calculations
+
+### HOOD (Robinhood) - Verified Example
+```
+Current Price: $114.30
+2024 Actual EPS: $1.56
+Forward EPS (FY1): $0.73
+TTM EPS: $2.40
+
+Trailing P/E (2024 actual): $114.30 / $1.56 = 73.27
+Trailing P/E (TTM): $114.30 / $2.40 = 47.62
+Forward P/E: $114.30 / $0.73 = 156.58
+
+Compression (2024 baseline): (73.27 - 156.58) / 73.27 = -113.70%
+Compression (TTM baseline): (47.62 - 156.58) / 47.62 = -228.77%
+
+Implied Growth: ($0.73 - $1.56) / $1.56 = -53.2%
+
+Bear Fair Value: $0.73 × 17.5 = $12.78 (-88.82% from current)
+Bull Fair Value: $0.73 × 37.5 = $27.38 (-76.05% from current)
+
+Signal: SELL (high confidence)
+Reason: Massive earnings collapse expected (-53%)
+```
+
+### NFLX (Netflix) - False Signal Example
+```
+Current Price: $114.09 (post-split)
+2024 Actual EPS: $1.98 (post-split)
+Yahoo Forward EPS: $23.78 (PRE-SPLIT! ❌)
+
+Yahoo Forward P/E: $114.09 / $23.78 = 4.80 (FALSE!)
+Correct Forward EPS: $23.78 / 10 = $2.378 (post-split)
+Correct Forward P/E: $114.09 / $2.378 = 48.0 ✅
+
+False Compression: (47.54 - 4.80) / 47.54 = +89.91% ❌
+Real Compression: (57.62 - 48.0) / 57.62 = +16.7% (neutral)
+
+Implied Growth (false): ($23.78 - $1.98) / $1.98 = 1,101% ❌ IMPOSSIBLE!
+Realistic Growth: ($2.378 - $1.98) / $1.98 = 20% ✅
+
+Signal: DATA ERROR (stock split confusion)
+Action: Flag for manual review, do NOT use Yahoo forward P/E
+```
+
+---
+
+**Prepared by**: Momentum Squared Portfolio Management System  
+**Based on**: PE_Compression_Analysis_Corrected_Nov2024.md  
+**For**: PE Scanner Development

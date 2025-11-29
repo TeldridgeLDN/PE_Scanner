@@ -1,0 +1,47 @@
+# PE Scanner Configuration
+# This file controls data fetching, validation, and analysis parameters
+
+data:
+  # Data source configuration
+  source: yahoo_finance
+  cache_ttl: 3600  # Cache time-to-live in seconds (1 hour)
+  max_retries: 3
+  timeout: 30  # Request timeout in seconds
+  
+validation:
+  # Data quality validation settings
+  uk_stock_correction: true          # Apply 100x correction to UK stocks with P/E < 1.0
+  stock_split_detection: true         # Detect stock splits via extreme growth rates
+  extreme_growth_threshold: 100       # Growth % threshold for flagging (default: 100%)
+  stale_estimate_days: 180            # Flag estimates older than this many days
+  extreme_downside_threshold: -95     # Downside % threshold for data quality warning
+  
+scenarios:
+  # Fair value scenario P/E multiples
+  bear_pe: 17.5   # Conservative/pessimistic valuation
+  bull_pe: 37.5   # Optimistic/aggressive valuation
+  
+thresholds:
+  # Compression signal thresholds
+  compression_signal: 20       # Minimum compression % to trigger detailed analysis
+  high_compression: 50         # High compression threshold for prioritization
+  extreme_compression: 80      # Extreme compression threshold
+  
+portfolios:
+  # Portfolio file locations
+  isa: "portfolios/isa.csv"
+  sipp: "portfolios/sipp.csv"
+  wishlist: "portfolios/wishlist.csv"
+  
+reporting:
+  # Report generation settings
+  default_format: markdown
+  output_dir: "outputs"
+  include_warnings: true
+  include_verification_status: true
+  
+logging:
+  # Logging configuration
+  level: INFO  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/pe_scanner.log"
