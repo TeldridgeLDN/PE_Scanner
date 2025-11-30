@@ -8,6 +8,10 @@ data:
   max_retries: 3
   timeout: 30  # Request timeout in seconds
   
+  # Rate limiting for Yahoo Finance API
+  rate_limit_delay: 0.2    # Delay between API calls in seconds (default: 200ms)
+  max_concurrent: 5        # Maximum concurrent requests (for future async support)
+  
 validation:
   # Data quality validation settings
   uk_stock_correction: true          # Apply 100x correction to UK stocks with P/E < 1.0

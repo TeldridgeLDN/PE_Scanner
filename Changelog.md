@@ -1,0 +1,244 @@
+# Changelog
+
+All notable changes to PE Scanner will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+- **Yahoo Finance Data Fetcher** (`data/fetcher.py`): Complete implementation
+  - `fetch_market_data()`: Fetches current price, trailing/forward P/E, trailing/forward EPS, market cap
+  - `batch_fetch()`: Efficient multi-ticker fetching with rate limiting
+  - `MarketDataCache`: Thread-safe in-memory cache with configurable TTL (default: 1 hour)
+  - `clear_cache()` and `get_cache_stats()`: Cache management utilities
+  - `FetcherConfig`: Configuration dataclass for fetcher settings
+  - `get_config()` and `reload_config()`: Config loading from `config.yaml`
+  - Graceful error handling for API failures and missing data
+  - Automatic ticker normalization (uppercase, whitespace trimming)
+- **Configurable Rate Limiting** (`config.yaml`):
+  - `data.rate_limit_delay`: Delay between Yahoo Finance API calls (default: 0.2s)
+  - `data.max_concurrent`: Maximum concurrent requests for future async support
+  - All fetcher settings now configurable via `config.yaml`
+- **Unit Tests** (`tests/unit/test_fetcher.py`): 27 comprehensive tests
+  - MarketData dataclass tests (creation, properties)
+  - Cache tests (TTL, expiration, case-insensitivity, stats)
+  - Helper function tests (`_safe_get` edge cases)
+  - API fetch tests (validation, extraction, error handling)
+  - Batch fetch tests (deduplication, partial failures)
+- **Portfolio Loader** (`portfolios/loader.py`): Complete implementation
+  - `load_portfolio()`: Load portfolios from CSV or JSON files
+  - `load_all_portfolios()`: Load all configured portfolios from directory
+  - `validate_portfolio()`: Data integrity validation (duplicates, negative values)
+  - `merge_portfolios()`: Combine multiple portfolios with weighted average cost basis
+  - `Position` and `Portfolio` dataclasses with computed properties (total_cost, market_value, gain_loss)
+  - Auto-detection of portfolio type from filename (ISA, SIPP, Wishlist)
+  - Config loading from `config.yaml` for portfolio paths
+- **Unit Tests** (`tests/unit/test_loader.py`): 38 comprehensive tests
+  - Position and Portfolio dataclass tests
+  - CSV loading tests (valid, optional fields, missing required, case-insensitive)
+  - JSON loading tests (object format, array format, invalid)
+  - Validation tests (empty, duplicates, negative values)
+  - Merge tests (duplicate tickers with weighted average)
+- **P/E Compression Calculator** (`analysis/compression.py`): Core analysis engine
+  - `calculate_compression()`: Formula: `((trailing_pe - forward_pe) / trailing_pe) × 100`
+  - `interpret_signal()`: Maps compression % to signals (STRONG_BUY → STRONG_SELL)
+  - `analyze_compression()`: Full analysis with warnings for extreme values
+  - `analyze_batch()`: Analyze multiple tickers at once
+  - `rank_by_compression()`: Sort results by opportunity (best buys first)
+  - `CompressionResult` with properties: `is_buy`, `is_sell`, `is_actionable`
+  - Configurable thresholds from `config.yaml` (20%, 50%, 80%)
+  - Validates PRD examples: HOOD (-113.7% → STRONG_SELL), ORA.PA (+70.7% → STRONG_BUY)
+- **Unit Tests** (`tests/unit/test_compression.py`): 37 comprehensive tests
+  - Compression calculation tests (positive, negative, zero, edge cases)
+  - Signal interpretation tests (all signals, custom thresholds)
+  - Full analysis tests (HOOD, ORA.PA, invalid data handling)
+  - Batch analysis and ranking tests
+  - PRD reference example verification
+- **UK Stock Data Corrector** (`data/corrector.py`): Pence→pounds fix
+  - `is_uk_stock()`: Detects UK stocks by `.L` suffix (case insensitive)
+  - `correct_uk_stocks()`: Applies 100× correction when forward P/E < 1.0
+  - `detect_stock_splits()`: Flags extreme implied growth (>100%) as split issue
+  - `calculate_implied_growth()`: Helper for EPS growth calculation
+  - `apply_corrections()`: Full correction pipeline
+  - `CorrectionResult` dataclass with `was_corrected`, `has_warnings` properties
+  - Configurable via `config.yaml` (thresholds, enable/disable)
+  - Validates BATS.L: 0.12 → 11.89 (×100) ✅
+- **Unit Tests** (`tests/unit/test_corrector.py`): 31 comprehensive tests
+  - UK stock detection tests (suffix, case, edge cases)
+  - Correction application tests (low P/E, high P/E, non-UK)
+  - Stock split detection tests (extreme growth, custom thresholds)
+  - PRD reference examples (BATS.L, BAB.L)
+- **Data Quality Validator** (`data/validator.py`): Comprehensive validation
+  - `DataQualityLevel` enum: VERIFIED → UNRELIABLE classification
+  - `DataQualityFlag` enum: 12 specific quality flags
+  - `ValidationResult` with `is_usable`, `has_critical_issues`, confidence score
+  - `check_missing_data()`: Detects missing P/E, EPS, price
+  - `check_negative_pe()`: Flags unprofitable companies
+  - `check_extreme_growth()`: Flags >100% implied growth as suspicious
+  - `check_stale_estimates()`: Flags data >6 months old
+  - `validate_market_data()`: Full validation pipeline
+  - `validate_batch()`: Batch validation with summary
+  - `filter_usable()`: Filters to only usable quality data
+  - Configurable thresholds from `config.yaml`
+- **Unit Tests** (`tests/unit/test_validator.py`): 46 comprehensive tests
+  - Missing data checks (all fields)
+  - Negative/zero P/E detection
+  - Extreme downside/upside projection detection
+  - Stale estimate detection
+  - Quality level classification
+  - Batch validation and filtering
+- **Fair Value Calculator** (`analysis/fair_value.py`): Bear/bull scenarios
+  - `calculate_fair_values()`: Bear (17.5×) and Bull (37.5×) fair values
+  - `calculate_upside()`: Upside/downside % from current price
+  - `analyze_fair_value()`: Full analysis with base case and warnings
+  - `analyze_fair_value_batch()`: Multi-ticker batch analysis
+  - `rank_by_upside()`: Rank results by opportunity
+  - `FairValueResult` with `is_undervalued_bear`, `is_overvalued`, `midpoint_upside_pct`
+  - Configurable P/E multiples from `config.yaml`
+  - Validates HOOD: Bear $12.78 (-88.82%), Bull $27.38 (-76.05%) → Overvalued ✅
+- **Unit Tests** (`tests/unit/test_fair_value.py`): 36 comprehensive tests
+  - Fair value calculation tests (basic, custom multiples, edge cases)
+  - Upside calculation tests (positive, negative, errors)
+  - Full analysis tests (HOOD, BATS.L, custom options)
+  - Batch analysis and ranking tests
+  - PRD formula verification
+- **Manual Verification Module** (`verification.py`): Checklist support
+  - `VerificationStatus` enum: PASSED ✅, WARNING ⚠️, FAILED ❌, PENDING 🔄
+  - `VerificationCheck` with expected/actual values and status icons
+  - `VerificationChecklist` with summary counts and overall status
+  - `check_trailing_eps()`: Compare with SEC filings
+  - `check_forward_eps()`: Verify against analyst consensus
+  - `check_stock_split()`: Detect split-related data issues
+  - `check_growth_realism()`: Validate earnings projections
+  - `check_pe_ratio()`: Compare with sector average
+  - `check_data_source()`: Cross-reference Bloomberg/FactSet
+  - `format_checklist_markdown()`: Rich markdown table output
+  - `format_comparison_table()`: Data source comparison
+  - Batch verification with summary statistics
+- **Unit Tests** (`tests/unit/test_verification.py`): 38 comprehensive tests
+  - Individual check tests (EPS, splits, growth, P/E)
+  - Checklist creation and status determination
+  - Output formatter tests (markdown, text)
+  - Batch verification and summary
+- **Portfolio Ranker** (`portfolios/ranker.py`): Signal-based ranking
+  - `Signal` enum: STRONG_BUY 🟢🟢, BUY 🟢, HOLD 🟡, SELL 🔴, STRONG_SELL 🔴🔴
+  - `Confidence` enum: HIGH, MEDIUM, LOW
+  - `RankedPosition` with signal icons, action text, priority
+  - `calculate_confidence()`: Based on data quality and validation
+  - `assign_signal()`: Configurable thresholds (±20%, ±50%)
+  - `rank_positions()`: Sort by compression, absolute, or upside
+  - `rank_portfolio()`: Complete pipeline with categorization
+  - `get_top_opportunities()`: Filter top buy/sell signals
+  - Action priority: 1=immediate, 2=soon, 3=monitor
+  - Validates PRD: ORA.PA/BATS.L → STRONG_BUY, HOOD → STRONG_SELL
+- **Unit Tests** (`tests/unit/test_ranker.py`): 34 comprehensive tests
+  - Signal assignment tests (all thresholds, custom config)
+  - Confidence calculation tests
+  - Position ranking tests (sort options, fair value integration)
+  - Action categorization tests
+  - PRD example verification
+- **Markdown Report Generator** (`portfolios/reporter.py`): Full reporting
+  - `ReportFormat` enum: MARKDOWN, TEXT, JSON, CONSOLE
+  - `ReportConfig` with toggles for warnings, methodology, fair values
+  - `Report` dataclass with sections and save() method
+  - `generate_summary()`: Immediate actions with 🚨 SELL/BUY sections
+  - `generate_report()`: Full pipeline with buy/sell/hold/warnings
+  - `format_position_row()`: Markdown table rows with signal icons
+  - `format_position_detail()`: Detailed position with scenarios
+  - `save_report()`: Save to .md/.json/.txt with auto directory creation
+  - `generate_text_report()`: Plain text alternative
+  - PRD format: Compression, fair value upside, confidence, warnings
+- **Unit Tests** (`tests/unit/test_reporter.py`): 36 comprehensive tests
+  - Report format and config tests
+  - Position formatting tests (rows and details)
+  - Summary and section generation tests
+  - File saving tests (markdown, JSON, directory creation)
+  - PRD compliance verification
+- **Command-Line Interface** (`cli.py`): Full CLI with Click
+  - `pe-scanner analyze`: Portfolio analysis with --portfolio/--all
+  - `pe-scanner verify`: Manual verification checklist for ticker
+  - `pe-scanner fetch`: Single ticker data fetch and display
+  - `pe-scanner status`: Show config, portfolios, cache stats
+  - `pe-scanner cache`: Cache management (--clear)
+  - Output formats: markdown, json, text, console
+  - Options: --config, --verbose, --debug, --no-cache, --methodology
+  - Rich console output with tables and panels
+  - Complete pipeline: fetch → correct → validate → analyze → rank → report
+- **Unit Tests** (`tests/unit/test_cli.py`): 19 comprehensive tests
+  - Command help and option tests
+  - Error handling tests
+  - Integration tests with config loading
+- **Performance Optimization** (`data/fetcher.py`): Concurrent fetching
+  - `ThreadPoolExecutor` for parallel API calls (5 workers default)
+  - `_fetch_single_ticker()`: Thread-safe single ticker fetch
+  - `FetchResult.data` and `.errors` dict properties for CLI compatibility
+  - `MarketData.fetched_at` alias for consistency
+  - **Benchmark Results:**
+    - 25 tickers: 1.8s (vs 120s target = 66x faster)
+    - Rate: ~14 tickers/sec with concurrent fetching
+    - Full pipeline (fetch→correct→validate→analyze→rank→report): 1.81s
+  - Cache hit optimization: 0.0001s for cached tickers
+- **Momentum_Squared Integration** (`integration/momentum_squared.py`):
+  - CSV format validation with column aliases
+  - `load_momentum_squared_portfolio()`: Load with type inference
+  - `sync_with_master()`: Drift detection with hash comparison
+  - `export_to_momentum_squared()`: Export portfolio to CSV
+  - Support for ISA/SIPP/WISHLIST type detection from filename
+- **diet103 Hooks Framework** (`integration/hooks.py`):
+  - `PreAnalysisValidator`: Portfolio format and ticker validation
+  - `DataQualityGuardian`: P/E bounds, growth rate limits
+  - `PortfolioSyncValidator`: Master file drift detection
+  - `ResultsValidator`: Signal count and compression validation
+  - `HooksManager`: Hook registration and execution pipeline
+  - `run_hooks()`: Convenience function for default hooks
+- **Unit Tests** (`tests/unit/test_integration.py`): 27 comprehensive tests
+  - Hook result status tests
+  - Validator execution tests
+  - Momentum_Squared format validation tests
+  - Portfolio sync and export roundtrip tests
+- **Comprehensive Test Suite** (Task 14):
+  - 399 total tests passing
+  - 82% code coverage (exceeds 80% target)
+  - End-to-end integration tests (`tests/integration/test_end_to_end.py`)
+  - PRD example validation (HOOD sell signal, UK stock corrections)
+  - Edge case tests (zero P/E, negative P/E, missing data)
+  - Full pipeline tests from portfolio to report generation
+
+## [0.1.0] - 2025-11-29
+
+### Added
+- **Project Structure**: Complete Python package structure with `src/pe_scanner/` layout
+- **Analysis Module** (`analysis/`):
+  - `compression.py`: P/E compression calculation stubs with `CompressionResult` and `CompressionSignal` enums
+  - `fair_value.py`: Fair value scenario stubs with bear (17.5x) and bull (37.5x) P/E multiples
+- **Data Module** (`data/`):
+  - `fetcher.py`: Yahoo Finance data fetcher stubs with `MarketData` dataclass
+  - `validator.py`: Data quality validation stubs with `DataQualityLevel` enum
+  - `corrector.py`: UK stock correction and stock split detection stubs
+- **Portfolios Module** (`portfolios/`):
+  - `loader.py`: CSV/JSON portfolio loader stubs with `Portfolio` and `Position` dataclasses
+  - `ranker.py`: Position ranking stubs with `Signal` and `Confidence` enums
+  - `reporter.py`: Markdown report generation stubs with `Report` and `ReportConfig`
+- **CLI** (`cli.py`): Click-based command line interface with:
+  - `pe-scanner analyze` - Portfolio analysis (stub)
+  - `pe-scanner verify` - Manual verification mode (stub)
+  - `pe-scanner fetch` - Single ticker data fetch (stub)
+  - `pe-scanner status` - Configuration status display (working)
+- **Test Framework**:
+  - `tests/conftest.py`: Pytest fixtures with sample data (HOOD, BATS.L, NFLX examples)
+  - `tests/unit/test_setup.py`: 15 setup verification tests (all passing)
+- **Configuration**:
+  - `pyproject.toml`: Full project configuration with dependencies and tooling
+  - `config.yaml`: Default analysis configuration
+  - `requirements.txt`: Dependency specifications
+
+### Technical Details
+- Python 3.10+ required
+- Virtual environment setup with all dependencies
+- 70% code coverage achieved on module stubs
+- All imports validated and working
+- CLI entry point `pe-scanner` registered and functional
+
+

@@ -1,14 +1,82 @@
 """Data fetching, validation, and correction modules."""
 
-from pe_scanner.data.fetcher import fetch_market_data, batch_fetch
-from pe_scanner.data.validator import validate_market_data, check_data_quality
-from pe_scanner.data.corrector import correct_uk_stocks, detect_stock_splits
+from pe_scanner.data.corrector import (
+    CorrectionResult,
+    CorrectorConfig,
+    apply_corrections,
+    apply_corrections_batch,
+    calculate_implied_growth,
+    correct_uk_stocks,
+    detect_stock_splits,
+    get_config as get_corrector_config,
+    is_uk_stock,
+)
+from pe_scanner.data.fetcher import (
+    FetcherConfig,
+    FetchResult,
+    MarketData,
+    batch_fetch,
+    clear_cache,
+    fetch_market_data,
+    get_cache_stats,
+    get_config,
+    reload_config,
+)
+from pe_scanner.data.validator import (
+    DataQualityFlag,
+    DataQualityLevel,
+    ValidationResult,
+    ValidatorConfig,
+    check_data_quality,
+    check_extreme_downside,
+    check_extreme_growth,
+    check_fetch_errors,
+    check_missing_data,
+    check_negative_pe,
+    check_stale_estimates,
+    filter_usable,
+    get_config as get_validator_config,
+    get_validation_summary,
+    validate_batch,
+    validate_market_data,
+)
 
 __all__ = [
-    "fetch_market_data",
+    # Fetcher
+    "FetcherConfig",
+    "FetchResult",
+    "MarketData",
     "batch_fetch",
-    "validate_market_data",
+    "clear_cache",
+    "fetch_market_data",
+    "get_cache_stats",
+    "get_config",
+    "reload_config",
+    # Validator
+    "DataQualityFlag",
+    "DataQualityLevel",
+    "ValidationResult",
+    "ValidatorConfig",
     "check_data_quality",
+    "check_extreme_downside",
+    "check_extreme_growth",
+    "check_fetch_errors",
+    "check_missing_data",
+    "check_negative_pe",
+    "check_stale_estimates",
+    "filter_usable",
+    "get_validation_summary",
+    "get_validator_config",
+    "validate_batch",
+    "validate_market_data",
+    # Corrector
+    "CorrectionResult",
+    "CorrectorConfig",
+    "apply_corrections",
+    "apply_corrections_batch",
+    "calculate_implied_growth",
     "correct_uk_stocks",
     "detect_stock_splits",
+    "get_corrector_config",
+    "is_uk_stock",
 ]
