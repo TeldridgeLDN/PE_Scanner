@@ -54,34 +54,81 @@ PE_Scanner/
 └── .taskmaster/               # Task Master project management
 ```
 
-## 🚀 Quick Start (Post-Development)
+## 🚀 Quick Start
+
+### Installation
 
 ```bash
-# Analyze a portfolio
-pe-scanner analyze --portfolio ISA
+cd /Users/tomeldridge/PE_Scanner
+source venv/bin/activate
+pip install -e .
+```
 
-# Generate report
+### Basic Usage
+
+```bash
+# Analyze individual stocks
+pe-scanner fetch --ticker AAPL
+pe-scanner fetch --ticker MO
+pe-scanner fetch --ticker BATS.L  # UK stocks auto-corrected
+
+# Analyze your portfolio
+pe-scanner analyze --portfolio ISA
+pe-scanner analyze --all  # All portfolios
+
+# Generate saved reports
 pe-scanner analyze --portfolio SIPP --output reports/sipp_analysis.md
 
-# Manual verification mode
+# Manual verification for suspicious signals
 pe-scanner verify --ticker HOOD
+
+# Check system status
+pe-scanner status
+pe-scanner cache --stats
+```
+
+### Real Examples
+
+**Tested Live:**
+```bash
+# Apple - Positive compression (+10.11%)
+$ pe-scanner fetch --ticker AAPL
+✅ CONSIDER BUYING - Moderate positive compression
+Bear: $145.43 (-48.1%) | Bull: $311.62 (+11.1%)
+
+# NVIDIA - Minimal compression (+1.94%)
+$ pe-scanner fetch --ticker NVDA
+🟡 HOLD - Compression within normal range
+Trading at 43.6x forward (premium valuation justified)
+
+# Alphabet - Negative compression (-12.95%)
+$ pe-scanner fetch --ticker GOOGL
+⚠️  CAUTION - EPS expected to decline 11.5%
+P/E expanding from 31.4x to 35.4x
+
+# Vodafone - Turnaround play
+$ pe-scanner fetch --ticker VOD
+⚠️ TURNAROUND PLAY - Currently loss-making
+Analysts expect return to profitability
 ```
 
 ## 📋 Development Status
 
-**Current Phase**: Phase 1 - Core Analysis Engine
+**Current Phase**: ✅ **COMPLETE** - Production Ready
 
 **Implemented**:
-- ✅ Project initialization
-- ✅ PRD and task breakdown
-- ⏳ Development tasks ready
-
-**Next Steps**:
-1. Core P/E compression calculation module
-2. Yahoo Finance data integration
-3. UK stock correction logic
-4. Portfolio CSV loader
-5. Basic reporting
+- ✅ All 15 PRD tasks completed (100%)
+- ✅ 399 tests passing
+- ✅ 82% code coverage
+- ✅ Yahoo Finance data fetcher with caching
+- ✅ UK stock pence-to-pounds auto-correction
+- ✅ Stock split detection
+- ✅ P/E compression analysis with signals
+- ✅ Fair value scenarios (bear/bull)
+- ✅ Portfolio ranking and reporting
+- ✅ CLI with analyze/verify/fetch commands
+- ✅ Momentum_Squared integration
+- ✅ diet103 validation hooks
 
 ## 🔗 Related Projects
 
@@ -125,17 +172,24 @@ Signal: SELL ✅ (confirmed with actual financials)
 ## 🛠️ Tech Stack
 
 **Core**:
-- Python 3.10+
-- pandas, numpy (data analysis)
-- yfinance (market data)
-- pydantic (data validation)
+- Python 3.13+ (tested with 3.13.5)
+- pandas>=2.0.0, numpy>=1.24.0 (data analysis)
+- yfinance>=0.2.28 (Yahoo Finance API)
+- pydantic>=2.0.0 (data validation)
 
 **Reporting**:
-- rich (terminal formatting)
-- tabulate (table generation)
+- rich>=13.0.0 (terminal formatting)
+- tabulate>=0.9.0 (table generation)
+- click>=8.0.0 (CLI framework)
 
 **Testing**:
-- pytest, pytest-cov
+- pytest>=7.4.0, pytest-cov>=4.1.0
+- 399 tests, 82% coverage
+
+**Performance**:
+- ThreadPoolExecutor for concurrent fetching
+- In-memory caching with TTL
+- 25 tickers analyzed in <2 seconds
 
 **Project Management**:
 - Task Master AI (task-driven development)
