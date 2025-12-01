@@ -1,0 +1,671 @@
+# Product Requirements Document: PE Scanner v2.0
+**Project**: PE Scanner v2.0 - Differentiation & Lead Generation Enhancements
+**Date**: December 1, 2025
+**Version**: 2.0
+**Status**: Planning Phase
+**Parent Version**: v1.0 (MVP Complete)
+
+---
+
+## 1. Executive Summary
+
+### 1.1 What Changed Since v1.0
+
+PE Scanner v1.0 successfully implemented the **core analysis engine** (P/E compression, data quality, fair value). Version 2.0 adds **differentiation and viral mechanics** to transform it from an analysis tool into a **lead generation machine**.
+
+### 1.2 The Missing Pieces (From Handover Document)
+
+Based on `/Users/tomeldridge/Momentum_Squared/docs/PE_SCANNER_PROJECT_HANDOVER.md`, v1.0 is missing:
+
+| Feature | Status | Business Impact |
+|---------|--------|-----------------|
+| **Tiered Stock Analysis** | ❌ Missing | Breaks for growth stocks & loss-making companies |
+| **Anchored Results** | ❌ Missing | Results are abstract, not memorable |
+| **Headline Generator** | ❌ Missing | Zero viral/sharing mechanics |
+| **Growth Mode (PEG)** | ❌ Missing | Can't analyze high P/E stocks (PLTR, NVDA) |
+| **Hyper-Growth Mode (P/S)** | ❌ Missing | Can't analyze loss-making stocks (RIVN) |
+| **Share URLs** | ❌ Missing | No social sharing infrastructure |
+| **Opportunity Matrix** | ❌ Missing | No roadmap for future enhancements |
+
+### 1.3 Business Value
+
+**Without these features:**
+- PE Scanner is a "calculator" (commodity)
+- Only works for value stocks (P/E < 25)
+- Results are forgettable numbers
+- Zero organic reach/sharing
+
+**With v2.0 enhancements:**
+- Works for **ALL stock types** (value, growth, hyper-growth)
+- Results are **memorable and shareable** ("HOOD would need to 2.5x profits")
+- **10x more viral** (headline generator + share buttons)
+- **Higher lead gen conversion** (email capture tied to portfolio scan)
+
+---
+
+## 2. Opportunity Matrix Analysis
+
+### 2.1 Full Opportunity Matrix (From Handover)
+
+| Opportunity | Difficulty | Lead Gen Value | Differentiation | Priority |
+|-------------|------------|----------------|-----------------|----------|
+| **A. Headline Generator** | Easy | High (shareable) | Medium | P0 (MVP v2) |
+| **B. What Would Have To Be True** | Medium | High (unique insight) | High | P0 (MVP v2) |
+| **C. Financial Calorie Counter** | Easy | Medium | Medium | P1 (Phase 5) |
+| **D. Mortgage Calculator for Stocks** | Medium | High | High | P1 (Phase 5) |
+| **E. Portfolio Health Score** | Medium | Very High (email gate) | Medium | P1 (Phase 6) |
+| **F. Compression Alerts** | Hard | Very High (premium) | High | P2 (Phase 7) |
+| **G. Multi-Lens Analysis** | Hard | High | Very High | P2 (Phase 8) |
+| **H. Stock Story Generator** | Hard | Very High | Very High | P2 (Phase 9) |
+
+### 2.2 Recommended MVP v2 Scope
+
+**From Handover Document (Approved by Tom):**
+
+> "Add to MVP scope:
+> - **Anchoring (Opportunity B)** — "What would have to be true"
+> - **Growth Mode** — Handle high P/E stocks differently
+> - **Headline Generator (Opportunity A)** — Shareable output
+>
+> These three additions make the scanner 10x more differentiated and shareable, with minimal extra effort."
+
+---
+
+## 3. Technical Requirements
+
+### 3.1 NEW: Tiered Stock Analysis
+
+**Problem:** Current P/E compression logic breaks for:
+- Growth stocks (P/E 25-50) like CRM, ADBE
+- Hyper-growth stocks (P/E > 50) like PLTR, NVDA
+- Loss-making companies (negative P/E) like RIVN
+
+**Solution:** Auto-detect stock type and route to appropriate analysis mode.
+
+#### 3.1.1 Stock Classification Logic
+
+```python
+def classify_stock_type(trailing_pe: float, forward_pe: float) -> str:
+    """
+    Classify stock into VALUE, GROWTH, or HYPER_GROWTH.
+    """
+    if trailing_pe is None or trailing_pe < 0:
+        return "HYPER_GROWTH"  # Loss-making or negative earnings
+    elif trailing_pe > 50:
+        return "HYPER_GROWTH"  # Extreme valuation
+    elif trailing_pe >= 25:
+        return "GROWTH"  # High but not extreme
+    else:
+        return "VALUE"  # Standard value stock
+```
+
+#### 3.1.2 Analysis Modes
+
+| Mode | Detection Criteria | Metrics | Signal Logic |
+|------|-------------------|---------|--------------|
+| **VALUE** | P/E < 25 | Trailing P/E, Forward P/E, Compression % | Current logic (compression > +20% = BUY) |
+| **GROWTH** | P/E 25-50 | PEG Ratio (P/E ÷ Growth Rate) | PEG < 1.0 = BUY, PEG > 2.0 = SELL |
+| **HYPER_GROWTH** | P/E > 50 or negative | Price/Sales, Rule of 40 | P/S < 5 + RO40 > 40 = BUY |
+
+#### 3.1.3 Implementation (Growth Mode - PEG Analysis)
+
+```python
+def analyze_growth_stock(ticker: str, info: dict) -> dict:
+    """
+    PEG ratio analysis for growth stocks (P/E 25-50).
+    
+    PEG = P/E ÷ Earnings Growth Rate
+    - PEG < 1.0 = undervalued (paying less than 1x for each % of growth)
+    - PEG > 2.0 = overvalued (paying more than 2x for each % of growth)
+    """
+    trailing_pe = info.get('trailingPE', 0)
+    earnings_growth = info.get('earningsGrowth', 0) * 100  # Convert to %
+    
+    if earnings_growth <= 0:
+        return {"error": "No positive earnings growth available"}
+    
+    peg = trailing_pe / earnings_growth
+    
+    if peg < 1.0:
+        signal = 'BUY'
+        confidence = 'high'
+    elif peg > 2.0:
+        signal = 'SELL'
+        confidence = 'high'
+    else:
+        signal = 'HOLD'
+        confidence = 'medium'
+    
+    return {
+        'ticker': ticker,
+        'analysis_mode': 'GROWTH (PEG)',
+        'trailing_pe': round(trailing_pe, 2),
+        'earnings_growth_pct': round(earnings_growth, 1),
+        'peg_ratio': round(peg, 2),
+        'signal': signal,
+        'confidence': confidence,
+        'explanation': f"Paying {peg:.2f}x for each % of growth"
+    }
+```
+
+#### 3.1.4 Implementation (Hyper-Growth Mode - Price/Sales)
+
+```python
+def analyze_hyper_growth_stock(ticker: str, info: dict) -> dict:
+    """
+    Price/Sales analysis for hyper-growth or loss-making companies.
+    
+    Metrics:
+    - P/S Ratio: Market Cap ÷ Revenue
+    - Rule of 40: Revenue Growth % + Profit Margin %
+    
+    Signals:
+    - BUY: P/S < 5 AND Rule of 40 >= 40
+    - SELL: P/S > 15 OR Rule of 40 < 20
+    """
+    market_cap = info.get('marketCap', 0)
+    revenue = info.get('totalRevenue', 0)
+    revenue_growth = info.get('revenueGrowth', 0) * 100
+    profit_margin = info.get('profitMargins', 0) * 100
+    
+    if revenue <= 0:
+        return {'error': 'No revenue data available'}
+    
+    price_to_sales = market_cap / revenue
+    rule_of_40 = revenue_growth + profit_margin
+    
+    if price_to_sales < 5 and rule_of_40 >= 40:
+        signal = 'BUY'
+        confidence = 'high'
+    elif price_to_sales > 15 or rule_of_40 < 20:
+        signal = 'SELL'
+        confidence = 'high'
+    else:
+        signal = 'HOLD'
+        confidence = 'medium'
+    
+    return {
+        'ticker': ticker,
+        'analysis_mode': 'HYPER-GROWTH (P/S)',
+        'price_to_sales': round(price_to_sales, 2),
+        'revenue_growth_pct': round(revenue_growth, 1),
+        'profit_margin_pct': round(profit_margin, 1),
+        'rule_of_40_score': round(rule_of_40, 1),
+        'signal': signal,
+        'confidence': confidence,
+        'explanation': f"At {price_to_sales:.1f}x sales with Rule of 40 score of {rule_of_40:.0f}"
+    }
+```
+
+### 3.2 NEW: Anchored Results ("What Would Have To Be True")
+
+**Problem:** Raw numbers like "-113% compression" or "PEG of 3.2" are abstract and forgettable.
+
+**Solution:** Anchor every result to something concrete and memorable.
+
+#### 3.2.1 Anchoring Strategies
+
+| Anchor Type | When to Use | Example Output |
+|-------------|-------------|----------------|
+| **Profit Multiplication** | Compression < -30% | "HOOD would need to 2.5x profits to justify current price" |
+| **Growth Requirement** | PEG > 2.0 | "To justify P/E of 65, NVDA needs 40%/year growth for 5 years" |
+| **Market Cap Comparison** | Market cap > $500B | "NVDA is priced as if it will generate more profit than Apple" |
+| **Historical Context** | Any stock | "Last time META had this valuation was March 2020" |
+| **Benchmark Comparison** | Loss-making hyper-growth | "At 12x sales, RIVN needs to become as profitable as Tesla" |
+
+#### 3.2.2 Implementation
+
+```python
+def generate_anchor(ticker: str, analysis_result: dict, info: dict) -> str:
+    """
+    Generate human-readable anchor context ("What would have to be true").
+    
+    Returns a memorable statement that makes the signal concrete.
+    """
+    mode = analysis_result.get('analysis_mode', 'VALUE')
+    signal = analysis_result.get('signal', 'HOLD')
+    market_cap = info.get('marketCap', 0)
+    
+    # VALUE MODE: Profit multiplication anchor
+    if 'compression_pct' in analysis_result:
+        compression = analysis_result['compression_pct']
+        trailing_pe = info.get('trailingPE', 0)
+        forward_pe = info.get('forwardPE', 0)
+        
+        if compression < -30 and trailing_pe and forward_pe:
+            # Calculate profit multiplication required
+            current_profit = market_cap / trailing_pe if trailing_pe > 0 else 0
+            implied_profit = market_cap / forward_pe if forward_pe > 0 else 0
+            
+            if current_profit > 0 and implied_profit > 0:
+                if implied_profit < current_profit:
+                    # Profit needs to DECLINE
+                    decline_pct = ((current_profit - implied_profit) / current_profit) * 100
+                    multiplier = current_profit / implied_profit
+                    return f"Market expects profits to DROP {decline_pct:.0f}%. To return to fair value, {ticker} would need to grow profits {multiplier:.1f}x"
+    
+    # GROWTH MODE: Growth requirement anchor
+    if 'peg_ratio' in analysis_result:
+        peg = analysis_result['peg_ratio']
+        trailing_pe = info.get('trailingPE', 0)
+        earnings_growth = analysis_result.get('earnings_growth_pct', 0)
+        
+        if trailing_pe > 30:
+            # Calculate required growth for PEG of 1.0
+            required_growth = trailing_pe / 1.0
+            years = 5  # Standard timeframe
+            return f"To justify P/E of {trailing_pe:.0f}, {ticker} needs {required_growth:.0f}% annual earnings growth for {years} years. Only 5% of companies achieve this."
+    
+    # HYPER-GROWTH MODE: Benchmark comparison anchor
+    if 'price_to_sales' in analysis_result:
+        ps = analysis_result['price_to_sales']
+        rule_40 = analysis_result.get('rule_of_40_score', 0)
+        
+        if ps > 10:
+            return f"At {ps:.1f}x sales, {ticker} needs to achieve {80 - rule_40:.0f} points higher profitability to justify valuation (current Rule of 40: {rule_40:.0f})"
+    
+    # MEGA-CAP COMPARISON (for any mode with market cap > $500B)
+    if market_cap > 500_000_000_000:
+        forward_pe = info.get('forwardPE', 0)
+        if forward_pe and forward_pe > 0:
+            implied_profit = market_cap / forward_pe
+            implied_profit_b = implied_profit / 1_000_000_000
+            
+            apple_profit = 100  # ~$100B annual profit (benchmark)
+            
+            if implied_profit_b > apple_profit:
+                return f"At current price, {ticker} is valued as if it will generate ${implied_profit_b:.0f}B in annual profit — more than Apple's ${apple_profit}B"
+    
+    # FALLBACK
+    return f"At current valuation, {ticker} is priced for {signal.lower()} conditions"
+```
+
+### 3.3 NEW: Headline Generator
+
+**Problem:** Nobody shares "P/E compression: -113%" or "PEG ratio: 3.2". People share memorable headlines.
+
+**Solution:** Auto-generate shareable headlines optimized for Twitter/LinkedIn virality.
+
+#### 3.3.1 Headline Templates
+
+| Signal | Severity | Template | Example |
+|--------|----------|----------|---------|
+| **SELL** | Severe (compression < -80%) | "🚨 {TICKER} is priced like it's heading to zero" | "🚨 HOOD is priced like it's heading to zero" |
+| **SELL** | Moderate (compression -30% to -80%) | "⚠️ {TICKER} would need a miracle to justify its price" | "⚠️ NFLX would need a miracle to justify its price" |
+| **SELL** | Growth (PEG > 3.0) | "⚠️ {TICKER} is trading at {PEG}x its growth rate" | "⚠️ CRM is trading at 3.2x its growth rate" |
+| **HOLD** | Any | "🤔 {TICKER} is fairly priced — no strong signal" | "🤔 META is fairly priced — no strong signal" |
+| **BUY** | Value (compression > 50%) | "📈 {TICKER} earnings set to surge — market hasn't noticed" | "📈 ORA.PA earnings set to surge — market hasn't noticed" |
+| **BUY** | Growth (PEG < 0.8) | "🚀 {TICKER} is a growth stock at a value price (PEG: {PEG})" | "🚀 ADBE is a growth stock at a value price (PEG: 0.7)" |
+
+#### 3.3.2 Implementation
+
+```python
+def generate_headline(ticker: str, analysis_result: dict) -> str:
+    """
+    Generate a shareable headline based on analysis result.
+    
+    Optimized for Twitter/LinkedIn sharing (under 280 chars).
+    """
+    signal = analysis_result.get('signal', 'HOLD')
+    mode = analysis_result.get('analysis_mode', 'VALUE')
+    
+    # SELL SIGNALS
+    if signal == 'SELL':
+        # Check severity
+        if 'compression_pct' in analysis_result:
+            compression = analysis_result['compression_pct']
+            if compression < -80:
+                return f"🚨 {ticker} is priced like it's heading to zero"
+            elif compression < -50:
+                return f"⚠️ {ticker} would need a miracle to justify its price"
+            else:
+                return f"⚠️ {ticker} looks overvalued at current levels"
+        
+        elif 'peg_ratio' in analysis_result:
+            peg = analysis_result['peg_ratio']
+            if peg > 3:
+                return f"⚠️ {ticker} is trading at {peg:.1f}x its growth rate — expensive"
+            else:
+                return f"⚠️ {ticker} growth doesn't justify its premium valuation"
+        
+        elif 'price_to_sales' in analysis_result:
+            ps = analysis_result['price_to_sales']
+            if ps > 15:
+                return f"⚠️ {ticker} is trading at {ps:.0f}x sales — bubble territory"
+            else:
+                return f"⚠️ {ticker} valuation looks stretched vs. fundamentals"
+    
+    # BUY SIGNALS
+    elif signal == 'BUY':
+        if 'compression_pct' in analysis_result:
+            compression = analysis_result['compression_pct']
+            if compression > 50:
+                return f"📈 {ticker} earnings are set to surge — market hasn't noticed"
+            else:
+                return f"📈 {ticker} looks undervalued at current levels"
+        
+        elif 'peg_ratio' in analysis_result:
+            peg = analysis_result['peg_ratio']
+            if peg < 0.8:
+                return f"🚀 {ticker} is a growth stock at a value price (PEG: {peg:.1f})"
+            else:
+                return f"📈 {ticker} growth justifies its premium valuation"
+        
+        elif 'price_to_sales' in analysis_result:
+            rule_40 = analysis_result.get('rule_of_40_score', 0)
+            return f"🚀 {ticker} has stellar Rule of 40 score ({rule_40:.0f}) at reasonable valuation"
+    
+    # HOLD
+    else:
+        return f"🤔 {ticker} is fairly priced — no strong signal either way"
+
+
+def generate_share_urls(ticker: str, headline: str, site_url: str = "pe-scanner.com") -> dict:
+    """
+    Generate pre-formatted share URLs for social platforms.
+    
+    Returns URLs for Twitter, LinkedIn, and copy-ready text.
+    """
+    import urllib.parse
+    
+    share_text = f"{headline}\n\nAnalyze your stocks free: {site_url}"
+    encoded_text = urllib.parse.quote(share_text)
+    encoded_url = urllib.parse.quote(f"https://{site_url}")
+    
+    return {
+        'twitter': f"https://twitter.com/intent/tweet?text={encoded_text}",
+        'linkedin': f"https://www.linkedin.com/sharing/share-offsite/?url={encoded_url}&summary={encoded_text}",
+        'copy_text': share_text
+    }
+```
+
+### 3.4 Complete API Response Schema (v2.0)
+
+With all enhancements, the API now returns:
+
+```json
+{
+  "ticker": "HOOD",
+  "company_name": "Robinhood Markets Inc",
+  "current_price": 114.30,
+  "analysis_mode": "VALUE (P/E Compression)",
+  "metrics": {
+    "trailing_pe": 47.62,
+    "forward_pe": 156.58,
+    "compression_pct": -228.77,
+    "implied_growth_pct": -69.6
+  },
+  "signal": "SELL",
+  "confidence": "high",
+  "anchor": "Market expects profits to DROP 70%. To return to fair value, HOOD would need to grow profits 3.3x",
+  "headline": "🚨 HOOD is priced like it's heading to zero",
+  "share_urls": {
+    "twitter": "https://twitter.com/intent/tweet?text=...",
+    "linkedin": "https://linkedin.com/...",
+    "copy_text": "🚨 HOOD is priced like it's heading to zero\n\nAnalyze your stocks free: pe-scanner.com"
+  },
+  "data_quality": "verified",
+  "timestamp": "2025-12-01T12:00:00Z"
+}
+```
+
+---
+
+## 4. Implementation Phases
+
+### Phase 5: v2.0 MVP Enhancements (Week 1-2)
+
+**Goal:** Add tiered analysis, anchoring, and headlines to existing v1.0 codebase.
+
+**Deliverables:**
+1. Tiered analysis routing (VALUE/GROWTH/HYPER_GROWTH)
+2. Growth mode (PEG analysis)
+3. Hyper-growth mode (Price/Sales + Rule of 40)
+4. Anchoring engine ("what would have to be true")
+5. Headline generator
+6. Social share URL generation
+7. Updated CLI to display anchors and headlines
+8. Updated reports to include all v2.0 fields
+
+**Success Criteria:**
+- Analyze PLTR (hyper-growth) successfully with P/S analysis
+- Analyze CRM (growth) successfully with PEG analysis
+- Analyze HOOD (value) with new anchor and headline
+- All existing tests pass + new tests for tiered modes
+- CLI output includes anchor and headline for every analysis
+
+### Phase 6: Web Interface (Week 3)
+
+**Goal:** Create web landing page for single-ticker analysis (adapt from Pirouette).
+
+**Deliverables:**
+- Flask web app with landing page
+- Ticker input form
+- Results display with anchor + headline + share buttons
+- Mobile-responsive design
+- Email capture modal (gate portfolio scan)
+
+**Success Criteria:**
+- < 3 second response time for single ticker
+- Share buttons work (Twitter, LinkedIn)
+- Email capture stores to ConvertKit/Buttondown
+- Works on mobile devices
+
+### Phase 7: Portfolio Health Score (Week 4)
+
+**Goal:** Implement "Portfolio Health Score" from Opportunity Matrix.
+
+**Deliverables:**
+- Portfolio CSV upload
+- Aggregate health score (0-100)
+- Breakdown by risk categories
+- Email-gated (requires signup)
+
+**Success Criteria:**
+- Analyze 50-position portfolio in < 30 seconds
+- Clear health score visualization
+- Conversion rate (scan → email) > 10%
+
+### Phase 8: Compression Alerts (Week 5-6)
+
+**Goal:** Implement "Compression Alerts" from Opportunity Matrix (premium feature).
+
+**Deliverables:**
+- Background job to track compression changes
+- Email/SMS alerts for new opportunities
+- Alert preferences (frequency, signal types)
+- Premium tier (paid feature)
+
+**Success Criteria:**
+- Alerts sent within 1 hour of signal change
+- < 5% false positive rate
+- Premium conversion rate > 2%
+
+---
+
+## 5. Testing Strategy
+
+### 5.1 New Unit Tests
+
+**Tiered Analysis:**
+- `test_classify_stock_type()` - VALUE/GROWTH/HYPER_GROWTH detection
+- `test_growth_mode_peg()` - PEG calculation and signals
+- `test_hyper_growth_mode()` - Price/Sales + Rule of 40
+- `test_analysis_routing()` - Correct mode selection
+
+**Anchoring:**
+- `test_profit_multiplication_anchor()` - HOOD example
+- `test_growth_requirement_anchor()` - NVDA example
+- `test_mega_cap_comparison_anchor()` - Market cap > $500B
+- `test_anchor_fallback()` - Edge cases
+
+**Headlines:**
+- `test_headline_severe_sell()` - Compression < -80%
+- `test_headline_moderate_sell()` - Compression -30% to -80%
+- `test_headline_growth_buy()` - PEG < 0.8
+- `test_headline_hyper_growth()` - P/S examples
+
+### 5.2 Integration Tests
+
+**End-to-End v2.0:**
+- `test_value_stock_full_pipeline()` - HOOD with anchor + headline
+- `test_growth_stock_full_pipeline()` - CRM with PEG + anchor + headline
+- `test_hyper_growth_stock_full_pipeline()` - PLTR with P/S + anchor + headline
+
+### 5.3 Test Tickers (From Handover)
+
+| Ticker | Mode | Expected Anchor | Expected Headline |
+|--------|------|-----------------|-------------------|
+| HOOD | VALUE | "Would need to grow profits 3.3x" | "🚨 HOOD is priced like it's heading to zero" |
+| CRM | GROWTH | "Needs 35%/year growth for 5 years" | Varies by PEG |
+| PLTR | HYPER_GROWTH | "Needs to become as profitable as..." | Varies by Rule of 40 |
+| RIVN | HYPER_GROWTH | "At 12x sales, needs Tesla-level profitability" | Varies by P/S |
+
+---
+
+## 6. Opportunity Matrix Roadmap
+
+### Phase 5-6 (v2.0 MVP) - APPROVED
+- ✅ **A. Headline Generator** (Easy, High Lead Gen)
+- ✅ **B. What Would Have To Be True** (Medium, High Differentiation)
+- ✅ **Growth Mode** (PEG analysis)
+- ✅ **Hyper-Growth Mode** (P/S + Rule of 40)
+
+### Phase 7 (Post-v2.0)
+- 🔄 **E. Portfolio Health Score** (Medium, Very High Lead Gen)
+
+### Phase 8
+- 🔄 **F. Compression Alerts** (Hard, Very High Premium)
+
+### Phase 9+ (Future)
+- ⏳ **C. Financial Calorie Counter** (Easy, Medium)
+- ⏳ **D. Mortgage Calculator for Stocks** (Medium, High)
+- ⏳ **G. Multi-Lens Analysis** (Hard, Very High)
+- ⏳ **H. Stock Story Generator** (Hard, Very High)
+
+---
+
+## 7. Success Metrics (v2.0)
+
+| Metric | v1.0 Baseline | v2.0 Target | Measurement |
+|--------|---------------|-------------|-------------|
+| **Stock Coverage** | Value stocks only | All stock types | % of S&P 500 analyzable |
+| **Shareability** | 0 shares | 50+ shares/month | Social share clicks |
+| **Memorability** | N/A | Survey after 1 week | % who remember anchor |
+| **Lead Gen** | 0 emails | 50+ emails | Email signups |
+| **Viral Coefficient** | 0 | 0.3+ | New users from shares |
+
+---
+
+## 8. Migration Plan (v1.0 → v2.0)
+
+### 8.1 Backward Compatibility
+
+**Existing v1.0 API (`/api/compression/<ticker>`):**
+- ✅ Keep for backward compatibility
+- ✅ Add deprecation warning
+- ✅ Redirect to new `/api/analyze/<ticker>` endpoint
+
+**New v2.0 API (`/api/analyze/<ticker>`):**
+- ✅ Returns tiered analysis + anchor + headline
+- ✅ Query params: `?include=anchor,headline,share`
+- ✅ Defaults to including all v2.0 fields
+
+### 8.2 Data Model Changes
+
+**Add to `MarketData` dataclass:**
+```python
+@dataclass
+class MarketData:
+    # ... existing fields ...
+    
+    # NEW v2.0 fields
+    earnings_growth: Optional[float] = None  # For PEG analysis
+    revenue_growth: Optional[float] = None   # For P/S analysis
+    profit_margin: Optional[float] = None    # For Rule of 40
+    total_revenue: Optional[float] = None    # For P/S calculation
+```
+
+**Add new result dataclasses:**
+```python
+@dataclass
+class GrowthAnalysisResult:
+    """Result from PEG analysis (growth stocks)."""
+    ticker: str
+    analysis_mode: str = "GROWTH (PEG)"
+    trailing_pe: float
+    earnings_growth_pct: float
+    peg_ratio: float
+    signal: str
+    confidence: str
+    explanation: str
+    anchor: Optional[str] = None
+    headline: Optional[str] = None
+    share_urls: Optional[dict] = None
+
+@dataclass
+class HyperGrowthAnalysisResult:
+    """Result from P/S analysis (hyper-growth stocks)."""
+    ticker: str
+    analysis_mode: str = "HYPER_GROWTH (P/S)"
+    price_to_sales: float
+    revenue_growth_pct: float
+    profit_margin_pct: float
+    rule_of_40_score: float
+    signal: str
+    confidence: str
+    explanation: str
+    anchor: Optional[str] = None
+    headline: Optional[str] = None
+    share_urls: Optional[dict] = None
+```
+
+---
+
+## 9. Documentation Updates
+
+### 9.1 README.md
+- Add v2.0 features section
+- Update "What It Does" with tiered analysis
+- Add examples for growth/hyper-growth stocks
+- Include headline + anchor examples
+
+### 9.2 USAGE.md
+- Add "Analyzing Growth Stocks" section
+- Add "Analyzing Hyper-Growth Stocks" section
+- Add "Understanding Anchors" section
+- Add "Sharing Results" section
+
+### 9.3 Changelog.md
+- Create "[Unreleased] - v2.0" section
+- Document all new features
+- Note API changes and deprecations
+
+---
+
+## 10. Open Questions
+
+1. **PEG threshold calibration** - Is PEG < 1.0 = BUY and PEG > 2.0 = SELL appropriate for all growth stocks?
+2. **Rule of 40 applicability** - Should we only use Rule of 40 for SaaS companies, or apply broadly?
+3. **Headline tone** - Are emoji-heavy headlines appropriate for LinkedIn vs. Twitter?
+4. **Anchor validation** - How do we verify anchors are accurate and meaningful?
+5. **Web hosting** - Continue Railway, or move to Vercel/Netlify for web app?
+
+---
+
+## 11. Reference Files
+
+| File | Location | Purpose |
+|------|----------|---------|
+| **v2.0 Handover** | `/Users/tomeldridge/Momentum_Squared/docs/PE_SCANNER_PROJECT_HANDOVER.md` | Complete v2.0 spec with examples |
+| **v1.0 PRD** | `.taskmaster/docs/prd.txt` | Original requirements (completed) |
+| **Pirouette Landing Page** | `/Users/tomeldridge/pirouette/src/app/page.tsx` | Web UI patterns to adapt |
+| **Corrected Analysis** | `/Users/tomeldridge/Momentum_Squared/analysis/PE_Compression_Analysis_Corrected_Nov2024.md` | Test cases and known issues |
+
+---
+
+**Last Updated:** December 1, 2025
+**Version:** 2.0
+**Status:** Ready for Task Breakdown
+**Estimated Timeline:** 2-3 weeks for Phase 5 (v2.0 MVP)
+

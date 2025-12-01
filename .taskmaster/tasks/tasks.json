@@ -239,16 +239,149 @@
         "status": "done",
         "subtasks": [],
         "updatedAt": "2025-11-30T07:52:11.884Z"
+      },
+      {
+        "id": 16,
+        "title": "Implement Stock Classification Logic",
+        "description": "Develop the function to classify stocks into VALUE, GROWTH, or HYPER_GROWTH categories based on trailing P/E ratios.",
+        "details": "Implement the classify_stock_type function as specified, handling None or negative trailing P/E as HYPER_GROWTH, trailing P/E > 50 as HYPER_GROWTH, trailing P/E between 25 and 50 as GROWTH, and below 25 as VALUE. Ensure robust input validation and unit tests.",
+        "testStrategy": "Unit test classify_stock_type with edge cases: None, negative, exactly 25, 50, above 50, and typical values to confirm correct classification.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 17,
+        "title": "Develop Growth Mode Analysis (PEG)",
+        "description": "Implement PEG ratio analysis for growth stocks with P/E between 25 and 50, generating BUY, SELL, or HOLD signals.",
+        "details": "Create analyze_growth_stock function calculating PEG = trailing P/E divided by earnings growth percentage. Return signals based on PEG thresholds (<1.0 BUY, >2.0 SELL, else HOLD) with confidence levels and explanation strings. Handle zero or negative earnings growth gracefully.",
+        "testStrategy": "Unit tests covering PEG calculation, signal assignment, and error handling for zero or negative earnings growth. Test with sample tickers like CRM.",
+        "priority": "high",
+        "dependencies": [
+          16
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 18,
+        "title": "Develop Hyper-Growth Mode Analysis (Price/Sales + Rule of 40)",
+        "description": "Implement analysis for hyper-growth or loss-making stocks using Price/Sales ratio and Rule of 40 metric.",
+        "details": "Implement analyze_hyper_growth_stock function calculating price-to-sales ratio and Rule of 40 (revenue growth % + profit margin %). Generate BUY, SELL, or HOLD signals based on thresholds (BUY if P/S < 5 and Rule of 40 >= 40, SELL if P/S > 15 or Rule of 40 < 20). Handle missing revenue data with error returns.",
+        "testStrategy": "Unit tests for correct signal generation with various P/S and Rule of 40 values, including edge cases and error conditions. Test with tickers like PLTR and RIVN.",
+        "priority": "high",
+        "dependencies": [
+          16
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 19,
+        "title": "Integrate Tiered Analysis Routing",
+        "description": "Create routing logic to select appropriate analysis mode (VALUE, GROWTH, HYPER_GROWTH) based on stock classification and invoke corresponding analysis functions.",
+        "details": "Develop a controller function that uses classify_stock_type to determine stock type, then calls the corresponding analysis function: existing VALUE mode logic, analyze_growth_stock for GROWTH, or analyze_hyper_growth_stock for HYPER_GROWTH. Ensure seamless integration and consistent output format.",
+        "testStrategy": "Integration tests verifying correct routing and output for sample tickers HOOD (VALUE), CRM (GROWTH), and PLTR (HYPER_GROWTH). Confirm all modes produce expected signals and data fields.",
+        "priority": "high",
+        "dependencies": [
+          16,
+          17,
+          18
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 20,
+        "title": "Implement Anchoring Engine for Results",
+        "description": "Develop the anchoring logic to generate memorable, concrete statements ('What Would Have To Be True') based on analysis results and stock info.",
+        "details": "Implement generate_anchor function covering all anchoring strategies: profit multiplication for VALUE stocks with compression < -30%, growth requirement for PEG > 2.0, benchmark comparisons for hyper-growth stocks, mega-cap profit comparisons, and fallback generic anchors. Use provided formulas and thresholds strictly.",
+        "testStrategy": "Unit tests for each anchor type using example tickers HOOD, NVDA, RIVN, and mega-cap scenarios. Validate fallback anchor for edge cases. Confirm output matches expected memorable statements.",
+        "priority": "high",
+        "dependencies": [
+          19
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 21,
+        "title": "Develop Headline Generator",
+        "description": "Create a headline generation module producing shareable, viral-optimized headlines based on analysis signals and metrics.",
+        "details": "Implement generate_headline function using defined templates for SELL, BUY, and HOLD signals with severity checks (compression %, PEG, P/S). Include emoji and concise language optimized for Twitter/LinkedIn. Also implement generate_share_urls to produce pre-formatted URLs for Twitter, LinkedIn, and copy text.",
+        "testStrategy": "Unit tests for headline generation covering all signal types and severity levels. Validate share URL correctness and encoding. Test with example tickers HOOD, CRM, PLTR.",
+        "priority": "high",
+        "dependencies": [
+          19
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 22,
+        "title": "Update API Endpoint and Response Schema",
+        "description": "Extend the existing API to support v2.0 analysis with tiered modes, anchors, headlines, and share URLs, maintaining backward compatibility.",
+        "details": "Modify or create new endpoint /api/analyze/<ticker> returning full v2.0 JSON schema including analysis_mode, metrics, signal, confidence, anchor, headline, share_urls, data_quality, and timestamp. Add query parameters to include/exclude anchor, headline, share URLs. Deprecate old /api/compression/<ticker> with redirect and warning.",
+        "testStrategy": "Integration tests verifying API responses for various tickers, correct inclusion of new fields, backward compatibility, and query param behavior. Validate response schema against specification.",
+        "priority": "high",
+        "dependencies": [
+          19,
+          20,
+          21
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 23,
+        "title": "Enhance CLI to Display Anchors and Headlines",
+        "description": "Update the command-line interface to show anchor statements and headlines alongside analysis results for each ticker.",
+        "details": "Modify CLI output formatting to include anchor and headline fields from v2.0 analysis results. Ensure readability and consistent display. Add options to toggle display if needed.",
+        "testStrategy": "Manual and automated CLI tests verifying anchor and headline appear correctly for sample tickers. Confirm no regressions in existing CLI functionality.",
+        "priority": "medium",
+        "dependencies": [
+          22
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 24,
+        "title": "Update Reporting to Include v2.0 Fields",
+        "description": "Modify reporting tools and output formats to incorporate new v2.0 data fields such as anchor, headline, and share URLs.",
+        "details": "Extend report generation modules to include new analysis_mode, anchor, headline, and share_urls fields in all relevant reports. Ensure formatting consistency and export compatibility (e.g., CSV, JSON).",
+        "testStrategy": "Test report outputs with v2.0 data, verifying presence and correctness of new fields. Validate report readability and data integrity.",
+        "priority": "medium",
+        "dependencies": [
+          22
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 25,
+        "title": "Create Unit and Integration Tests for v2.0 Features",
+        "description": "Develop comprehensive automated tests covering tiered analysis, anchoring, headline generation, and API integration for v2.0.",
+        "details": "Implement unit tests for classify_stock_type, analyze_growth_stock, analyze_hyper_growth_stock, generate_anchor, generate_headline, and share URL generation. Develop integration tests for full analysis pipeline on representative tickers HOOD, CRM, PLTR. Include edge cases and error handling.",
+        "testStrategy": "Run all tests in CI pipeline ensuring coverage of new features. Validate test results against expected outputs from PRD examples and handover documents.",
+        "priority": "high",
+        "dependencies": [
+          16,
+          17,
+          18,
+          20,
+          21,
+          22
+        ],
+        "status": "pending",
+        "subtasks": []
       }
     ],
     "metadata": {
-      "version": "1.0.0",
-      "lastModified": "2025-11-30T08:00:48.446Z",
-      "taskCount": 15,
-      "completedCount": 15,
-      "tags": [
-        "master"
-      ]
+      "created": "2025-12-01T20:53:51.725Z",
+      "updated": "2025-12-01T20:53:51.725Z",
+      "description": "Tasks for master context"
     }
   }
 }
