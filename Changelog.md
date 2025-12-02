@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Complete Rebrand to StockSignal** - Changed from "PE Scanner" to "StockSignal" across entire codebase
+  - Updated frontend: metadata, page titles, components, legal pages
+  - Updated backend: API URLs, rate limit messages, share URLs
+  - Updated documentation: README, API docs, deployment guides
+  - Changed domain from `pe-scanner.com` to `stocksignal.app`
+  - Changed Twitter handle from `@PEScanner` to `@StockSignalApp`
+  - More memorable brand name with better SEO (includes "stock" keyword)
+
 ### Added
 - **Rate Limiting System with Redis** (`src/pe_scanner/api/rate_limit.py` - 498 lines) - Task 34
   - 3-tier rate limiting: Anonymous (3/day), Free (10/day), Pro/Premium (unlimited)
