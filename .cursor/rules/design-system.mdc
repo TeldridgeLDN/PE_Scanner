@@ -1,0 +1,528 @@
+---
+description: StockSignal design system - consistent visual patterns, components, and styling rules
+globs: web/app/**/*.tsx, web/components/**/*.tsx
+alwaysApply: true
+---
+
+# StockSignal Design System
+
+This rule defines the design system for StockSignal. **All frontend components must follow these patterns** to maintain visual consistency across the application.
+
+## Color Palette
+
+### Primary Colors
+- **Primary (Teal)**: `#0d9488` - Main brand color, primary actions, Pro tier
+  - Backgrounds: `bg-primary`, `bg-primary/10`, `bg-primary/5`
+  - Text: `text-primary`
+  - Borders: `border-primary`, `border-primary/30`, `border-primary/20`
+  - Hover: `hover:from-primary-dark` (`#134e4a`)
+
+- **Accent (Blue)**: `#0369a1` - Secondary accent, highlights
+  - Backgrounds: `bg-accent`, `bg-accent/10`, `bg-accent/5`
+  - Text: `text-accent`
+  - Borders: `border-accent/30`, `border-accent/20`
+  - Hover: `hover:via-[#0c4a6e]`
+
+- **Buy (Green)**: `#059669` - Positive signals, success states
+  - Backgrounds: `bg-buy`, `bg-buy/10`
+  - Text: `text-buy`
+  - Borders: `border-buy/30`
+
+- **Sell (Red)**: `#ef4444` - Negative signals, warnings
+  - Backgrounds: `bg-sell`
+  - Text: `text-sell`
+
+### Neutral Colors
+- **Slate Scale**: Primary neutral palette
+  - `slate-50`: Section backgrounds, subtle fills
+  - `slate-100`: Card backgrounds, badges
+  - `slate-200`: Borders, dividers
+  - `slate-500`: Placeholder text
+  - `slate-600`: Body text
+  - `slate-700`: Secondary headings
+  - `slate-900`: Primary headings
+  - `white`: Card backgrounds
+
+### Tier Colors (Plans)
+```typescript
+// Free Tier
+badgeBg: 'bg-slate-100'
+badgeText: 'text-slate-700'
+badgeBorder: 'border-slate-200'
+
+// Pro Tier
+badgeBg: 'bg-primary/10'
+badgeText: 'text-primary'
+badgeBorder: 'border-primary/20'
+
+// Premium Tier
+badgeBg: 'bg-purple-100'
+badgeText: 'text-purple-700'
+badgeBorder: 'border-purple-200'
+```
+
+---
+
+## Typography
+
+### Font Families
+- **Headings**: `font-heading` class (uses display font)
+- **Body**: Default system font stack
+
+### Heading Sizes
+```tsx
+// Page titles (H1)
+<h1 className="font-heading text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
+
+// Section titles (H2)
+<h2 className="font-heading text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+
+// Subsection titles (H3)
+<h3 className="font-heading text-xl font-bold text-slate-900 mb-3">
+
+// Card titles (H4)
+<h4 className="font-bold text-slate-900">
+```
+
+### Body Text
+```tsx
+// Large body text
+<p className="text-lg text-slate-600">
+
+// Regular body text
+<p className="text-slate-600">
+
+// Small text
+<p className="text-sm text-slate-600">
+
+// Extra small text (captions)
+<p className="text-xs text-slate-600 font-medium">
+```
+
+### Font Weights
+- `font-black` (900): Hero titles, emphasis
+- `font-bold` (700): Headings, buttons, labels
+- `font-semibold` (600): Data values, highlights
+- `font-medium` (500): Labels, secondary text
+- `font-normal` (400): Body text (default)
+
+---
+
+## Layout & Spacing
+
+### Section Structure
+```tsx
+// ✅ DO: Standard section pattern
+<section className="py-12 bg-slate-50">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {/* Section title */}
+    <div className="text-center max-w-3xl mx-auto mb-8">
+      <h2 className="font-heading text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+        Section Title
+      </h2>
+      <p className="text-lg text-slate-600">
+        Section description text
+      </p>
+    </div>
+    
+    {/* Content */}
+    <div className="grid md:grid-cols-3 gap-6">
+      {/* Cards */}
+    </div>
+  </div>
+</section>
+```
+
+### Spacing Scale
+- **Section padding**: `py-12` (vertical) or `py-20` for hero sections
+- **Component spacing**: `mb-12` for major components, `mb-8` for minor
+- **Grid gaps**: `gap-6` or `gap-8` for card grids
+- **Card padding**: `p-6` or `p-8` for larger cards
+- **Element gaps**: `gap-2`, `gap-3`, `gap-4` for inline elements
+
+### Container Widths
+- **Max width**: `max-w-7xl` for main content
+- **Centered content**: `max-w-3xl mx-auto` for text blocks
+- **Full width**: Use sparingly, typically for backgrounds
+
+---
+
+## Components
+
+### Cards
+
+#### Standard Card Pattern
+```tsx
+// ✅ DO: Use this card pattern
+<div className="p-6 bg-white rounded-xl border border-slate-200 hover:border-primary/30 hover:shadow-md transition-all">
+  {/* Card content */}
+</div>
+
+// ✅ DO: For larger cards
+<div className="p-8 bg-white rounded-2xl shadow-sm border border-slate-200">
+  {/* Card content */}
+</div>
+
+// ❌ DON'T: Use dark backgrounds or glassmorphism
+<div className="bg-slate-900 backdrop-blur-sm"> {/* NO */}
+```
+
+#### Card States
+- **Default**: `border-slate-200`, `shadow-sm`
+- **Hover**: `hover:border-{color}/30`, `hover:shadow-md`
+- **Active**: `border-primary`, `shadow-lg`
+
+### Buttons
+
+#### Primary Button
+```tsx
+<button className="px-6 py-3 bg-gradient-to-r from-primary via-accent to-buy text-white font-bold rounded-xl hover:shadow-xl hover:scale-105 transition-all">
+  Button Text
+</button>
+```
+
+#### Secondary Button
+```tsx
+<button className="px-6 py-3 bg-white border-2 border-slate-200 text-slate-900 font-bold rounded-xl hover:border-primary/30 hover:shadow-md transition-all">
+  Button Text
+</button>
+```
+
+#### Link Button
+```tsx
+<Link href="/path" className="inline-flex items-center gap-2 text-primary font-bold hover:gap-3 transition-all">
+  Link Text
+  <svg className="w-5 h-5">...</svg>
+</Link>
+```
+
+### Badges
+
+#### Plan Badges (Color-Coded)
+```tsx
+// ✅ DO: Use plan badge pattern
+<span className={`inline-block px-4 py-2 rounded-lg border-2 ${badgeBg} ${badgeText} ${badgeBorder} font-bold text-sm`}>
+  {planText}
+</span>
+
+// Free: bg-slate-100 text-slate-700 border-slate-200
+// Pro: bg-primary/10 text-primary border-primary/20
+// Premium: bg-purple-100 text-purple-700 border-purple-200
+```
+
+#### Status Badges
+```tsx
+// Coming Soon badge
+<span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-md">
+  Soon
+</span>
+
+// Active badge
+<span className="px-3 py-1.5 bg-buy/10 text-buy text-xs font-bold rounded-full flex items-center gap-2">
+  <span className="w-2 h-2 bg-buy rounded-full animate-pulse"></span>
+  Active
+</span>
+```
+
+### Icons
+
+#### Icon System
+```tsx
+// ✅ DO: Use outlined stroke icons with consistent styling
+<svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="..." />
+</svg>
+
+// ✅ DO: Place icons in colored backgrounds
+<div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+  <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="..." />
+  </svg>
+</div>
+
+// ❌ DON'T: Use filled icons or inconsistent stroke widths
+<svg className="w-6 h-6" fill="currentColor"> {/* NO */}
+<path strokeWidth={2}> {/* NO - use 2.5 */}
+```
+
+#### Icon Sizes
+- **Large**: `w-8 h-8` in `w-16 h-16` containers
+- **Medium**: `w-6 h-6` in `w-12 h-12` containers
+- **Small**: `w-5 h-5` in `w-10 h-10` containers
+- **Inline**: `w-4 h-4` or `w-5 h-5` next to text
+
+---
+
+## Backgrounds
+
+### Section Backgrounds
+```tsx
+// ✅ DO: Alternate between these patterns
+<section className="py-12 bg-white"> {/* White sections */}
+<section className="py-12 bg-slate-50"> {/* Light grey sections */}
+
+// ✅ DO: Use subtle gradients for hero sections
+<section className="relative pt-32 pb-12 overflow-hidden bg-white">
+  <div className="absolute inset-0 -z-10">
+    <div 
+      className="absolute inset-0"
+      style={{
+        background: `linear-gradient(135deg, #ffffff 0%, #f0fdfa 25%, #ecfeff 50%, #f0f9ff 75%, #ffffff 100%)`
+      }}
+    />
+  </div>
+</section>
+
+// ❌ DON'T: Use dark backgrounds
+<section className="bg-slate-900"> {/* NO */}
+```
+
+### Gradient Patterns
+```tsx
+// Animated gradient orbs (for hero sections)
+<div 
+  className="absolute inset-0 opacity-40"
+  style={{
+    background: `
+      radial-gradient(circle at 20% 30%, rgba(13, 148, 136, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(3, 105, 161, 0.12) 0%, transparent 50%),
+      radial-gradient(circle at 40% 70%, rgba(5, 150, 105, 0.1) 0%, transparent 50%)
+    `,
+    animation: 'float 20s ease-in-out infinite'
+  }}
+/>
+```
+
+---
+
+## States & Interactions
+
+### Hover Effects
+```tsx
+// Cards
+hover:border-primary/30 hover:shadow-md transition-all
+
+// Buttons
+hover:shadow-xl hover:scale-105 transition-all
+
+// Links
+hover:text-primary transition-colors
+
+// Icons
+group-hover:scale-110 transition-transform
+```
+
+### Transition Classes
+- **Default**: `transition-all` for multiple properties
+- **Specific**: `transition-colors`, `transition-transform`, `transition-shadow`
+- **Duration**: Default (150ms) or `duration-300` for slower transitions
+
+### Animation Classes
+```css
+/* Already defined in globals.css */
+animate-fade-in
+animate-slide-up
+animate-pulse
+```
+
+---
+
+## Grid Layouts
+
+### Standard Grids
+```tsx
+// 3-column grid (most common)
+<div className="grid md:grid-cols-3 gap-6">
+
+// 2-column grid
+<div className="grid md:grid-cols-2 gap-8">
+
+// Auto-fit responsive grid
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+```
+
+---
+
+## Examples
+
+### ✅ Complete Section Example
+```tsx
+<section className="py-12 bg-slate-50">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {/* Section Header */}
+    <div className="text-center max-w-3xl mx-auto mb-8">
+      <h2 className="font-heading text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+        Features
+      </h2>
+      <p className="text-lg text-slate-600">
+        Everything you need to analyze stocks
+      </p>
+    </div>
+    
+    {/* Feature Grid */}
+    <div className="grid md:grid-cols-3 gap-6">
+      {features.map((feature) => (
+        <div 
+          key={feature.id}
+          className="p-6 bg-white rounded-xl border border-slate-200 hover:border-primary/30 hover:shadow-md transition-all"
+        >
+          {/* Icon */}
+          <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+            <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="..." />
+            </svg>
+          </div>
+          
+          {/* Content */}
+          <h3 className="font-heading text-xl font-bold text-slate-900 mb-3">
+            {feature.title}
+          </h3>
+          <p className="text-slate-600">
+            {feature.description}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+```
+
+### ❌ Anti-Patterns to Avoid
+
+```tsx
+// DON'T: Mix dark and light themes
+<div className="bg-slate-900 text-white"> {/* NO */}
+
+// DON'T: Use filled icons
+<svg fill="currentColor"> {/* NO - use stroke */}
+
+// DON'T: Inconsistent stroke widths
+<path strokeWidth={2}> {/* NO - use 2.5 */}
+
+// DON'T: Use emojis in production UI (unless specific use case)
+<span>🚀</span> {/* NO - use icons */}
+
+// DON'T: Skip hover states
+<button className="bg-primary"> {/* NO - add hover:shadow-xl hover:scale-105 */}
+
+// DON'T: Use arbitrary spacing
+<div className="mt-7 mb-5"> {/* NO - use standard scale: 4, 6, 8, 12 */}
+
+// DON'T: Forget responsive classes
+<div className="text-4xl"> {/* NO - use text-3xl sm:text-4xl */}
+```
+
+---
+
+## Accessibility
+
+### ARIA Labels
+- Add `aria-label` to icon-only buttons
+- Use semantic HTML (`<nav>`, `<main>`, `<section>`, `<article>`)
+- Ensure sufficient color contrast (WCAG AA minimum)
+
+### Keyboard Navigation
+- All interactive elements must be keyboard accessible
+- Use proper focus states: `focus:ring-2 focus:ring-primary`
+
+### Screen Readers
+- Use descriptive link text (avoid "click here")
+- Add alt text to all images
+- Use proper heading hierarchy (H1 → H2 → H3)
+
+---
+
+## Responsive Design
+
+### Breakpoints (Tailwind)
+- **sm**: 640px (mobile landscape)
+- **md**: 768px (tablet)
+- **lg**: 1024px (desktop)
+- **xl**: 1280px (large desktop)
+
+### Mobile-First Pattern
+```tsx
+// ✅ DO: Start with mobile, add larger sizes
+<div className="text-3xl md:text-4xl lg:text-5xl">
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+<div className="px-4 sm:px-6 lg:px-8">
+```
+
+---
+
+## Performance
+
+### Image Optimization
+- Use Next.js `<Image>` component
+- Provide `width` and `height` props
+- Use `priority` for above-fold images
+- Lazy load below-fold images (default)
+
+### Code Splitting
+- Use dynamic imports for heavy components
+- Lazy load modals, drawers, and off-screen content
+
+---
+
+## File Organization
+
+### Component Structure
+```
+web/
+├── app/              # Next.js app router pages
+│   ├── page.tsx     # Main landing page
+│   └── dashboard/   # Dashboard pages
+├── components/       # Reusable components
+│   ├── Navigation.tsx
+│   ├── PricingSection.tsx
+│   └── Footer.tsx
+└── app/globals.css  # Global styles & animations
+```
+
+---
+
+## Design System Checklist
+
+When creating a new component, verify:
+
+- ✅ Uses light backgrounds (`bg-white` or `bg-slate-50`)
+- ✅ Cards have `rounded-xl` or `rounded-2xl`
+- ✅ Borders are `border-slate-200`
+- ✅ Icons are outlined stroke with `strokeWidth={2.5}`
+- ✅ Icons in colored backgrounds (`bg-{color}/10`)
+- ✅ Typography uses `font-heading` for titles
+- ✅ Colors use slate scale for neutrals
+- ✅ Spacing uses standard scale (4, 6, 8, 12)
+- ✅ Hover states included
+- ✅ Transitions applied
+- ✅ Responsive classes used
+- ✅ Consistent with main page patterns
+
+---
+
+## References
+
+- **Main Page**: `web/app/page.tsx` - Reference implementation
+- **Dashboard**: `web/app/dashboard/page.tsx` - Aligned implementation
+- **Navigation**: `web/components/Navigation.tsx` - Header patterns
+- **Pricing**: `web/components/PricingSection.tsx` - Card patterns
+
+---
+
+## Enforcement
+
+**This design system is mandatory** for all frontend components. When reviewing code:
+
+1. Check component against this guide
+2. Verify visual consistency with main page
+3. Test responsive behavior
+4. Validate accessibility
+5. Ensure hover states work
+
+**If a pattern isn't documented here**, refer to `web/app/page.tsx` as the source of truth or discuss with team before implementing.
+
+---
+
+*Last Updated: 2 December 2024*  
+*Maintained by: Development Team*  
+*Status: Active & Enforced*

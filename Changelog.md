@@ -26,6 +26,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Pro plan: £25/mo or £240/year (save £60)
   - Premium plan: £49/mo or £470/year (save £118)
   - Pricing section updated with Stripe checkout buttons
+- **Dashboard Design System Alignment** - Consistent design patterns with main page
+  - Light hero section with subtle gradient background and animated orbs (matching main page)
+  - Redesigned all sections to match main page design patterns (fonts, spacing, colors, visual hierarchy)
+  - Simplified plan badge: clean text-only display ("Current Plan" / "Free") without box or emoji
+  - Floating plan badge with glassmorphism (backdrop-blur, semi-transparent)
+  - "Today's Summary" card with enlarged stat icons (14px→20px) for better visual weight
+  - Inline upgrade CTA within summary card for free users
+  - Bento-style grid layout for quick actions (asymmetric, modern)
+  - Large primary action card (Analyze Stock) with visible chart emoji (20% opacity)
+  - Enhanced "Coming Soon" badges with sparkle emoji and pulse animation
+  - Secondary action cards with icon scale-up on hover
+  - Resources & Support section with hover effects and color transitions
+  - Minimalist account details footer with 3-column grid
+  - Smooth micro-interactions (scale, translate, blur, color transitions)
+  - Glassmorphism effects throughout (backdrop-blur, transparent backgrounds)
+  - Reduced vertical spacing for tighter, more cohesive layout
+  - Better visual hierarchy with size and color contrast
+  - Professional animations (scale, translate, blur transitions)
+  - Mobile-responsive with proper breakpoints
+  - UX-tested and refined using Playwright browser automation
 - **User Dashboard** - Authenticated user experience
   - Welcome message with user's first name
   - Plan status card showing current tier (Free/Pro/Premium)
