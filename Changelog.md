@@ -8,6 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **REST API v2.0** (`api/` module): Flask-based REST API for stock analysis
+  - `create_app()`: Flask app factory with full v2.0 support
+  - `AnalysisService`: Business logic layer coordinating data fetching and analysis
+  - Pydantic response schemas (`AnalysisResponse`, `ErrorResponse`, `DeprecatedEndpointResponse`)
+  - **Endpoints:**
+    - `GET /`: API root with documentation links
+    - `GET /health`: Health check for monitoring
+    - `GET /api/analyze/<ticker>`: Main v2.0 analysis endpoint
+    - `GET /api/compression/<ticker>`: Deprecated endpoint (sunset: 2026-01-01)
+  - **Features:**
+    - Complete v2.0 JSON schema (analysis_mode, metrics, signal, confidence, anchor, headline, share_urls)
+    - Query parameters for selective fields (`include_anchor`, `include_headline`, `include_share_urls`, `base_url`)
+    - Automatic tier routing (VALUE/GROWTH/HYPER_GROWTH)
+    - Comprehensive error handling (404, 500 with proper messages)
+    - CORS enabled for web integration
+    - Deprecation headers on legacy endpoint (`X-Deprecated`, `X-Sunset-Date`, `Link`)
+  - API Documentation: `API_DOCUMENTATION.md`
+  - Dependencies: flask>=3.0.0, flask-cors>=4.0.0
+  - Example usage scripts: `test_api.py`, `test_api_detailed.py`
 - **Headline Generator Module** (`analysis/headlines.py`): Viral-optimized headlines for stock analysis signals
   - `generate_headline()`: Auto-detects analysis mode and creates shareable headlines
   - `generate_share_urls()`: Pre-formatted URLs for Twitter, LinkedIn, and copy text

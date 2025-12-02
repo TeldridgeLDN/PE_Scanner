@@ -8,6 +8,10 @@ rich>=13.0.0
 pyyaml>=6.0.0
 click>=8.0.0
 
+# API dependencies
+flask>=3.0.0
+flask-cors>=4.0.0
+
 # Development dependencies
 pytest>=7.4.0
 pytest-cov>=4.1.0
