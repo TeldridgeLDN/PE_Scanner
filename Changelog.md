@@ -7,7 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Landing Page Visibility Issues** - Resolved critical white-on-white text problems
+  - Hero badge: Changed from teal-on-teal to white background with dark text
+  - Social proof badges: Changed -113% SELL and +62% BUY from transparent to solid colored backgrounds
+  - Contact Us button: Changed from text link to solid teal button with white text
+  - Improved accessibility and visual hierarchy throughout
+
 ### Changed
+- **Colorful SVG Icons** - Replaced emoji and grey icons with vibrant colored SVGs
+  - How It Works section: Custom teal/green search, AI grid, and chart icons
+  - Features section: 7 colorful icons (red for compression, green for growth, amber for hyper-growth, etc.)
+  - Enhanced visual appeal and professionalism
 - **Complete Rebrand to StockSignal** - Changed from "PE Scanner" to "StockSignal" across entire codebase
   - Updated frontend: metadata, page titles, components, legal pages
   - Updated backend: API URLs, rate limit messages, share URLs
