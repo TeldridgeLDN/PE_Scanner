@@ -41,7 +41,7 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"
 
-# Railway will use the Procfile for the start command
-# This CMD is a fallback for local testing
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "60", "--access-logfile", "-", "--error-logfile", "-", "--log-level", "info", "src.pe_scanner.api.app:create_app()"]
+# Start gunicorn with proper configuration
+# Use shell form to properly expand $PORT environment variable
+CMD gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 60 --log-level info --access-logfile - --error-logfile - src.pe_scanner.api.app:app
 

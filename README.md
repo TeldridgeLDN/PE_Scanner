@@ -32,6 +32,21 @@ Based on actual November 2024 analysis that identified:
 
 ## 🏗️ Architecture
 
+### Full Stack Architecture
+PE Scanner consists of two main components:
+
+**Backend (Python + Flask):**
+- REST API v2.0 for stock analysis
+- P/E compression engine (VALUE/GROWTH/HYPER_GROWTH modes)
+- Portfolio batch processing
+- Data quality validation
+
+**Frontend (Next.js 15):**
+- Web interface at `web/` directory
+- Ticker search and results display
+- Portfolio upload interface
+- Shareable analysis headlines
+
 ### PAI/diet103 Integration
 PE Scanner follows the Orchestrator_Project architecture patterns:
 - **PAI Global Layer**: Cross-project template sharing and orchestration
@@ -44,9 +59,14 @@ PE_Scanner/
 ├── src/
 │   └── pe_scanner/
 │       ├── analysis/          # P/E compression, fair value calculations
+│       ├── api/               # Flask REST API v2.0
 │       ├── data/              # Yahoo Finance integration, validation
 │       ├── portfolios/        # Portfolio loading, ranking, reporting
 │       └── cli.py             # Command-line interface
+├── web/                       # Next.js 15 frontend (NEW)
+│   ├── app/                   # App Router pages
+│   ├── components/            # React components
+│   └── lib/                   # Frontend utilities
 ├── tests/                     # Test suite
 ├── scripts/                   # Analysis scripts
 ├── portfolios/                # Portfolio CSV files (ISA, SIPP, Wishlist)
@@ -56,15 +76,37 @@ PE_Scanner/
 
 ## 🚀 Quick Start
 
-### Installation
+### Backend Installation (Python)
 
 ```bash
-cd /Users/tomeldridge/PE_Scanner
+# Clone repository
+git clone https://github.com/yourusername/PE_Scanner.git
+cd PE_Scanner
+
+# Install Python backend
+python -m venv venv
 source venv/bin/activate
 pip install -e .
 ```
 
-### Basic Usage
+### Frontend Installation (Next.js)
+
+```bash
+# Navigate to web directory
+cd web
+
+# Install dependencies
+npm install
+
+# Copy environment variables
+cp env.example .env.local
+
+# Start development server
+npm run dev
+# Open http://localhost:3000
+```
+
+### Backend Usage (CLI)
 
 ```bash
 # Analyze individual stocks
@@ -136,10 +178,39 @@ Analysts expect return to profitability
 - **Momentum_Squared**: Investment analysis platform with diet103 enhancements
 - **Portfolio Management**: Master portfolio tracking and Workflow 9 analysis
 
+## 🚀 Deployment
+
+### Backend (Railway)
+**Status**: ✅ Production-ready (Task 39 complete)
+
+```bash
+# Quick deploy (15 minutes)
+# See DEPLOY_NOW.md for step-by-step guide
+
+1. Create Railway project from GitHub
+2. Add Redis service (free tier)
+3. Set environment variables
+4. Deploy automatically builds and runs
+
+# Full details in RAILWAY_DEPLOYMENT.md
+```
+
+**Cost**: ~$5/month (or FREE with Railway credits)
+
+### Frontend (Vercel)
+**Status**: 🚧 Task 40 (pending)
+- Next.js 15 app in `web/` directory
+- Deploy to Vercel (free Hobby plan)
+- Set `NEXT_PUBLIC_API_URL` to Railway URL
+
+---
+
 ## 📚 Documentation
 
 - **PRD**: `.taskmaster/docs/prd.txt` - Complete product requirements
-- **Tasks**: `.taskmaster/tasks/` - Development roadmap
+- **Tasks**: `.taskmaster/tasks/` - Development roadmap  
+- **Deployment**: `RAILWAY_DEPLOYMENT.md` - Full deployment guide
+- **Quick Deploy**: `DEPLOY_NOW.md` - 15-minute setup
 - **Methodology**: Reference implementation at `/Users/tomeldridge/Momentum_Squared/analysis/PE_Compression_Analysis_Corrected_Nov2024.md`
 
 ## 🧪 Testing Strategy

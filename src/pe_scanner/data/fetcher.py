@@ -26,6 +26,8 @@ from typing import Optional
 import yaml
 import yfinance as yf
 
+from pe_scanner.data.api_throttle import acquire_yahoo_api_token
+
 logger = logging.getLogger(__name__)
 
 
@@ -396,6 +398,14 @@ def fetch_market_data(
     # Fetch from Yahoo Finance
     logger.info(f"Fetching market data for {ticker}")
     try:
+        # CRITICAL: Acquire throttle token before Yahoo API call
+        if not acquire_yahoo_api_token(timeout=30.0):
+            logger.error(f"Yahoo API throttle timeout for {ticker}")
+            return MarketData(
+                ticker=ticker,
+                fetch_errors=["API rate limit - please try again in a moment"],
+            )
+        
         yf_ticker = yf.Ticker(ticker)
         data = _extract_market_data(ticker, yf_ticker)
 
@@ -420,11 +430,18 @@ def _fetch_single_ticker(
 ) -> tuple[str, Optional[MarketData], Optional[str]]:
     """
     Fetch a single ticker (used by ThreadPoolExecutor).
+    
+    Acquires Yahoo API throttle token before making request to prevent rate limit bans.
 
     Returns:
         Tuple of (ticker, MarketData or None, error_message or None)
     """
     try:
+        # CRITICAL: Acquire throttle token before Yahoo API call
+        if not acquire_yahoo_api_token(timeout=30.0):
+            logger.error(f"Yahoo API throttle timeout for {ticker}")
+            return (ticker, None, "API rate limit - please try again in a moment")
+        
         yf_ticker = yf.Ticker(ticker)
         data = _extract_market_data(ticker, yf_ticker)
 

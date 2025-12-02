@@ -1,0 +1,135 @@
+@import "tailwindcss";
+
+/* PE Scanner Design Tokens */
+:root {
+  /* Background colors */
+  --background: #ffffff;
+  --foreground: #171717;
+  
+  /* Primary Brand - Teal/Blue (modern finance) */
+  --color-primary: #0d9488;
+  --color-primary-dark: #0f766e;
+  --color-primary-light: #14b8a6;
+  
+  /* Signal colors */
+  --color-buy: #10b981;
+  --color-buy-dark: #059669;
+  --color-sell: #ef4444;
+  --color-sell-dark: #dc2626;
+  --color-hold: #f59e0b;
+  --color-hold-dark: #d97706;
+  
+  /* Accent - Deep Blue/Emerald */
+  --color-accent: #0369a1;
+  --color-accent-dark: #075985;
+  
+  /* Typography */
+  --font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SF Mono", Monaco, "Cascadia Mono", "Roboto Mono", Consolas, "Courier New", monospace;
+}
+
+@theme inline {
+  /* Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary*: var(--color-primary);
+  --color-buy*: var(--color-buy);
+  --color-sell*: var(--color-sell);
+  --color-hold*: var(--color-hold);
+  --color-accent*: var(--color-accent);
+  
+  /* Typography */
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-heading);
+  --font-mono: var(--font-mono);
+  
+  /* Fluid Typography (responsive font sizes) */
+  --font-size-fluid-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  --font-size-fluid-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+  --font-size-fluid-base: clamp(1rem, 0.925rem + 0.375vw, 1.125rem);
+  --font-size-fluid-lg: clamp(1.125rem, 1rem + 0.625vw, 1.375rem);
+  --font-size-fluid-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.625rem);
+  --font-size-fluid-2xl: clamp(1.5rem, 1.25rem + 1.25vw, 2.25rem);
+  --font-size-fluid-3xl: clamp(1.875rem, 1.5rem + 1.875vw, 3rem);
+  --font-size-fluid-4xl: clamp(2.25rem, 1.75rem + 2.5vw, 4rem);
+  --font-size-fluid-5xl: clamp(3rem, 2rem + 5vw, 5rem);
+  
+  /* Border Radius */
+  --radius-4xl: 2rem;
+  
+  /* Box Shadows */
+  --shadow-glow: 0 0 40px -10px rgba(13, 148, 136, 0.5);
+  --shadow-glow-buy: 0 0 40px -10px rgba(16, 185, 129, 0.5);
+  --shadow-glow-sell: 0 0 40px -10px rgba(239, 68, 68, 0.5);
+  
+  /* Animations */
+  --animate-fade-in: fadeIn 0.6s ease-out;
+  --animate-slide-up: slideUp 0.6s ease-out;
+  --animate-scale-in: scaleIn 0.4s ease-out;
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-slide-in-right: slideInRight 0.3s ease-out;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+/* Animation Keyframes */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slideUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes slideInRight {
+  0% { opacity: 0; transform: translateX(100%); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+/* Base Styles */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* UK English number formatting */
+html {
+  font-feature-settings: "tnum" 1;
+}
+
+/* Signal Badge Styles */
+.signal-buy {
+  background: var(--color-buy);
+  color: white;
+}
+
+.signal-sell {
+  background: var(--color-sell);
+  color: white;
+}
+
+.signal-hold {
+  background: var(--color-hold);
+  color: white;
+}

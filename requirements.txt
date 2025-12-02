@@ -11,8 +11,12 @@ click>=8.0.0
 # API dependencies
 flask>=3.0.0
 flask-cors>=4.0.0
+redis>=5.0.0
 
-# Development dependencies
+# Production server
+gunicorn>=21.0.0
+
+# Development dependencies (not installed in production)
 pytest>=7.4.0
 pytest-cov>=4.1.0
 pytest-asyncio>=0.21.0

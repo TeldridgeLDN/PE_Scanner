@@ -516,13 +516,474 @@
         "status": "done",
         "subtasks": [],
         "updatedAt": "2025-12-02T08:32:13.751Z"
+      },
+      {
+        "id": "26",
+        "title": "Port Pirouette Skills & Update Project Configuration",
+        "description": "Copy proven Pirouette skills to PE Scanner for AI-assisted development and update pricing strategy throughout documentation.",
+        "details": "Create `.cursor/skills/` directory and port 5 key skills from Pirouette:\n1. project-scaffolder.md - Fast Next.js project setup\n2. skill-import-assistant.md - Safe code pattern copying\n3. scaling-calculator.md - Breakeven & cost modeling\n4. email-touchpoint-mapper.md - User journey planning\n5. prd-progress-tracker.md - PRD alignment checking\n\nCreate AGENTS.md following the agents.md standard used by Pirouette.\n\nUpdate all pricing references:\n- Change £20/mo → £25/mo for Pro tier\n- Add Premium tier at £49/mo\n- Add annual billing (20% discount): Pro £240/yr, Premium £470/yr\n- Update breakeven calculations in documentation\n\nReview and integrate rate limiting strategy from pirouette_patterns_analysis.md:\n- 3 tickers/day (anonymous)\n- 10 tickers/day (free account)\n- Unlimited (Pro £25/mo)\n- Unlimited + API (Premium £49/mo)",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T09:25:20.180Z"
+      },
+      {
+        "id": "27",
+        "title": "Initialize Next.js 15 Frontend Project with Tailwind CSS",
+        "description": "Create new Next.js 15 project for PE Scanner web interface using App Router, TypeScript, and Tailwind CSS following Pirouette patterns.",
+        "details": "Use project-scaffolder skill from Task 26 to initialize:\n- Create new Next.js 15 project: `npx create-next-app@latest pe-scanner-web --typescript --tailwind --app --no-src-dir`\n- Project structure:\n  - app/ (App Router)\n  - components/ (React components)\n  - lib/ (utilities, analytics, email)\n  - public/ (static assets)\n\nConfigure Tailwind CSS:\n- Copy tailwind.config.ts from Pirouette\n- Set up design tokens (colors, fonts, spacing)\n- Configure custom animations\n\nSet up TypeScript:\n- Strict mode enabled\n- Path aliases (@/ for root imports)\n- Include Next.js types\n\nCreate initial folder structure:\n- app/layout.tsx (root layout)\n- app/page.tsx (landing page stub)\n- app/report/[ticker]/page.tsx (results page stub)\n- components/ (empty, ready for Task 29)\n- lib/analytics/ (for Task 44)\n- lib/email/ (for Task 34)\n\nEnvironment setup:\n- Copy .env.example from Pirouette pattern\n- Add NEXT_PUBLIC_API_URL (Railway backend)\n- Add NEXT_PUBLIC_APP_URL (Vercel frontend)",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [
+          "26"
+        ],
+        "priority": "high",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T10:11:16.179Z"
+      },
+      {
+        "id": "28",
+        "title": "Create Landing Page with Hero Section",
+        "description": "Build marketing landing page with hero section, features, pricing, and CTAs following Pirouette page structure.",
+        "details": "Create app/page.tsx with sections from Pirouette pattern:\n\n1. Hero Section:\n   - Headline: \"Is Your Stock Overpriced? Find Out in 30 Seconds\"\n   - Subheadline: \"P/E compression analysis with shareable headlines\"\n   - TickerSearchForm component (Task 29)\n   - Trust indicators: \"No signup • Results in 30 seconds\"\n   - Gradient mesh background (copy from Pirouette)\n\n2. Social Proof Bar:\n   - \"Analyzed 10,000+ stocks in November 2024\"\n   - Example results: HOOD (-113% SELL), BATS (+62% BUY)\n\n3. How It Works (3 steps):\n   - Enter ticker symbol\n   - AI analyzes (VALUE/GROWTH/HYPER_GROWTH tiers)\n   - Get shareable headline + anchor\n\n4. Features Grid (7 cards):\n   - P/E Compression Analysis\n   - Growth Stock (PEG) Support\n   - Hyper-Growth (P/S + Rule of 40)\n   - Shareable Headlines\n   - Anchoring Context\n   - Fair Value Scenarios\n   - Data Quality Validation\n\n5. Pricing Section (3 tiers):\n   - Free: 10 tickers/day, basic results\n   - Pro £25/mo: Unlimited + portfolio upload\n   - Premium £49/mo: API + webhooks + white-label\n   - Annual pricing: 20% discount\n\n6. Example Results:\n   - Show real examples with Twitter card style\n   - HOOD (SELL), META (BUY), BATS.L (BUY)\n\n7. Final CTA:\n   - \"Ready to Scan Your Portfolio?\"\n   - Email capture teaser\n\n8. Footer:\n   - Product links, Legal (Privacy, Terms), Social media\n\nStyling:\n- Use Tailwind CSS utility classes\n- Gradient backgrounds (indigo-500 to purple-600)\n- Responsive: mobile-first approach\n- Animations: fade-in, slide-up (copy from Pirouette)\n- UK English throughout",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [
+          "27"
+        ],
+        "priority": "high",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T10:34:33.034Z"
+      },
+      {
+        "id": "29",
+        "title": "Build TickerSearchForm Component",
+        "description": "Create client-side ticker search form component with validation, loading states, and rate limit handling.",
+        "details": "Create components/TickerSearchForm.tsx based on Pirouette's HeroAnalyzeForm pattern:\n\nForm Features:\n- Large input field for ticker symbol\n- Auto-uppercase ticker input (AAPL, not aapl)\n- Handle UK stocks (.L suffix)\n- \"Analyze\" button with loading spinner\n- Clear error messages\n\nClient-side Validation:\n- Required field check\n- Valid ticker format (letters, numbers, dots, hyphens)\n- Max length: 10 characters\n- Show inline validation errors\n\nRate Limit Handling:\n- Display \"X searches remaining\" for logged-out users\n- Show \"Sign up for 10/day\" CTA when limit reached\n- Parse 429 HTTP response from API\n- Show countdown timer: \"Try again in 2 hours\"\n\nLoading States:\n- Disable button during fetch\n- Show spinner animation\n- Prevent double-submission\n- Minimum 500ms between submissions (frontend throttle)\n\nSuccess Handling:\n- Redirect to /report/[ticker] on 200 response\n- Pass analysis data via URL state or re-fetch\n- Track analytics event: trackTickerAnalysis(ticker)\n\nTypeScript:\n- FormEvent typing\n- useState for input, loading, errors\n- Interface for API response\n- Proper error type handling\n\nAccessibility:\n- Label for screen readers\n- ARIA attributes for errors\n- Keyboard navigation support\n- Focus management",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [
+          "27"
+        ],
+        "priority": "high",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T10:48:43.403Z"
+      },
+      {
+        "id": "30",
+        "title": "Create Results Display Page (/report/[ticker])",
+        "description": "Build dynamic results page showing analysis with headline, anchor, metrics, and share buttons.",
+        "details": "Create app/report/[ticker]/page.tsx for displaying analysis results:\n\nPage Layout:\n- Navigation bar with \"PE Scanner\" logo + \"Analyze Another\" link\n- Main content area with card design\n- Responsive: mobile-first, works on all screens\n\nContent Sections:\n\n1. Signal Badge (Top):\n   - Large colored badge: BUY (green), SELL (red), HOLD (yellow)\n   - Signal emoji: 🟢🔴🟡\n   - Analysis mode indicator: VALUE / GROWTH / HYPER_GROWTH\n\n2. Headline Display:\n   - Large, bold headline from API (e.g., \"HOOD is priced like it's going bankrupt\")\n   - Twitter-optimized (≤280 chars)\n   - Emoji included from backend\n\n3. Anchor Statement:\n   - \"What Would Have To Be True\" section\n   - Plain English explanation (e.g., \"HOOD would need to 2.5x profits\")\n   - Highlights key insight in readable format\n\n4. Key Metrics Grid:\n   - Trailing P/E, Forward P/E, Compression %\n   - For GROWTH: PEG ratio, earnings growth\n   - For HYPER_GROWTH: P/S ratio, Rule of 40 score\n   - Fair value scenarios (bear/bull)\n   - Data quality indicators\n\n5. Share Buttons (Task 31):\n   - Twitter, LinkedIn, Copy Link\n   - Pre-filled with headline + link\n\n6. CTA Section:\n   - \"Want to scan your whole portfolio?\"\n   - Button: \"Upload Portfolio CSV\" (triggers email gate)\n   - Shows rate limit: \"2 searches remaining today\"\n\nData Fetching:\n- Server component fetches from /api/analyze/[ticker]\n- Handle loading state with Suspense\n- Error boundary for API failures\n- Revalidate: 3600 seconds (1 hour cache)\n\nSEO Optimization:\n- Dynamic meta tags (ticker, signal, headline)\n- Open Graph tags for social sharing\n- Structured data (JSON-LD) for stock analysis\n\nTypeScript:\n- Page props interface { params: { ticker: string } }\n- Type-safe API response parsing\n- Proper error handling",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [
+          "29"
+        ],
+        "priority": "high",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T11:00:29.052Z"
+      },
+      {
+        "id": "31",
+        "title": "Integrate Next.js Frontend with Flask API v2.0",
+        "description": "Connect Next.js frontend to existing Flask API on Railway, handle CORS, environment variables, and error responses.",
+        "details": "Set up API integration between Next.js (Vercel) and Flask (Railway):\n\nEnvironment Configuration:\n- NEXT_PUBLIC_API_URL=https://pe-scanner-api.railway.app\n- Add to .env.local and Vercel environment variables\n\nAPI Client Setup (lib/api/client.ts):\n- Create fetchAnalysis(ticker: string) function\n- Use Next.js fetch with cache: 'force-cache', revalidate: 3600\n- Handle CORS headers\n- Parse JSON response\n- TypeScript interfaces matching API v2.0 schema\n\nResponse Handling:\n- 200 OK: Parse AnalysisResponse (analysis_mode, metrics, signal, etc.)\n- 429 Too Many Requests: Extract rate limit info (remaining, resetAt)\n- 404 Not Found: Ticker doesn't exist / no data\n- 500 Server Error: Display generic error message\n\nFlask API Updates (src/pe_scanner/api/app.py):\n- Add CORS headers for Vercel domain\n- Whitelist: https://pe-scanner.com, https://www.pe-scanner.com\n- Allow credentials: false (no cookies needed yet)\n- Expose custom headers: X-RateLimit-Remaining, X-RateLimit-Reset\n\nError Formatting:\n- Create ErrorDisplay component\n- User-friendly messages (not raw API errors)\n- Suggest actions: \"Try a different ticker\" / \"Sign up for more searches\"\n\nTesting:\n- Test from localhost:3000 → Railway API\n- Test CORS with different origins\n- Test rate limiting (hit 3/day limit)\n- Test error scenarios (invalid ticker, API down)\n\nCaching Strategy:\n- Use Next.js ISR (Incremental Static Regeneration)\n- Cache popular tickers (AAPL, MSFT, etc.) for 1 hour\n- Fresh data for less common tickers\n- Respect Railway API's cache headers",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [
+          "30"
+        ],
+        "priority": "high",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T11:42:02.087Z"
+      },
+      {
+        "id": "32",
+        "title": "Build ShareButtons Component with Analytics Tracking",
+        "description": "Create social sharing component with pre-filled Twitter, LinkedIn, and copy-to-clipboard functionality.",
+        "details": "Create components/ShareButtons.tsx using share_urls from API:\n\nComponent Props:\n- ticker: string\n- headline: string\n- twitterUrl: string (from API)\n- linkedinUrl: string (from API)\n- copyText: string (from API)\n\nButton Design:\n- Twitter button: Blue gradient, Twitter icon\n- LinkedIn button: Professional blue, LinkedIn icon\n- Copy button: Gray, clipboard icon\n- Hover effects and animations\n\nFunctionality:\n\n1. Twitter Share:\n   - Opens new window with API-provided twitterUrl\n   - Pre-filled: headline + hashtags + link\n   - Track event: trackEvent('Headline_Shared', { ticker, platform: 'twitter' })\n\n2. LinkedIn Share:\n   - Opens new window with linkedinUrl\n   - Pre-filled: headline + link\n   - Track event: trackEvent('Headline_Shared', { ticker, platform: 'linkedin' })\n\n3. Copy to Clipboard:\n   - Uses navigator.clipboard.writeText()\n   - Copies full text from API (headline + URL + hashtags)\n   - Show toast notification: \"Copied to clipboard!\"\n   - Track event: trackEvent('Headline_Shared', { ticker, platform: 'copy' })\n   - Fallback for older browsers (textarea + execCommand)\n\nToast Notification:\n- Create simple toast component\n- Auto-dismiss after 2 seconds\n- Positioned: bottom-right on desktop, bottom-center on mobile\n- Green checkmark icon\n\nMobile Optimization:\n- Stack buttons vertically on small screens\n- Larger touch targets (min 44px)\n- Native share API fallback: navigator.share() if available\n\nAccessibility:\n- ARIA labels for screen readers\n- Keyboard navigation support\n- Focus visible styles\n- Success announcements for screen readers",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [
+          "30"
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T11:48:58.364Z"
+      },
+      {
+        "id": "33",
+        "title": "Create Pricing Section with Three Tiers",
+        "description": "Build pricing section component displaying Free, Pro (£25/mo), and Premium (£49/mo) tiers with annual billing option.",
+        "details": "Create components/PricingSection.tsx with Pirouette pattern:\n\nPricing Tiers:\n\n1. Free Tier:\n   - Price: £0 forever\n   - Features:\n     * 10 tickers/day (with signup)\n     * 3 tickers/day (anonymous)\n     * Basic headline + anchor\n     * Social sharing\n   - CTA: \"Get Started Free\"\n   - Style: White background, border\n\n2. Pro Tier (Featured):\n   - Price: £25/month or £240/year (save £60)\n   - Badge: \"Most Popular\"\n   - Features:\n     * Unlimited ticker searches\n     * Portfolio CSV upload\n     * Email reports\n     * Export to Excel\n     * Historical tracking (50 analyses)\n     * Priority API access\n   - CTA: \"Start Pro Trial\"\n   - Style: Gradient background (indigo-purple), scale 105%\n\n3. Premium Tier:\n   - Price: £49/month or £470/year (save £118)\n   - Features:\n     * Everything in Pro\n     * Weekly opportunity digest\n     * Slack/Discord webhooks\n     * API access (1000 calls/day)\n     * White-label reports\n     * Unlimited saved analyses\n     * Priority support (24h response)\n   - CTA: \"Contact Sales\"\n   - Style: White background, hover effects\n\nAnnual/Monthly Toggle:\n- Segmented control above pricing cards\n- \"Monthly\" / \"Annual\" (Save 20%)\n- Update prices dynamically\n- Show savings badge: \"Save £60\" / \"Save £118\"\n\nVisual Elements:\n- Checkmark icons for features (green)\n- Feature list with proper spacing\n- Comparison table (optional, below cards)\n- Trust indicators: \"Cancel anytime\" / \"No credit card for free tier\"\n\nMobile Responsive:\n- Stack cards vertically on mobile\n- Maintain proper spacing\n- Larger CTAs for touch\n\nLinks:\n- All CTAs point to /sign-up (Task 35)\n- Track analytics: trackPricingViewed('pro') / trackUpgradeClicked('premium')\n\nAccessibility:\n- Semantic HTML (section, article tags)\n- Proper heading hierarchy\n- ARIA labels for pricing toggle",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [
+          "28"
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T12:02:16.334Z"
+      },
+      {
+        "id": "34",
+        "title": "Implement Rate Limiting System with Redis",
+        "description": "Add 3-tier rate limiting (IP-based, account-based, behavioral) to Flask API using Redis, following Pirouette patterns.",
+        "details": "Create rate limiting system based on Pirouette's rate-limit.ts pattern:\n\nSetup Redis (Railway):\n- Add Redis service to Railway project (free tier: 25MB)\n- Get REDIS_URL from Railway environment\n- Install redis-py in requirements.txt\n\nCreate src/pe_scanner/api/rate_limit.py:\n\n1. IP-Based Rate Limiting (Anonymous Users):\n   - Track by x-forwarded-for header\n   - Limit: 3 tickers/day per IP\n   - Window: 24 hours (86400 seconds)\n   - Redis key: \"ratelimit:anon:{ip}:{date}\"\n   - Response: RateLimitResult with remaining, resetAt, suggestSignup\n\n2. Account-Based Rate Limiting (Free Users):\n   - Track by user_id (from Clerk/auth)\n   - Limit: 10 tickers/day\n   - Window: 24 hours\n   - Redis key: \"ratelimit:user:{user_id}:{date}\"\n   - Response: Suggest upgrade to Pro\n\n3. Pro/Premium Users:\n   - No rate limits (return allowed=True, remaining=-1)\n   - Track usage for analytics only\n\nHelper Functions:\n- get_client_ip(request): Extract IP from headers\n- check_rate_limit(ip_or_user, tier): Main check function\n- record_search(ip_or_user, ticker): Increment counter\n- get_reset_time(key): Calculate when limit resets\n\nFlask Route Integration:\n- Add decorator: @rate_limit_check\n- Apply to /api/analyze/<ticker>\n- Return 429 status with headers:\n  * X-RateLimit-Limit: 3\n  * X-RateLimit-Remaining: 0\n  * X-RateLimit-Reset: 1701864000\n  * Retry-After: 7200\n\nResponse Format (429):\n{\n  \"error\": \"Rate limit exceeded\",\n  \"message\": \"You've analyzed 3 tickers today. Sign up for 10/day!\",\n  \"remaining\": 0,\n  \"resetAt\": \"2024-12-06T12:00:00Z\",\n  \"suggestSignup\": true\n}\n\nBehavioral Analysis (Phase 2 - Optional):\n- Detect sequential scanning (AAAA, AAAB, AAAC)\n- Flag rapid requests (<2 sec apart)\n- Implement CAPTCHA for suspicious patterns\n- Store in: \"abuse:suspect:{ip}\" set\n\nTesting:\n- Unit tests for rate limit logic\n- Integration test hitting limit (3 requests)\n- Test reset after 24 hours\n- Test Pro user bypass",
+        "testStrategy": "",
+        "status": "in-progress",
+        "dependencies": [
+          "26"
+        ],
+        "priority": "high",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T13:48:23.950Z"
+      },
+      {
+        "id": "35",
+        "title": "Integrate Resend Email Service",
+        "description": "Set up Resend for transactional emails following Pirouette patterns, create email client and configuration.",
+        "details": "Set up Resend email service based on Pirouette's src/lib/email/resend.ts:\n\nResend Setup:\n- Sign up at resend.com (free tier: 3000 emails/month)\n- Add domain: pe-scanner.com\n- Configure DNS records (SPF, DKIM, DMARC)\n- Get API key: RESEND_API_KEY\n\nInstall Dependencies:\n- npm install resend @react-email/components\n- Add to package.json in frontend project\n\nCreate lib/email/resend.ts:\n- EMAIL_CONFIG with from addresses:\n  * default: 'PE Scanner <hello@pe-scanner.com>'\n  * noreply: 'PE Scanner <noreply@pe-scanner.com>'\n  * reports: 'PE Scanner Reports <reports@pe-scanner.com>'\n- sendEmail() function with SendEmailOptions interface\n- sendBatchEmails() for multiple recipients\n- Error handling and logging\n\nCreate lib/email/templates/BaseEmail.tsx:\n- Wrapper component for all emails\n- PE Scanner branding (logo, colors)\n- Consistent header/footer\n- Responsive design\n- Plain text fallback\n\nEnvironment Variables:\n- RESEND_API_KEY (server-side only, not NEXT_PUBLIC_)\n- Add to .env.local and Vercel\n\nAPI Routes for Email:\n- app/api/subscribe/route.ts (email capture)\n- Validate email format\n- Store in database (Supabase or Redis)\n- Send welcome email\n- Return success/error response\n\nTesting:\n- Test sendEmail() with welcome template\n- Verify emails arrive in inbox\n- Check spam score (should be low with proper DNS)\n- Test error handling (invalid email, API failure)\n\nRate Limiting:\n- Limit email signups: 5 per IP per hour\n- Prevent spam signups\n- Use Redis to track",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "27"
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "36",
+        "title": "Build Email Capture Modal Component",
+        "description": "Create modal component for capturing emails when users want portfolio upload, following Pirouette's EmailCaptureModal pattern.",
+        "details": "Create components/PortfolioGateModal.tsx based on Pirouette's EmailCaptureModal:\n\nModal Triggers:\n- \"Upload Portfolio CSV\" button clicked\n- User hits 3/day rate limit (anonymous)\n- \"Save Analysis\" button clicked\n\nModal Design:\n- Centered overlay with backdrop blur\n- Card with gradient border (indigo-purple)\n- Close button (X) in top-right\n- Dismissible by clicking backdrop or ESC key\n\nContent:\n\n1. Header:\n   - Icon: 📊\n   - Headline: \"Analyze Your Entire Portfolio\"\n   - Subheadline: \"Upload CSV, get instant P/E compression analysis\"\n\n2. Benefits List:\n   - ✓ Upload ISA, SIPP, or any portfolio\n   - ✓ Get buy/sell signals for every holding\n   - ✓ Identify overvalued positions\n   - ✓ Email report with full results\n   - ✓ Free forever (10 tickers/day)\n\n3. Email Form:\n   - Email input with validation\n   - \"Get Free Access\" CTA button\n   - Privacy note: \"No spam, unsubscribe anytime\"\n   - Disabled state during submission\n\nForm Handling:\n- Client-side email validation (regex)\n- Submit to /api/subscribe\n- Show loading spinner during POST\n- Success: Close modal + show success message\n- Error: Display error inline\n- Track: trackEvent('Email_Captured', { source: 'portfolio_gate' })\n\nState Management:\n- useState for open/closed\n- useState for email, loading, error\n- Pass as props: isOpen, onClose, onSuccess\n\nSuccess Flow:\n- Close modal\n- Show toast: \"Check your email for access instructions\"\n- Redirect to /dashboard (portfolio upload page)\n- Or auto-open file picker if staying on page\n\nAccessibility:\n- Focus trap (can't tab outside modal)\n- Focus email input on open\n- ARIA role=\"dialog\"\n- aria-labelledby for title\n- ESC key to close\n- Return focus to trigger button on close\n\nAnimations:\n- Fade in backdrop (0.2s)\n- Scale in modal (0.3s with spring)\n- Smooth transitions",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "35"
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "37",
+        "title": "Create Email Templates (Welcome, Portfolio Report)",
+        "description": "Design and implement React Email templates for welcome email and portfolio analysis reports.",
+        "details": "Create email templates using @react-email/components:\n\n1. lib/email/templates/BaseEmail.tsx:\n   - Header with PE Scanner logo\n   - Consistent typography (system fonts)\n   - Footer with unsubscribe link\n   - Social media links\n   - 600px max width (email standard)\n   - Inline styles (email clients don't support CSS files)\n\n2. lib/email/templates/WelcomeEmail.tsx:\n   - Subject: \"Welcome to PE Scanner 🎯\"\n   - Greeting with user's name (if provided)\n   - Quick value prop: \"Instant P/E compression analysis\"\n   - Instructions: \"Here's what you can do now:\"\n     * Analyze unlimited tickers\n     * Upload portfolio CSV\n     * Get email reports\n   - CTA button: \"Analyze Your Portfolio\" → https://pe-scanner.com/dashboard\n   - Helpful tips section\n   - Plain text version\n\n3. lib/email/templates/PortfolioReportEmail.tsx:\n   - Subject: \"Your {Portfolio Name} Analysis is Ready 📊\"\n   - Summary statistics:\n     * Total positions analyzed: X\n     * Sell signals: Y\n     * Buy opportunities: Z\n   - Top 3 Sell Signals (red boxes):\n     * Ticker, headline, compression %\n   - Top 3 Buy Opportunities (green boxes):\n     * Ticker, headline, compression %\n   - CTA: \"View Full Report\" → link to saved analysis\n   - Footer: \"Want unlimited searches? Upgrade to Pro\"\n   - Plain text version\n\nStyling:\n- Tailwind-like utility approach (but inline)\n- Colors: Red (#FEE2E2) for sells, Green (#D1FAE5) for buys\n- Font: System font stack (Arial fallback)\n- Button: Indigo gradient, white text\n- Responsive: Single column on mobile\n\nSend Functions:\n- sendWelcomeEmail(email: string, name?: string)\n- sendPortfolioReport(email: string, report: PortfolioAnalysis)\n- Both return Promise<SendEmailResult>\n\nTesting:\n- Preview emails locally: npm run email:dev (use @react-email/preview)\n- Send test emails to your own address\n- Check rendering in Gmail, Outlook, Apple Mail\n- Verify links work correctly\n- Test plain text fallback",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "35"
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": "38",
+        "title": "Build Portfolio Upload Interface",
+        "description": "Create dashboard page for uploading portfolio CSV files, processing with existing PE Scanner backend, and displaying batch results.",
+        "details": "Create app/dashboard/page.tsx for portfolio analysis:\n\nAuthentication:\n- Require email signup (gated access)\n- Store user_id in session/cookie\n- Redirect to signup if not authenticated\n\nFile Upload Component:\n\n1. Upload Area:\n   - Drag-and-drop zone (react-dropzone or custom)\n   - Click to browse file picker\n   - Accept: .csv files only\n   - Max size: 1MB (reasonable for portfolio CSV)\n   - Visual states: default, hover, dragging, uploading\n\n2. CSV Validation:\n   - Check columns: ticker, shares, cost_basis (optional), current_price (optional)\n   - Show preview table: first 5 rows\n   - Error handling: missing columns, invalid tickers\n   - Count positions: \"Found 17 positions in your portfolio\"\n\n3. Portfolio Type Selection:\n   - Dropdown: ISA / SIPP / General / Wishlist\n   - Optional but helps with reporting\n\nUpload Flow:\n- Client validates CSV locally (papaparse library)\n- POST to /api/portfolio with file data\n- Show progress: \"Analyzing 17 positions...\"\n- Backend processes using existing portfolio analysis code\n- Poll for completion or use websocket (simple: long polling)\n- Redirect to results page when done\n\nAPI Endpoint (Flask):\n- POST /api/portfolio\n- Accept multipart/form-data or JSON (CSV string)\n- Use existing load_portfolio() from portfolios/loader.py\n- Use analyze_portfolio_batch() from analysis modules\n- Return job_id for polling or full results\n- Rate limit: 5 portfolios/day for free, unlimited for Pro\n\nResults Display:\n- Table with columns: Ticker, Signal, Compression %, Fair Value\n- Color-coded rows: Green (BUY), Red (SELL), Yellow (HOLD)\n- Sort by: Signal priority, Compression magnitude\n- Filter by: Signal type\n- Export button: Download as Excel (use XLSX library)\n\nEmail Report:\n- After analysis complete, send PortfolioReportEmail\n- Include top 3 sells and buys\n- Link to saved results page\n\nSaved Analyses:\n- Store in database (Supabase optional)\n- List of past uploads: \"My ISA - Nov 2024\"\n- Click to view historical results\n- Free users: Save last 5, Pro: Save 50, Premium: Unlimited\n\nError Handling:\n- Invalid CSV format\n- Tickers not found (show which ones)\n- API errors (timeout, 500)\n- Clear error messages with next steps",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "36"
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "39",
+        "title": "Create Railway Deployment Configuration",
+        "description": "Set up Flask API deployment to Railway with Dockerfile, environment variables, and health checks following Pirouette deployment patterns.",
+        "details": "Create Railway deployment configuration for Flask API:\n\nCreate railway/Dockerfile:\n- FROM python:3.11-slim\n- WORKDIR /app\n- COPY requirements.txt and install dependencies\n- COPY src/ directory\n- Install gunicorn for production server\n- EXPOSE 8000\n- CMD: gunicorn with proper binding\n\nCreate railway.json:\n- Specify Dockerfile builder\n- Health check: /health endpoint\n- Restart policy: ON_FAILURE\n- Environment variables configuration\n\nCreate Procfile (alternative):\n- web: gunicorn --bind 0.0.0.0:$PORT src.pe_scanner.api.app:app\n\nRequirements for Production:\n- Add gunicorn>=21.0.0\n- Add redis>=5.0.0\n- Pin all dependency versions\n- Test with pip install -r requirements.txt\n\nRailway Environment Variables:\n- FLASK_ENV=production\n- REDIS_URL=${REDIS_URL} (auto-provided by Railway)\n- YAHOO_FINANCE_RATE_LIMIT=0.2\n- MAX_TICKERS_PER_REQUEST=50\n- RESEND_API_KEY=re_xxxxx\n- ALLOWED_ORIGINS=https://pe-scanner.com,https://www.pe-scanner.com\n- SUPABASE_URL (if using database)\n- SUPABASE_SERVICE_KEY (if using database)\n\nHealth Check Endpoint:\n- Ensure /health returns 200 OK\n- Include: uptime, Redis status, cache stats\n- Railway pings every 30 seconds\n\nLogging:\n- Configure structured logging\n- Log level: INFO in production\n- Log to stdout (Railway captures)\n- Include request IDs\n\nPerformance:\n- Configure gunicorn workers: 2-4 workers\n- Set timeout: 60 seconds\n- Enable keepalive\n- Monitor memory usage\n\nRailway Setup:\n- Create new project: \"pe-scanner-api\"\n- Link GitHub repo (or manual deploy)\n- Add Redis service (free tier)\n- Configure custom domain: api.pe-scanner.com\n- Enable automatic deploys on git push\n\nTesting:\n- Deploy to Railway\n- Test health endpoint: https://xxx.railway.app/health\n- Test analysis endpoint: /api/analyze/HOOD\n- Monitor logs for errors\n- Check Redis connection\n- Verify CORS headers work",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "34"
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "40",
+        "title": "Deploy Next.js Frontend to Vercel",
+        "description": "Deploy Next.js application to Vercel with proper environment variables, build configuration, and performance optimization.",
+        "details": "Deploy frontend to Vercel following Pirouette pattern:\n\nVercel Project Setup:\n- Link GitHub repository (pe-scanner-web)\n- Framework preset: Next.js\n- Root directory: / (or pe-scanner-web/)\n- Build command: npm run build (default)\n- Output directory: .next (default)\n- Install command: npm install (default)\n\nEnvironment Variables (Vercel Dashboard):\n- NEXT_PUBLIC_API_URL=https://pe-scanner-api.railway.app\n- NEXT_PUBLIC_APP_URL=https://pe-scanner.com\n- NEXT_PUBLIC_PLAUSIBLE_DOMAIN=pe-scanner.com\n- RESEND_API_KEY=re_xxxxx (server-side)\n- REDIS_URL (if client-side rate limit checking)\n- CLERK_SECRET_KEY (if using auth)\n- CLERK_WEBHOOK_SECRET (if using auth)\n\nBuild Configuration (vercel.json):\n- Add security headers (X-Frame-Options: DENY)\n- Configure rewrites for API proxy (optional)\n- Set up redirects (www → non-www)\n- Enable compression\n- Configure caching headers\n\nPerformance Optimization:\n- Enable Next.js image optimization\n- Configure ISR (revalidate: 3600) for report pages\n- Enable edge runtime for API routes (where applicable)\n- Minimize bundle size\n\nProduction Checklist:\n- [ ] Build succeeds without errors\n- [ ] All environment variables set\n- [ ] Health check passes\n- [ ] Links work correctly\n- [ ] Images load\n- [ ] Analytics tracking fires\n- [ ] No console errors\n- [ ] Mobile responsive\n- [ ] Lighthouse score >90\n\nPreview Deployment:\n- Test on Vercel preview URL first\n- Verify all features work\n- Check API integration\n- Test form submissions\n- Verify email sending\n- Check rate limiting\n\nDomain Setup (Task 42):\n- Will add custom domain after deployment\n- For now, use Vercel preview URL: pe-scanner-web.vercel.app\n\nMonitoring:\n- Enable Vercel Analytics (free)\n- Monitor function execution logs\n- Track build times\n- Check for edge function errors",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "31",
+          "35"
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "41",
+        "title": "Set Up Custom Domain and DNS Configuration",
+        "description": "Purchase domain (pe-scanner.com), configure DNS records for Vercel (frontend) and Railway (API), and enable SSL.",
+        "details": "Domain and DNS setup for production launch:\n\nDomain Purchase:\n- Provider: Namecheap or Cloudflare (recommended)\n- Domain: pe-scanner.com (primary choice)\n- Cost: ~£10/year\n- Auto-renew: Enabled\n- Privacy protection: Enabled\n\nDNS Configuration:\n\n1. Frontend (Vercel):\n   - Add domain in Vercel dashboard\n   - DNS records (at registrar):\n     * Type: A, Name: @, Value: 76.76.21.21 (Vercel)\n     * Type: CNAME, Name: www, Value: cname.vercel-dns.com\n   - Verify DNS propagation: nslookup pe-scanner.com\n   - Vercel auto-issues SSL certificate (Let's Encrypt)\n\n2. API Subdomain (Railway):\n   - Add custom domain in Railway dashboard\n   - DNS record:\n     * Type: CNAME, Name: api, Value: xxx.railway.app\n   - Railway auto-issues SSL certificate\n\n3. Email (Resend):\n   - DNS records for email authentication:\n     * Type: TXT, Name: @, Value: (SPF record from Resend)\n     * Type: TXT, Name: resend._domainkey, Value: (DKIM from Resend)\n     * Type: TXT, Name: _dmarc, Value: (DMARC policy)\n   - Verify in Resend dashboard\n\nFinal URLs:\n- Frontend: https://pe-scanner.com\n- API: https://api.pe-scanner.com\n- Email: hello@pe-scanner.com\n\nSSL Verification:\n- Check certificate: https://www.ssllabs.com/ssltest/\n- Should get A+ rating\n- Verify HTTPS redirect works (http → https)\n- Check mixed content warnings (none should exist)\n\nUpdate Environment Variables:\n- Vercel: NEXT_PUBLIC_APP_URL=https://pe-scanner.com\n- Railway: ALLOWED_ORIGINS=https://pe-scanner.com,https://www.pe-scanner.com\n- Resend: Verify domain ownership\n\nRedirects:\n- www.pe-scanner.com → pe-scanner.com (canonical)\n- Configure in Vercel or DNS\n\nTesting:\n- Visit all URLs (frontend, API, www redirect)\n- Test from mobile device\n- Check SSL certificate validity\n- Verify email sending works with custom domain\n- Test API calls from frontend\n- Check browser console for errors",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "40"
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "42",
+        "title": "Add Navigation Component with Responsive Design",
+        "description": "Create navigation bar component with logo, links, auth state, and mobile menu following Pirouette Navigation pattern.",
+        "details": "Create components/Navigation.tsx:\n\nDesktop Navigation:\n- Logo (left): PE Scanner with icon\n- Main links (center): Features, Pricing, How It Works\n- Auth buttons (right):\n  * If logged out: \"Sign In\" + \"Get Started\" (gradient button)\n  * If logged in: \"Dashboard\" + User avatar/menu\n- Sticky header: stays visible on scroll\n- Transparent initially, white background after scroll\n\nMobile Navigation:\n- Hamburger menu icon (right side)\n- Slide-out menu (full screen overlay)\n- Close button (X)\n- Stacked links with large touch targets\n- Auth buttons at bottom\n\nLinks:\n- Features → #features (anchor scroll)\n- Pricing → #pricing (anchor scroll)\n- How It Works → #how-it-works (anchor scroll)\n- Sign In → /sign-in (if using Clerk)\n- Get Started → /sign-up or TickerSearchForm focus\n- Dashboard → /dashboard (auth required)\n\nScroll Behavior:\n- Transparent nav initially\n- Add white background + shadow after scroll >50px\n- Smooth transitions (0.2s)\n- Hide on scroll down, show on scroll up (optional)\n\nUser Menu (if logged in):\n- Dropdown on avatar click\n- Options: Dashboard, Account, Sign Out\n- Show plan badge: \"Pro\" / \"Free\"\n- Show searches remaining: \"7 left today\"\n\nMobile Menu Animation:\n- Slide from right\n- Backdrop blur\n- Smooth transitions\n- Prevent body scroll when open\n\nAccessibility:\n- Semantic nav element\n- ARIA labels for buttons\n- Focus visible styles\n- Keyboard navigation (Tab, Enter)\n- Skip to content link\n\nResponsive Breakpoints:\n- Mobile: <768px (hamburger menu)\n- Tablet: 768-1024px (compact nav)\n- Desktop: >1024px (full nav)",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [
+          "28"
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T12:08:05.475Z"
+      },
+      {
+        "id": "43",
+        "title": "Create Footer Component with Legal Links",
+        "description": "Build footer component with branding, product links, legal pages, and social media following Pirouette footer pattern.",
+        "details": "Create components/Footer.tsx with standard SaaS footer structure:\n\nFooter Sections:\n\n1. Brand Column:\n   - PE Scanner logo + icon\n   - Tagline: \"Stock valuation made simple\"\n   - Short description: \"Instant P/E compression analysis with shareable headlines\"\n   - Copyright: © 2025 PE Scanner. UK Company.\n\n2. Product Column:\n   - Features (link to #features)\n   - Pricing (link to #pricing or /pricing)\n   - How It Works (link to #how-it-works)\n   - API Docs (link to /docs - future)\n   - Examples (link to /examples - showcase HOOD, META)\n\n3. Resources Column:\n   - Blog (link to /blog - future)\n   - Twitter (link to @PEScanner)\n   - LinkedIn (link to company page)\n   - GitHub (link to public repo if open source)\n\n4. Legal Column:\n   - Privacy Policy (link to /privacy)\n   - Terms of Service (link to /terms)\n   - Cookie Policy (link to /cookies - if needed)\n   - Contact (mailto:hello@pe-scanner.com)\n\nSocial Media Icons:\n- Twitter/X icon\n- LinkedIn icon\n- GitHub icon (if applicable)\n- Hover effects (color change)\n\nStyling:\n- Background: Dark slate (bg-slate-900)\n- Text: Light gray (text-slate-400)\n- Hover: White (text-white)\n- Padding: py-12\n- Grid layout: 4 columns desktop, 2 cols tablet, 1 col mobile\n\nBottom Bar:\n- Separator line (border-slate-800)\n- Copyright text centered\n- Small print: \"Made in the UK\"\n\nLegal Pages (Create Stubs):\n- app/privacy/page.tsx (Task 43)\n- app/terms/page.tsx (Task 43)\n\nMobile Responsive:\n- Stack columns vertically\n- Proper spacing\n- Links remain accessible\n\nAccessibility:\n- Semantic footer element\n- Link text descriptive\n- Focus styles visible",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [
+          "28"
+        ],
+        "priority": "low",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T12:15:11.507Z"
+      },
+      {
+        "id": "44",
+        "title": "Integrate Plausible Analytics",
+        "description": "Set up privacy-friendly Plausible Analytics following Pirouette patterns for tracking user behavior and conversions.",
+        "details": "Set up Plausible Analytics based on Pirouette's implementation:\n\nPlausible Account Setup:\n- Sign up at plausible.io (30-day free trial)\n- Add site: pe-scanner.com\n- Choose plan: Starter (10k pageviews/month, £9/mo)\n\nCreate lib/analytics/plausible.ts:\n- Type-safe event names (PlausibleEvent type)\n- trackEvent() core function\n- Convenience functions:\n  * trackTickerAnalysis(ticker, signal)\n  * trackHeadlineShared(ticker, platform)\n  * trackEmailCaptured(source)\n  * trackPortfolioUploaded(positionCount)\n  * trackUpgradeClicked(tier, trigger)\n  * trackScrollDepth(percentage)\n\nEvent Types:\n- Ticker_Analyzed (props: ticker, signal, analysis_mode)\n- Headline_Shared (props: ticker, platform: twitter/linkedin/copy)\n- Email_Captured (props: source: rate_limit/portfolio_gate/footer)\n- Portfolio_Uploaded (props: positions, type: ISA/SIPP)\n- Upgrade_Clicked (props: tier: pro/premium, trigger: limit/feature)\n- Scroll_Depth_50, Scroll_Depth_75, Scroll_Depth_100\n- Pricing_Viewed\n- Report_Viewed (props: ticker, owner: true/false)\n\nInstall Plausible Script (app/layout.tsx):\n- Add Script component from next/script\n- src=\"https://plausible.io/js/script.js\"\n- data-domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}\n- defer loading\n\nConfigure Custom Goals (Plausible Dashboard):\n- Add all custom events listed above\n- Custom properties auto-generated when events fire\n- Set up funnel: Visitor → Analyzed → Signup → Upgrade\n\nDevelopment Mode:\n- Log events to console instead of sending\n- Don't load Plausible script in development\n- Enable with: NODE_ENV=production\n\nComponents Integration:\n- TickerSearchForm: Track submissions\n- ShareButtons: Track shares\n- Email modal: Track captures\n- Pricing page: Track views and clicks\n\nScrollTracker Component:\n- Create components/ScrollTracker.tsx\n- Track 25%, 50%, 75%, 100% depths\n- Use IntersectionObserver API\n- Debounce events (one per milestone)\n\nTesting:\n- Verify script loads (Network tab)\n- Check Realtime dashboard in Plausible\n- Test all custom events fire\n- Verify props are captured\n- Check no ad blocker conflicts",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [
+          "27"
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T11:54:10.742Z"
+      },
+      {
+        "id": "45",
+        "title": "Implement Scroll Depth Tracking Component",
+        "description": "Create ScrollTracker component to measure user engagement via scroll depth milestones using Plausible events.",
+        "details": "Create components/ScrollTracker.tsx from Pirouette pattern:\n\nScroll Tracking Logic:\n- Track milestones: 25%, 50%, 75%, 100% of page\n- Use IntersectionObserver for performance\n- Fire Plausible events once per milestone per session\n- Store fired milestones in sessionStorage\n\nImplementation:\n- Create invisible marker divs at each % point\n- Position using CSS: top-[25%], top-[50%], etc.\n- IntersectionObserver watches for visibility\n- When visible: fire event, store in session\n- Don't fire duplicate events\n\nEvents:\n- trackScrollDepth(25) → Scroll_Depth_25\n- trackScrollDepth(50) → Scroll_Depth_50\n- trackScrollDepth(75) → Scroll_Depth_75\n- trackScrollDepth(100) → Scroll_Depth_100\n\nSession Storage:\n- Key: \"scroll-depth-fired\"\n- Value: JSON array [25, 50, 75, 100]\n- Check before firing: if (!fired.includes(depth))\n- Clear on page navigation\n\nPerformance:\n- Debounce scroll events\n- Use passive event listeners\n- Cleanup on unmount\n- Minimal DOM impact (4 tiny divs)\n\nUsage:\n- Add to app/layout.tsx (tracks all pages)\n- Or add to specific pages only\n\nTesting:\n- Scroll slowly, verify events fire\n- Check sessionStorage updates\n- Verify no duplicate events\n- Test on different page lengths\n- Mobile testing",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "44"
+        ],
+        "priority": "low",
+        "subtasks": []
+      },
+      {
+        "id": "46",
+        "title": "Add TrackableButton Component for CTA Analytics",
+        "description": "Create reusable button component that automatically tracks clicks in Plausible with variant and location metadata.",
+        "details": "Create components/TrackableButton.tsx from Pirouette pattern:\n\nComponent Props:\n- variant: 'primary' | 'secondary' | 'outline'\n- label: string (for analytics: \"Hero CTA - Sign Up\")\n- location: string (for analytics: \"homepage\", \"pricing\", \"report\")\n- href: string (Next.js Link)\n- onClick?: () => void (optional custom handler)\n- children: ReactNode (button text)\n- className?: string (additional Tailwind classes)\n\nVariant Styles:\n\n1. Primary:\n   - Gradient: indigo-500 to purple-600\n   - White text\n   - Shadow on hover\n   - Translate Y on hover (-1px)\n\n2. Secondary:\n   - White background\n   - Indigo border\n   - Indigo text\n   - Hover: light indigo background\n\n3. Outline:\n   - Transparent background\n   - Border only\n   - Hover: fill with color\n\nAnalytics Tracking:\n- On click: trackCTA(variant, label, location)\n- Example event props: { variant: 'primary', label: 'Hero CTA', location: 'homepage' }\n- Use Plausible custom properties\n\nImplementation:\n- Wrap Next.js Link component\n- Forward all props\n- Add onClick handler for tracking\n- Support external links (target=\"_blank\")\n- Support button element (if no href)\n\nStates:\n- Default\n- Hover\n- Active (pressed)\n- Disabled\n- Loading (with spinner)\n\nAccessibility:\n- Proper button/link semantics\n- ARIA labels when needed\n- Focus visible styles\n- Keyboard support (Enter/Space)\n\nUsage Examples:\n```tsx\n<TrackableButton\n  variant=\"primary\"\n  label=\"Hero - Get Started\"\n  location=\"homepage\"\n  href=\"/sign-up\"\n>\n  Get Started Free →\n</TrackableButton>\n\n<TrackableButton\n  variant=\"secondary\"\n  label=\"Pricing - Pro Tier\"\n  location=\"pricing\"\n  href=\"/sign-up?plan=pro\"\n>\n  Start Pro Trial\n</TrackableButton>\n```\n\nTesting:\n- Verify clicks tracked in Plausible\n- Check all variants render correctly\n- Test keyboard navigation\n- Mobile touch targets (min 44px)",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [
+          "44"
+        ],
+        "priority": "low",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T12:41:45.955Z"
+      },
+      {
+        "id": "47",
+        "title": "Create Open Graph Meta Tags for Social Sharing",
+        "description": "Add dynamic Open Graph and Twitter Card meta tags to report pages for rich social media previews.",
+        "details": "Implement social sharing meta tags for rich previews:\n\nCreate lib/metadata.ts helper:\n- generateReportMetadata(ticker, analysis): Metadata object\n- Handles dynamic values from API response\n\nReport Page Meta Tags (app/report/[ticker]/page.tsx):\n\nOpen Graph Tags:\n- og:title: \"{ticker} Analysis: {headline}\"\n- og:description: \"{anchor}\" (first 150 chars)\n- og:type: \"website\"\n- og:url: \"https://pe-scanner.com/report/{ticker}\"\n- og:image: \"https://pe-scanner.com/og-images/{ticker}.png\" (Task 48)\n- og:site_name: \"PE Scanner\"\n- og:locale: \"en_GB\"\n\nTwitter Card Tags:\n- twitter:card: \"summary_large_image\"\n- twitter:site: \"@PEScanner\"\n- twitter:title: Same as og:title\n- twitter:description: Same as og:description\n- twitter:image: Same as og:image\n\nDynamic Image Generation (Task 48):\n- Use @vercel/og for dynamic OG images\n- Generate card with: ticker, signal, headline, key metric\n- Cache images for 1 hour\n- Fallback: static image if generation fails\n\nLanding Page Meta:\n- Standard tags for homepage\n- Generic OG image: \"PE Scanner - Stock Valuation Tool\"\n- Description: \"Instant P/E compression analysis...\"\n\nImplementation:\n- Export metadata object from page.tsx\n- Next.js handles meta tag generation\n- TypeScript: Metadata type from next\n\nTesting:\n- Preview with Facebook Sharing Debugger\n- Preview with Twitter Card Validator\n- Preview with LinkedIn Post Inspector\n- Verify images load correctly\n- Test with various tickers\n\nSEO Benefits:\n- Rich previews increase click-through\n- Professional appearance in social feeds\n- Better engagement on shared results",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [
+          "30"
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T12:23:32.965Z"
+      },
+      {
+        "id": "48",
+        "title": "Generate Dynamic OG Images for Social Sharing",
+        "description": "Create API route to dynamically generate Open Graph images showing ticker analysis results using Vercel OG Image generation.",
+        "details": "Create app/api/og-image/[ticker]/route.tsx for dynamic social cards:\n\nUse Vercel's @vercel/og library:\n- Install: npm install @vercel/og\n- ImageResponse API for generating PNG images\n- Edge runtime for fast generation\n- 1200x630px (Facebook/LinkedIn optimal size)\n\nCard Design:\n\n1. Background:\n   - Gradient based on signal:\n     * BUY: Green gradient (emerald-500 to teal-600)\n     * SELL: Red gradient (red-500 to rose-600)\n     * HOLD: Yellow gradient (amber-500 to orange-600)\n\n2. Content Layout:\n   - Top: \"PE Scanner\" logo + wordmark\n   - Center: Ticker symbol (large, bold)\n   - Signal badge: BUY/SELL/HOLD with emoji\n   - Headline (from API, truncate if >100 chars)\n   - Key metric based on mode:\n     * VALUE: \"Compression: -113%\"\n     * GROWTH: \"PEG: 1.4\"\n     * HYPER_GROWTH: \"P/S: 12.0x\"\n   - Bottom: \"pe-scanner.com\"\n\nTypography:\n- Use system fonts (Inter via Google Fonts CDN)\n- Ticker: 96px bold\n- Headline: 36px medium\n- Metrics: 28px regular\n- Footer: 20px light\n\nData Fetching:\n- Fetch from /api/analyze/{ticker}\n- Use edge-compatible fetch\n- Cache response for 1 hour\n- Handle errors: return fallback image\n\nCaching:\n- Set Cache-Control header: public, max-age=3600\n- Vercel caches at edge\n- Regenerate after 1 hour or on purge\n\nFallback Image:\n- Static image if API fails\n- Generic \"PE Scanner\" branding\n- 1200x630px PNG in public/og-default.png\n\nUsage:\n- Reference in metadata: og:image: /api/og-image/HOOD\n- Next.js generates at request time (first visit)\n- Cached for subsequent visits\n\nTesting:\n- Test locally: http://localhost:3000/api/og-image/HOOD\n- Verify image generates correctly\n- Test with BUY, SELL, HOLD signals\n- Check caching works\n- Verify size: exactly 1200x630px\n- Preview in Facebook/Twitter validators",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [
+          "47"
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T12:30:40.687Z"
+      },
+      {
+        "id": "49",
+        "title": "Create Legal Pages (Privacy Policy, Terms of Service)",
+        "description": "Write privacy policy and terms of service pages compliant with UK GDPR and consumer protection laws.",
+        "details": "Create legal pages following UK compliance standards:\n\n1. app/privacy/page.tsx:\n   - What data we collect:\n     * Email addresses (for portfolio uploads)\n     * IP addresses (for rate limiting, anonymized after 24h)\n     * Ticker searches (anonymous, no PII)\n     * Analytics data (via Plausible, no cookies)\n   - How we use data:\n     * Send portfolio reports\n     * Prevent abuse\n     * Improve service\n   - Data retention:\n     * Emails: Until user deletes account\n     * IP addresses: 7 days\n     * Search history: 90 days\n   - Third parties:\n     * Resend (email delivery)\n     * Plausible (analytics, EU servers)\n     * Railway (hosting, EU region)\n   - User rights (UK GDPR):\n     * Right to access data\n     * Right to deletion\n     * Right to export\n     * Contact: privacy@pe-scanner.com\n   - Cookies: None (Plausible doesn't use cookies)\n   - Last updated date\n\n2. app/terms/page.tsx:\n   - Service description: Stock analysis tool\n   - Acceptable use:\n     * For personal investment research\n     * Not financial advice\n     * No guarantees on accuracy\n   - Prohibited use:\n     * No scraping or automated access\n     * No reselling data\n     * Respect rate limits\n   - Disclaimer:\n     * \"Not financial advice\"\n     * \"Past performance doesn't guarantee future results\"\n     * \"Data from Yahoo Finance, may contain errors\"\n   - Account terms:\n     * Free tier limitations\n     * Pro tier benefits\n     * Cancellation policy (cancel anytime)\n     * Refund policy (pro-rata for annual)\n   - Limitation of liability:\n     * No liability for investment losses\n     * Service provided \"as-is\"\n   - Governing law: UK law, jurisdiction: England & Wales\n   - Contact: legal@pe-scanner.com\n   - Last updated date\n\nStyling:\n- Simple, readable layout\n- Max-width: 800px\n- Proper spacing and hierarchy\n- Table of contents at top (anchor links)\n- Legal references in footnotes\n\nFooter Component Update:\n- Add links to /privacy and /terms\n- Update in Task 43\n\nReview:\n- Have legal counsel review (recommended)\n- Or use template from UK legal site\n- Ensure GDPR compliance\n- Check against ICO guidelines\n\nTesting:\n- Pages accessible\n- All links work\n- Mobile readable\n- Print-friendly styles",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "28"
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": "50",
+        "title": "Write Launch Blog Post",
+        "description": "Create comprehensive blog post explaining PE Scanner methodology, showcasing example analyses, and telling the origin story.",
+        "details": "Write launch blog post (app/blog/launch/page.tsx or external Medium):\n\nArticle Structure:\n\n1. Hook (Opening):\n   - \"In November 2024, I analyzed my £290k portfolio\"\n   - \"HOOD showed -113% P/E compression. It dropped 53%.\"\n   - \"Here's the free tool I built to never miss these signals again\"\n\n2. The Problem:\n   - Most investors look at P/E ratios wrong\n   - High P/E ≠ overvalued, Low P/E ≠ undervalued\n   - Need to compare trailing vs. forward P/E\n   - Manual analysis is tedious for portfolios\n\n3. The Solution:\n   - P/E compression analysis\n   - Formula explanation (simple, visual)\n   - Example: HOOD calculation walkthrough\n   - Why it works (market expectations vs. reality)\n\n4. Live Examples:\n   - Embed 3 ticker analyses:\n     * HOOD (SELL signal) - what happened next\n     * BATS.L (BUY signal) - UK stock example\n     * META (HOLD signal) - fair value example\n   - Show actual headlines + anchors\n   - Link to live results on PE Scanner\n\n5. Beyond P/E Compression:\n   - Growth stocks (PEG analysis)\n   - Hyper-growth stocks (P/S + Rule of 40)\n   - Tiered analysis approach\n   - Data quality validation\n\n6. How to Use It:\n   - Step 1: Enter ticker\n   - Step 2: Get instant analysis\n   - Step 3: Share headline or upload portfolio\n   - Screenshots of UI\n\n7. The Tech:\n   - Built with Python + Flask\n   - Yahoo Finance data\n   - Next.js frontend\n   - Open source? (decide)\n\n8. Call to Action:\n   - \"Try it free: pe-scanner.com\"\n   - \"Upload your portfolio CSV for full analysis\"\n   - \"Share your results on Twitter\"\n\nSEO Optimization:\n- Title: \"I Built a Free Tool to Find Overvalued Stocks (Here's How It Works)\"\n- Meta description: \"P/E compression analysis tool that caught HOOD's 53% drop...\"\n- Keywords: P/E ratio, stock analysis, portfolio analysis, valuation\n- Internal links to pricing, features\n- External links to reference materials\n\nPublishing:\n- Host on pe-scanner.com/blog/launch\n- Or publish to Medium/Dev.to and link\n- Include in launch email\n- Share on Twitter (thread)\n- Post to LinkedIn\n- Submit to Hacker News\n\nImages:\n- Screenshots of tool in action\n- Example analysis results\n- Before/after portfolio comparisons\n- Infographics explaining compression\n\nLength: 1500-2000 words (detailed but scannable)",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "30",
+          "38"
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": "51",
+        "title": "Create Product Hunt Submission Materials",
+        "description": "Prepare Product Hunt launch assets including tagline, description, screenshots, demo video, and hunter outreach.",
+        "details": "Prepare Product Hunt launch following Pirouette's product-hunt-launch.md pattern:\n\nProduct Hunt Profile:\n\n1. Name: \"PE Scanner\"\n\n2. Tagline (60 chars max):\n   - \"Find overvalued stocks in 30 seconds\"\n   - Or: \"P/E compression analysis with shareable headlines\"\n\n3. Description (260 chars):\n   - \"PE Scanner analyzes stocks using P/E compression to identify overvalued positions. Caught HOOD's -113% compression before its 53% drop. Free tier: 10 tickers/day. Pro: Unlimited + portfolio CSV upload.\"\n\n4. Topics/Categories:\n   - Fintech\n   - Productivity\n   - Investing\n   - SaaS\n   - Analytics\n\n5. First Comment (Maker Introduction):\n   - Story: Why I built this (portfolio management pain)\n   - Methodology: How P/E compression works\n   - Examples: HOOD sell signal, BATS.L buy signal\n   - Features: Tiered analysis, shareable headlines\n   - Roadmap: Future features (webhooks, alerts)\n   - Ask: \"What stock should I analyze live right now?\"\n\nGallery Images (7 max, 1200x800px):\n\n1. Hero Screenshot:\n   - Landing page with search box\n   - Clean, minimal\n\n2. Analysis Results:\n   - HOOD analysis showing SELL signal\n   - Headline + anchor visible\n   - Share buttons\n\n3. Features Grid:\n   - 7 analysis capabilities\n   - Icons and descriptions\n\n4. Pricing Table:\n   - Three tiers clearly visible\n   - £25 Pro tier highlighted\n\n5. Portfolio Upload:\n   - Dashboard with CSV upload\n   - Results table preview\n\n6. Email Report:\n   - Screenshot of PortfolioReportEmail\n   - Shows buy/sell sections\n\n7. Mobile View:\n   - Responsive design demonstration\n\nDemo Video (30-60 seconds):\n- Screen recording showing:\n  1. Landing page (3 sec)\n  2. Enter \"HOOD\" (2 sec)\n  3. Results appear (5 sec)\n  4. Show headline + anchor (5 sec)\n  5. Click share button (3 sec)\n  6. Upload portfolio CSV (5 sec)\n  7. Show results table (5 sec)\n- Add background music (upbeat, minimal)\n- Add text overlays for clarity\n- Export as .mp4 or .gif\n- Max size: 30MB\n\nPromotional Assets:\n- Logo: 240x240px PNG (transparent background)\n- Thumbnail: 240x240px (for listings)\n- Maker photo: Professional headshot\n- Social links: Twitter, LinkedIn, website\n\nHunter Outreach:\n- Research Product Hunt hunters (finance/SaaS focus)\n- Email template requesting hunt\n- Offer: Free Pro access for life\n- Deadline: 2 weeks before launch\n\nLaunch Timing:\n- Tuesday-Thursday (best days)\n- 12:01 AM PST (midnight Pacific)\n- Avoid: Fridays, weekends, holidays\n- Prepare responses for first 4 hours (critical window)\n\nPrepare Responses:\n- FAQ answers ready\n- Technical questions (how it works)\n- Comparison questions (vs competitors)\n- Feature requests (roadmap)\n- Bug reports (triage process)",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "50"
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": "52",
+        "title": "Prepare Reddit Launch Posts for UK Investing Communities",
+        "description": "Draft Reddit posts for r/UKInvesting and r/StockMarket following community guidelines and avoiding spam flags.",
+        "details": "Create Reddit launch content following best practices:\n\nTarget Subreddits:\n\n1. r/UKInvesting (240k members):\n   - Focus: UK-specific angle\n   - Emphasis: ISA/SIPP portfolio analysis\n   - Example: BATS.L (UK stock with data quality issues)\n   - Tone: Helpful, humble, community-focused\n\n2. r/StockMarket (2M members):\n   - Focus: Methodology + US examples\n   - Emphasis: HOOD case study\n   - Example: Real signals that predicted moves\n   - Tone: Data-driven, educational\n\nPost Structure (Both Subreddits):\n\nTitle Options:\n- \"I built a free tool to find overvalued stocks using P/E compression\"\n- \"How I caught HOOD's 53% drop 6 months early (with free analysis tool)\"\n- \"P/E compression analysis: The one metric that predicted HOOD's decline\"\n\nPost Body (1000-1500 words):\n\n1. Hook:\n   - Personal story: \"In November 2024, I analyzed my ISA...\"\n   - Specific result: \"HOOD showed -113% compression\"\n   - Validation: \"It dropped 53% in 6 months\"\n\n2. Problem:\n   - Traditional P/E analysis is misleading\n   - High P/E doesn't mean overvalued (growth stocks)\n   - Need to look at market expectations (forward P/E)\n\n3. Solution:\n   - Explain P/E compression formula\n   - Visual example with actual numbers\n   - Why it works (anchoring to earnings growth)\n\n4. Examples:\n   - HOOD (SELL): -113% compression, anchor explanation\n   - BATS.L (BUY): +62% compression, UK data quirks\n   - META (HOLD): Fairly valued example\n\n5. The Tool:\n   - Built it for my own portfolio\n   - Making it free for community\n   - Features: Instant analysis, shareable headlines, CSV upload\n   - Link: \"Try it here: pe-scanner.com\"\n\n6. Limitations & Disclaimers:\n   - \"Not financial advice, just a screening tool\"\n   - \"Always do your own research\"\n   - \"Data quality issues exist (UK stocks especially)\"\n   - \"Best used as starting point for deeper analysis\"\n\n7. Ask for Feedback:\n   - \"What would make this more useful?\"\n   - \"What tickers should I analyze?\"\n   - \"What features would you want?\"\n\nReddit Best Practices:\n- Use old.reddit markdown formatting\n- Include imgur links for screenshots\n- Engage with comments for 24 hours\n- Don't delete and repost\n- Follow subreddit rules (check before posting)\n- Provide value first, promote second\n- Be transparent about being the creator\n\nTiming:\n- r/UKInvesting: 7-9 AM GMT (UK audience waking up)\n- r/StockMarket: 8-10 AM EST (US audience starts day)\n- Midweek: Tuesday-Thursday (best engagement)\n\nResponse Templates:\n- \"How is this different from XYZ?\" → Comparison answer\n- \"Is this financial advice?\" → Clear disclaimer\n- \"How do you make money?\" → Transparent pricing explanation\n- \"Can you add feature X?\" → Roadmap discussion\n- Technical questions → Link to methodology blog post\n\nBackup Posts (if needed):\n- r/investing (2M members)\n- r/stocks (5M members)\n- r/ValueInvesting (150k members)",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "50"
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": "53",
+        "title": "Create Twitter Launch Thread Template",
+        "description": "Draft Twitter thread telling the PE Scanner story with visuals, examples, and clear CTA for launch day.",
+        "details": "Create Twitter launch thread (10-15 tweets):\n\nThread Structure:\n\nTweet 1 (Hook):\n\"In November 2024, I ran P/E compression analysis on my portfolio.\n\nHOOD showed -113% compression.\n\n6 months later, it dropped 53%.\n\nHere's the free tool I built to catch these signals 👇\"\n\nTweet 2 (The Problem):\n\"Most investors look at P/E ratios wrong.\n\nHigh P/E ≠ overvalued\nLow P/E ≠ undervalued\n\nYou need to compare TRAILING P/E vs FORWARD P/E.\n\nThe difference reveals market expectations.\"\n\nTweet 3 (The Formula):\n\"P/E Compression = ((Trailing PE - Forward PE) / Trailing PE) × 100\n\nNegative compression = Market expects earnings to DROP\nPositive compression = Market expects earnings to GROW\n\nExample: HOOD...\"\n[Include simple visual diagram]\n\nTweet 4 (HOOD Example):\n\"HOOD (November 2024):\n• Trailing P/E: 47.62\n• Forward P/E: 156.58\n• Compression: -113%\n\nTranslation: Market expected earnings to collapse 53%.\n\nThat's exactly what happened.\n\n🚨 SELL signal\"\n[Screenshot of HOOD analysis]\n\nTweet 5 (BUY Example):\n\"But it works for BUYs too.\n\nBATS.L (UK stock):\n• Compression: +62%\n• Signal: 🟢 BUY\n\nMarket expected 62% earnings growth.\n\nThis was undervalued relative to expectations.\"\n[Screenshot of BATS analysis]\n\nTweet 6 (Growth Stocks):\n\"For high-P/E growth stocks, I use PEG ratio:\n\nPEG = P/E ÷ Earnings Growth %\n\nCRM example:\n• P/E: 35\n• Growth: 25%\n• PEG: 1.4\n• Signal: HOLD (fairly valued)\"\n\nTweet 7 (The Tool):\n\"I built PE Scanner to automate this for my portfolio.\n\nFeatures:\n✓ Instant ticker analysis\n✓ Shareable headlines\n✓ CSV portfolio upload\n✓ 3-tier analysis (VALUE/GROWTH/HYPER_GROWTH)\n\nFree forever.\"\n[Screenshot of landing page]\n\nTweet 8 (Shareable Headlines):\n\"Every analysis generates a shareable headline:\n\n• 🚨 \"HOOD is priced like it's going bankrupt\"\n• 🟢 \"BATS.L: Market expects 62% earnings growth\"\n\nOne click to share on Twitter or LinkedIn.\"\n[Screenshot of share buttons]\n\nTweet 9 (Portfolio Feature):\n\"Upload your ISA or SIPP as CSV:\n\nGet instant analysis of every position:\n🔴 Sell signals\n🟢 Buy opportunities\n🟡 Hold positions\n\nEmail report with full results.\"\n[Screenshot of portfolio table]\n\nTweet 10 (Pricing):\n\"Free tier: 10 tickers/day\nPro (£25/mo): Unlimited + portfolio upload\nPremium (£49/mo): API access + webhooks\n\nStart free: pe-scanner.com\"\n\nTweet 11 (Disclaimers):\n\"Important disclaimers:\n\n⚠️ Not financial advice\n⚠️ Data from Yahoo Finance (can have errors)\n⚠️ Use as screening tool, not sole decision factor\n\nAlways do your own research.\"\n\nTweet 12 (CTA):\n\"Try PE Scanner free:\nhttps://pe-scanner.com\n\nWhat ticker should I analyze live right now?\n\nDrop a $TICKER below and I'll share the results 👇\"\n\nAssets Needed:\n- Screenshot: Landing page\n- Screenshot: HOOD analysis\n- Screenshot: Portfolio table\n- Screenshot: Share buttons\n- Diagram: P/E compression formula (Canva)\n- Demo GIF: Analyzing HOOD (30 sec max)\n\nHashtags:\n#Investing #StockMarket #PEAnalysis #Portfolio #UKInvesting #Fintech\n\nSchedule:\n- Launch day: 8 AM GMT (UK audience) or 9 AM EST (US audience)\n- Pin thread to profile\n- Respond to comments for 24 hours\n- Quote retweet good examples\n\nEngagement Strategy:\n- Ask for ticker suggestions in final tweet\n- Analyze suggested tickers live\n- Reply with results + screenshots\n- Create follow-up threads with findings\n\nBoost Strategy:\n- Tag relevant accounts (FinTwit influencers)\n- Use trending hashtags\n- Consider Twitter Ads (£50 budget for launch day)",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "50"
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": "54",
+        "title": "Create LinkedIn Launch Post and Strategy",
+        "description": "Draft professional LinkedIn post positioning PE Scanner for founders, investors, and finance professionals.",
+        "details": "Create LinkedIn launch content with professional positioning:\n\nLinkedIn Post (Main):\n\nOpening Hook:\n\"After analyzing £290,000 worth of portfolios in November 2024, I discovered something troubling.\n\nThe stocks that looked 'cheap' on P/E ratios alone were often value traps.\n\nThe stocks that looked 'expensive' were sometimes undervalued relative to growth expectations.\n\nSo I built a tool to solve this. It's free, and I'm launching it today.\"\n\nBody (1000-1500 words):\n\n1. The Problem:\n   - Traditional P/E analysis misleading\n   - Professional investors use forward P/E\n   - Retail investors lack access to systematic tools\n   - £5k+ for wealth manager analysis\n\n2. The Insight:\n   - P/E compression = Trailing P/E vs Forward P/E\n   - Negative compression = Overvalued (market expects decline)\n   - Positive compression = Undervalued (market expects growth)\n   - Validated with real portfolio tracking\n\n3. Case Study (HOOD):\n   - Nov 2024: -113% compression\n   - Analysis: Market expects 53% earnings drop\n   - Result: Stock fell 53% over 6 months\n   - Signal worked exactly as predicted\n\n4. The Solution:\n   - PE Scanner: Free stock valuation tool\n   - Features: Tiered analysis, shareable headlines, portfolio CSV\n   - Built with: Python, Flask, Next.js\n   - For: UK investors (ISA/SIPP), US investors, anyone\n\n5. Beyond P/E:\n   - Growth stocks: PEG ratio analysis\n   - Hyper-growth: Price/Sales + Rule of 40\n   - Automatic data quality validation\n   - UK stock corrections (pence/pounds issues)\n\n6. Pricing Philosophy:\n   - Free tier: 10 tickers/day (prove value first)\n   - Pro: £25/mo (for serious investors)\n   - Premium: £49/mo (API access for quants)\n   - Transparent, fair pricing\n\n7. Call to Action:\n   - \"Try it free: https://pe-scanner.com\"\n   - \"DM me your ticker and I'll share the live analysis\"\n   - \"Connect if you're interested in systematic investing\"\n\nAssets:\n- Professional screenshot (landing page)\n- Chart showing HOOD's decline vs. prediction\n- Portfolio analysis example (anonymized)\n- Before/after comparison\n\nHashtags:\n#Investing #PortfolioManagement #Fintech #UKInvesting #SaaS #SystematicInvesting\n\nPost Format:\n- PDF carousel (5 slides): Problem → Solution → Results → Features → CTA\n- Or: Text post with 1 hero image\n- Or: Video (1-2 min walkthrough)\n\nFollow-Up Posts:\n\nWeek 2: \"100+ investors have analyzed their portfolios with PE Scanner. Here are the most common findings...\"\n\nWeek 3: \"Case study: How PE compression caught [TICKER]'s decline\"\n\nWeek 4: \"New feature: API access for automated portfolio monitoring\"\n\nEngagement Strategy:\n- Respond professionally to all comments\n- Offer free Pro access to finance influencers\n- Share in relevant groups (if member)\n- Ask connections for shares\n- Post during work hours: 9 AM or 1 PM GMT\n\nTarget Audience:\n- Finance professionals\n- Retail investors\n- Portfolio managers\n- Fintech founders\n- Investment clubs\n- Wealth managers (potential partners)",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "50"
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": "55",
+        "title": "Set Up Email Drip Campaign for User Onboarding",
+        "description": "Create automated email sequence to convert free users to Pro subscribers over 14 days using email-touchpoint-mapper skill.",
+        "details": "Design email drip campaign using Pirouette's email-touchpoint-mapper skill:\n\nEmail Sequence (14-day conversion funnel):\n\nDay 0 (Signup):\n- Email: WelcomeEmail.tsx (from Task 37)\n- Subject: \"Welcome to PE Scanner 🎯\"\n- Content: Quick start guide, portfolio upload instructions\n- CTA: \"Analyze Your Portfolio\"\n\nDay 3 (Engagement):\n- Email: EducationalEmail1.tsx (NEW)\n- Subject: \"How I Caught HOOD's 53% Drop (P/E Compression Explained)\"\n- Content:\n  * HOOD case study with timeline\n  * Formula explanation (visual)\n  * \"Try analyzing your top 5 holdings\"\n- CTA: \"Analyze Another Ticker\"\n- Trigger: Only if user hasn't uploaded portfolio yet\n\nDay 7 (Value Demonstration):\n- Email: WeeklyOpportunitiesEmail.tsx (NEW)\n- Subject: \"This Week's Top Compression Signals 📊\"\n- Content:\n  * Top 3 buy opportunities this week (from curated list)\n  * Top 3 sell warnings\n  * \"Pro users get this weekly + portfolio alerts\"\n- CTA: \"Upgrade to Pro for £25/mo\"\n\nDay 10 (Social Proof):\n- Email: TestimonialsEmail.tsx (NEW)\n- Subject: \"How Investors Are Using PE Scanner\"\n- Content:\n  * User testimonials (collect during beta)\n  * Example: \"Found 3 overvalued positions in my ISA\"\n  * Stats: \"10,000+ tickers analyzed\"\n  * \"Join 500+ investors using PE Scanner Pro\"\n- CTA: \"Start Pro Trial (First Month £20)\"\n\nDay 14 (Limited Offer):\n- Email: UpgradeOfferEmail.tsx (NEW)\n- Subject: \"Last Chance: Early Bird Pricing Expires Tomorrow\"\n- Content:\n  * \"Launch pricing: £20/mo (normally £25)\"\n  * Scarcity: \"Only for first 50 customers\"\n  * Feature breakdown: What Pro unlocks\n  * Money-back guarantee: \"Cancel anytime, no questions\"\n- CTA: \"Lock In Early Bird Pricing\"\n\nConditional Emails (Event-Triggered):\n\nPortfolio Uploaded:\n- Immediately send: PortfolioReportEmail (Task 37)\n- Replace Day 3 email with engagement email\n- Skip to Day 7 (value demo)\n\nHit Rate Limit:\n- Immediately send: UpgradeNudgeEmail (NEW)\n- Subject: \"You've Hit Your Daily Limit 🚀\"\n- Content: \"You're power user! Upgrade for unlimited\"\n- CTA: \"Upgrade to Pro\"\n\nPro Subscription:\n- Welcome to Pro email\n- Feature walkthrough\n- Tips for portfolio monitoring\n- End drip campaign\n\nEmail Service Setup:\n- Use Resend Audiences feature\n- Tag users: \"onboarding\", \"free\", \"pro\"\n- Automate via Resend Broadcasts\n- Or: Build custom cron job (Railway)\n\nUnsubscribe:\n- One-click unsubscribe in every email\n- Preference center: Frequency options\n- Keep critical emails only (portfolio reports)\n\nA/B Testing (Future):\n- Test subject lines\n- Test send times (morning vs evening)\n- Test CTA copy\n- Use Resend analytics\n\nMetrics to Track:\n- Open rate (target: >30%)\n- Click rate (target: >5%)\n- Conversion rate (target: >10%)\n- Unsubscribe rate (keep <2%)",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "37"
+        ],
+        "priority": "low",
+        "subtasks": []
+      },
+      {
+        "id": "56",
+        "title": "Implement Authentication with Clerk (Optional)",
+        "description": "Set up Clerk authentication for user accounts, following Pirouette patterns, to enable portfolio uploads and saved analyses.",
+        "details": "Set up Clerk authentication (optional, simplifies user management):\n\nClerk Setup:\n- Sign up at clerk.com (free tier: 10k MAU)\n- Create application: \"PE Scanner\"\n- Enable authentication methods:\n  * Email/Password (required)\n  * Google OAuth (recommended)\n  * GitHub OAuth (optional)\n\nInstall Dependencies:\n- npm install @clerk/nextjs\n\nEnvironment Variables:\n- NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxx\n- CLERK_SECRET_KEY=sk_test_xxxxx\n- NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in\n- NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up\n- NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard\n- NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard\n\nMiddleware (middleware.ts):\n- Protect routes: /dashboard/*, /api/portfolio/*\n- Allow public: /, /report/*, /api/analyze/*\n- Redirect unauthenticated: → /sign-in\n\nCreate Auth Pages:\n- app/sign-in/[[...sign-in]]/page.tsx\n- app/sign-up/[[...sign-up]]/page.tsx\n- Use Clerk prebuilt components\n\nUser Sync to Database (if using Supabase):\n- Webhook: app/api/webhooks/clerk/route.ts\n- On user.created: Insert into users table\n- Store: clerk_id, email, plan (default: 'free')\n- Update: analyses_this_month counter\n\nUser Metadata:\n- Store plan in Clerk metadata: user.publicMetadata.plan\n- Store searches remaining: user.publicMetadata.searchesRemaining\n- Update via Clerk API after each search\n\nNavigation Integration:\n- Show user avatar if logged in\n- Sign Out button in dropdown\n- Update Navigation component (Task 42)\n\nRate Limiting Integration:\n- Use Clerk user ID for rate limiting\n- Free users: 10 tickers/day\n- Pro users: Unlimited (check user.publicMetadata.plan)\n\nAlternative (No Auth):\n- Use only IP-based rate limiting\n- No portfolio save feature\n- Simpler MVP\n- Add auth later (Phase 2)\n\nDecision: Recommend starting WITHOUT Clerk (simpler launch), add in Phase 2 if needed.\n\nIf No Clerk:\n- Use email-only signup (simpler)\n- Store emails in Supabase directly\n- Use magic link for login (passwordless)\n- Or: Skip auth entirely, use IP limiting only",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "27"
+        ],
+        "priority": "low",
+        "subtasks": []
+      },
+      {
+        "id": "57",
+        "title": "Add Backend Portfolio Analysis Endpoint",
+        "description": "Create Flask API endpoint for batch portfolio analysis, accepting CSV data and returning ranked results.",
+        "details": "Create POST /api/portfolio endpoint in Flask API:\n\nEndpoint: POST /api/portfolio\n\nRequest Format:\n- Content-Type: application/json\n- Body: {\n    \"tickers\": [\"HOOD\", \"AAPL\", \"BATS.L\", ...],\n    \"portfolio_type\": \"ISA\" | \"SIPP\" | \"GENERAL\",\n    \"include_email_report\": boolean,\n    \"email\": \"user@example.com\" (if email report requested)\n  }\n\nOr CSV Upload:\n- Content-Type: multipart/form-data\n- Parse CSV using existing load_portfolio() from portfolios/loader.py\n- Extract tickers from CSV\n\nProcessing:\n1. Validate tickers (max 100 per request for free, unlimited for Pro)\n2. Use existing batch_fetch() from data/fetcher.py\n3. Apply corrections (UK stocks) from data/corrector.py\n4. Validate data quality from data/validator.py\n5. Analyze with tiered router from analysis/router.py\n6. Rank results from portfolios/ranker.py\n7. Generate report from portfolios/reporter.py\n\nResponse Format:\n{\n  \"success\": true,\n  \"portfolio_type\": \"ISA\",\n  \"total_positions\": 17,\n  \"analyzed\": 15,\n  \"errors\": 2,\n  \"summary\": {\n    \"sell_signals\": 2,\n    \"buy_signals\": 5,\n    \"hold_signals\": 8\n  },\n  \"results\": [\n    {\n      \"ticker\": \"HOOD\",\n      \"signal\": \"SELL\",\n      \"compression_pct\": -113.7,\n      \"headline\": \"HOOD is priced like it's going bankrupt\",\n      \"anchor\": \"Market expects profits to DROP 60%\",\n      \"priority\": 1\n    },\n    // ... more results\n  ],\n  \"report_url\": \"https://pe-scanner.com/report/portfolio/{job_id}\"\n}\n\nEmail Report Integration:\n- If include_email_report=true:\n  * Generate full analysis\n  * Send PortfolioReportEmail (Task 37)\n  * Include top 3 sells and buys\n  * Link to full results page\n\nRate Limiting:\n- Free users: 5 portfolio uploads/day\n- Pro users: Unlimited\n- Check using existing rate_limit.py (Task 34)\n\nError Handling:\n- Invalid tickers: Return in errors array\n- Missing data: Flag with warnings\n- API timeout: Return partial results\n- Empty portfolio: 400 Bad Request\n\nBackground Processing (Future):\n- For large portfolios (>50 positions)\n- Return job_id immediately\n- Process async\n- Webhook or polling for completion\n\nTesting:\n- Test with example_isa.csv (17 positions)\n- Test with invalid tickers\n- Test with empty CSV\n- Test email report sending\n- Verify rate limiting works",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "34",
+          "37"
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "58",
+        "title": "Create End-to-End Testing Suite for Critical Paths",
+        "description": "Write Playwright tests covering main user flows: ticker search, portfolio upload, email capture, and rate limiting.",
+        "details": "Set up Playwright E2E tests following Pirouette patterns:\n\nInstall Dependencies:\n- npm install -D @playwright/test\n- npx playwright install (browsers)\n\nTest Files (tests/e2e/):\n\n1. ticker-search.spec.ts:\n   - Navigate to homepage\n   - Enter \"HOOD\" in search box\n   - Click \"Analyze\" button\n   - Wait for redirect to /report/HOOD\n   - Verify: Signal badge visible\n   - Verify: Headline contains text\n   - Verify: Share buttons present\n   - Test: Invalid ticker shows error\n\n2. portfolio-upload.spec.ts:\n   - Navigate to /dashboard\n   - Upload example_isa.csv\n   - Wait for processing\n   - Verify: Results table shows 17 rows\n   - Verify: Signal colors (red/green/yellow)\n   - Verify: Sort by compression works\n   - Test: Invalid CSV shows error\n\n3. email-capture.spec.ts:\n   - Navigate to homepage\n   - Click \"Upload Portfolio\" (triggers modal)\n   - Enter email in form\n   - Submit\n   - Verify: Modal closes\n   - Verify: Success toast appears\n   - Test: Invalid email shows error\n\n4. rate-limiting.spec.ts:\n   - Make 3 ticker requests (anon limit)\n   - Verify: 4th request shows 429 error\n   - Verify: Rate limit message displayed\n   - Verify: \"Sign up\" CTA shown\n   - Test: Reset after 24 hours (mock time)\n\n5. social-sharing.spec.ts:\n   - Navigate to /report/HOOD\n   - Click Twitter share button\n   - Verify: New window opens (or intercept)\n   - Verify: URL contains headline\n   - Click Copy button\n   - Verify: Clipboard contains text\n   - Verify: Toast notification shown\n\n6. responsive.spec.ts:\n   - Test all pages on mobile (iPhone 13)\n   - Test all pages on tablet (iPad)\n   - Verify: Navigation menu works\n   - Verify: Forms are usable\n   - Verify: Share buttons accessible\n\nPlaywright Config (playwright.config.ts):\n- Base URL: http://localhost:3000 (dev) or staging URL\n- Timeout: 30 seconds\n- Retry: 2 times on failure\n- Workers: 3 parallel tests\n- Browsers: Chromium, Firefox, Webkit (Safari)\n\nCI Integration (GitHub Actions):\n- Run on every PR\n- Run on main branch push\n- Generate HTML report\n- Upload artifacts (screenshots, videos)\n\nTest Data:\n- Use real tickers: HOOD, AAPL, BATS.L\n- Use example_isa.csv\n- Mock rate limit Redis (or use test instance)\n\nTesting Strategy:\n- Happy path first\n- Edge cases (errors, timeouts)\n- Accessibility (keyboard navigation)\n- Performance (page load <3 seconds)\n\nRun Commands:\n- npm run test:e2e (all tests)\n- npm run test:e2e:headed (with browser UI)\n- npm run test:e2e:debug (step through)",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "30",
+          "36",
+          "38"
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": "59",
+        "title": "Implement Intelligent Ticker Mapping System",
+        "description": "Create ticker mapping service to automatically handle regional stock suffixes (UK .L, etc.) so users can enter 'BAT' instead of 'BAT.L'",
+        "details": "Build a ticker mapping system that:\n\n1. **UK Stock Database (JSON file)**:\n   - Create `web/lib/ticker-mapping.json` with common UK tickers\n   - Format: { \"BAT\": \"BAT.L\", \"BP\": \"BP.L\", \"BATS\": \"BATS.L\", \"VOD\": \"VOD.L\", ... }\n   - Include FTSE 100 companies initially (~100 tickers)\n   - Add FTSE 250 popular names (~50 more)\n   - Source: Can scrape from Yahoo Finance or use static list\n\n2. **Ticker Mapping Service**:\n   - Create `web/lib/ticker-mapper.ts`\n   - Function: `mapTickerToYahooFormat(userInput: string): string`\n   - Logic:\n     * Check if input already has suffix (.L, .LN, .PA, etc.) → return as-is\n     * Check UK database for match → return with .L suffix\n     * Otherwise → return as-is (assume US ticker)\n   - Case-insensitive matching (BAT = bat = Bat)\n   - Export both mapper and database for use\n\n3. **Update TickerSearchForm Component**:\n   - Import ticker mapper\n   - Apply mapping before validation\n   - Apply mapping before API call\n   - Show visual indicator when UK ticker detected:\n     * Input: \"BAT\" → Badge shows \"🇬🇧 UK (BAT.L)\"\n     * Makes it clear what will be searched\n   - Update popular ticker buttons to show user-friendly names:\n     * Display: \"BAT\" (not \"BATS.L\")\n     * Display: \"BP\" (not \"BP.L\")\n     * Clicking populates with short form\n\n4. **Update Validation Logic**:\n   - Validator should accept tickers WITHOUT suffix\n   - Regex: `^[A-Z0-9]{1,10}$` (no dot required)\n   - Mapping happens AFTER validation but BEFORE API call\n\n5. **Backend Compatibility Check**:\n   - Verify Flask API accepts mapped tickers (BAT.L format)\n   - Ensure data/corrector.py handles .L suffix properly\n   - Test UK stock data corrections still work\n\n6. **User Feedback**:\n   - When UK ticker detected, show badge: \"🇬🇧 UK Stock\"\n   - Tooltip or helper text: \"Searching LSE for BAT (British American Tobacco)\"\n   - Makes mapping transparent to user\n\n7. **Fallback Strategy**:\n   - If API returns 404 for mapped ticker (e.g., BAT.L):\n     * Retry with original input (BAT) in case it's actually US ticker\n     * Show clear error if both fail: \"BAT not found on LSE or NYSE\"\n   - Prevents false negatives from mapping\n\n8. **Extended Support (Future)**:\n   - EU tickers: .PA (Paris), .DE (Frankfurt), .AS (Amsterdam)\n   - Canadian: .TO (Toronto)\n   - Australian: .AX (Sydney)\n   - For MVP: Focus on UK (.L) only\n\n9. **Testing**:\n   - Test BAT → BAT.L mapping\n   - Test BP → BP.L mapping\n   - Test AAPL → AAPL (no mapping)\n   - Test BAT.L → BAT.L (already has suffix)\n   - Test case insensitivity (bat → BAT.L)\n   - Test unknown UK ticker → treated as US\n\n**Example Flow**:\n```\nUser types: \"BAT\"\n↓\nMapper checks UK database → Found: \"BAT.L\"\n↓\nBadge shows: \"🇬🇧 UK (BAT.L)\"\n↓\nUser submits\n↓\nAPI called: GET /api/analyze/BAT.L\n↓\nResults display: \"BAT (British American Tobacco)\"\n```\n\n**Files to Create**:\n- `web/lib/ticker-mapping.json` (UK ticker database)\n- `web/lib/ticker-mapper.ts` (mapping service)\n\n**Files to Modify**:\n- `web/components/TickerSearchForm.tsx` (apply mapping, update badges)\n\n**Dependencies**:\n- Task 29 (TickerSearchForm) ✅ Complete\n- Flask API with UK stock support ✅ Already handles .L suffix\n\n**Benefits**:\n- Simpler user input (just \"BAT\" not \"BAT.L\")\n- Better UX for UK investors (primary target market)\n- Reduces confusion about Yahoo Finance suffixes\n- Transparent mapping (user sees what's being searched)\n- Extensible to other markets later",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [
+          "29"
+        ],
+        "priority": "high",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T10:55:13.634Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-02T08:32:13.752Z",
-      "taskCount": 25,
-      "completedCount": 23,
+      "lastModified": "2025-12-02T13:48:23.953Z",
+      "taskCount": 59,
+      "completedCount": 38,
       "tags": [
         "master"
       ]

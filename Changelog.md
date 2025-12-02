@@ -8,6 +8,487 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Rate Limiting System with Redis** (`src/pe_scanner/api/rate_limit.py` - 498 lines) - Task 34
+  - 3-tier rate limiting: Anonymous (3/day), Free (10/day), Pro/Premium (unlimited)
+  - Redis-based distributed rate limiting (multi-instance safe for Railway)
+  - Graceful degradation when Redis unavailable (fail-open safety)
+  - Token bucket algorithm with 24-hour rolling windows
+  - Friendly, conversion-focused error messages with market urgency psychology
+  - Response headers: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`, `Retry-After`
+  - Anonymous users: "Markets are moving—don't miss signal shifts!" CTA
+  - Free users: "Stock prices change by the minute—upgrade for unlimited!"
+  - Admin functions: `get_usage_stats()`, `reset_user_limit()`
+  - Flask decorator: `@rate_limit_check` for easy endpoint protection
+  - Integrated into `/api/analyze/<ticker>` endpoint
+  - **Test coverage**: 29/29 tests passing (100%)
+
+- **Yahoo Finance API Throttling System** (`src/pe_scanner/data/api_throttle.py` - 277 lines) - Task 34
+  - Global request queue prevents Yahoo Finance IP bans (2 req/sec = 7200/hour safe limit)
+  - Token bucket algorithm: 5-token burst capacity with 0.5s refill rate
+  - Redis-based coordination across multiple Railway instances
+  - Graceful degradation to local throttling if Redis unavailable
+  - Hourly request tracking for monitoring and analytics
+  - Automatic throttle acquisition before every Yahoo Finance API call
+  - Integrated into `fetch_market_data()` and `_fetch_single_ticker()`
+  - **Protection**: Prevents 1-6 hour Yahoo Finance temporary bans from excessive requests
+  - **Test coverage**: 13/14 tests passing (93%), 87% code coverage
+
+- **Rate Limit Response Schema** (`src/pe_scanner/api/schema.py`) - Task 34
+  - `RateLimitErrorResponse` Pydantic model for 429 errors
+  - Fields: error, message, remaining, reset_at, limit, tier, upgrade_url, signup_url, hint
+  - Conversion-optimized hints emphasize market volatility and urgency
+
+- **Portfolio Rate Limiting Strategy** (`.taskmaster/docs/portfolio_rate_limiting_strategy.md`) - Task 34 Follow-up
+  - Comprehensive strategy for portfolio CSV uploads (Task 57)
+  - Two-tier system: Separate limits for single-ticker vs portfolio uploads
+  - Free tier: 5 uploads/day, 50 tickers max per upload (250 total/day)
+  - Pro tier: Unlimited uploads, 500 tickers max per upload
+  - Premium tier: Unlimited uploads, 1000 tickers max per upload
+  - Prevents abuse while allowing free users to analyze full portfolios
+  - Includes implementation plan, test requirements, UX flows, pricing messaging
+  - Status: Approved for implementation in Task 57
+
+- **Railway Deployment Configuration** (`Dockerfile`, `railway.json`, `.dockerignore`) - Task 39
+  - Production-ready Docker configuration for Flask API
+  - Base image: Python 3.11-slim for smaller footprint
+  - Gunicorn WSGI server: 2 workers, 60s timeout
+  - Health check endpoint with Redis status monitoring
+  - Automatic dependency installation from requirements.txt
+  - Environment variable support for Railway
+  - CORS configuration for production domains
+  - Comprehensive deployment guide (RAILWAY_DEPLOYMENT.md)
+  - Cost-effective: ~$5/month (or free with Railway credits)
+  - Status: Ready for deployment
+
+### Changed
+- **Redis dependency added** (`requirements.txt`) - Task 34
+  - Added `redis>=5.0.0` for rate limiting and API throttling
+  - Installed in PE_Scanner virtual environment
+
+- **Flask API CORS headers updated** (`src/pe_scanner/api/app.py`) - Task 34
+  - Added `X-RateLimit-Limit`, `X-RateLimit-Reset`, `Retry-After` to exposed headers
+  - Enabled proper rate limit header visibility to frontend
+  - Added Redis connection check on app startup with logging
+
+- **Yahoo Finance rate limiting made safer** (`config.yaml`) - Task 34
+  - Reduced `max_concurrent` from 5 to 3 (safer burst limit)
+  - Increased `rate_limit_delay` from 0.2s to 0.5s (more conservative)
+  - Added comments explaining global throttling via `api_throttle.py`
+
+- **Data fetcher protected with throttling** (`src/pe_scanner/data/fetcher.py`) - Task 34
+  - All Yahoo Finance API calls now acquire throttle token via `acquire_yahoo_api_token()`
+  - Prevents IP bans from excessive requests during high traffic
+  - Added import for `api_throttle` module
+  - Timeout set to 30 seconds for token acquisition
+
+- **Feature icons updated to SVG** (`web/app/page.tsx`) - Professional icon design
+  - Replaced emoji icons (📉📈🚀📰⚓💰✅) with proper SVG icons
+  - All icons use teal color scheme (`text-primary`)
+  - Icons wrapped in rounded background containers (`bg-primary/10`)
+  - Icon mapping:
+    * P/E Compression: Chart trending down (VALUE)
+    * Growth Stock: Chart trending up (GROWTH)
+    * Hyper-Growth: Sparkles/star burst (HYPER_GROWTH)
+    * Shareable Headlines: Newspaper layout
+    * Anchoring Context: Tag/label icon
+    * Fair Value: Currency/dollar circle
+    * Data Quality: Check circle
+  - Consistent 40×40px size, 2px stroke width
+  - **Rationale**: Professional appearance, brand consistency, no emoji rendering issues across platforms
+
+- **Color scheme rebrand from purple to teal** - Modern fintech positioning
+  - Primary brand colors updated from Indigo/Purple (#6366f1) to Teal/Blue (#0d9488, #0369a1)
+  - Gradient transitions: Navy → Sky changed to Teal → Deep Blue throughout application
+  - Hero headline gradient: "Before Your Portfolio Does" now uses teal→blue→emerald gradient for emphasis
+  - Pricing section updates:
+    * "Most Popular" badge: Changed from accent blue to emerald gradient (better visibility)
+    * Annual toggle switch: Updated from purple (#6366F1) to teal (#0d9488)
+    * Smooth toggle animation: Fixed layout shift by reserving space for "Save 20%" badge
+    * Badge now fades in/out with opacity and scale transitions (duration: 200ms)
+    * Prevents text jumping when switching between monthly/annual billing
+    * CTA buttons: Explicitly set teal colors to fix potential CSS variable resolution issues
+      - Featured (Pro) card: White button with explicit teal text (#0d9488)
+      - Non-featured cards: Explicit teal background (#0d9488) with white text
+- **Final CTA section button colors fixed** (`web/app/page.tsx`)
+  - "Scan My Portfolio Now": White button with explicit teal text (#0d9488)
+  - "View Pricing": Explicit teal background (#0f766e) with white text
+  - Both buttons now have proper hover states with color transitions
+  - Fixes white-on-white visibility issue
+  - Updated components: `TrackableButton`, `Navigation`, `PricingSection`, hero sections, report pages
+  - CSS variables updated in `web/app/globals.css`:
+    * `--color-primary`: #6366f1 → #0d9488 (teal-600)
+    * `--color-primary-dark`: #4f46e5 → #0f766e (teal-700)
+    * `--color-primary-light`: #818cf8 → #14b8a6 (teal-500)
+    * `--color-accent`: #14b8a6 → #0369a1 (sky-700)
+    * `--shadow-glow`: Updated to teal-based glow
+  - Signal colors unchanged (BUY/SELL/HOLD remain green/red/amber)
+  - **Rationale**: Modern fintech positioning (Trading212, Freetrade aesthetic), better differentiation from generic SaaS purple, stronger growth/analytics association with teal
+  - **Target audience**: 25-40 tech-savvy investors, modern portfolio managers
+  - Full analysis in `.taskmaster/docs/color_scheme_analysis.md` and `color_scheme_comparison.md`
+  - WCAG AA accessibility compliance maintained (4.9:1+ contrast ratios)
+- **Hero headline messaging** (`web/app/page.tsx`) - Lateral thinking copy optimization
+  - Changed headline from "Is Your Stock Overpriced?" to "Spot Earnings Collapses Before Your Portfolio Does"
+  - Updated subheading from "P/E compression analysis with shareable headlines..." to "Free analysis reveals which stocks are priced for disaster. Get clear BUY/SELL/HOLD signals in 30 seconds."
+  - **Rationale**: Universal appeal (no insider knowledge required), fear-based urgency (loss aversion), outcome-focused (clear benefit)
+  - Based on comprehensive lateral thinking analysis (35+ headline alternatives evaluated)
+  - See `.taskmaster/docs/messaging_analysis_lateral_thinking.md` and `hero_headline_alternatives.md` for full analysis
+
+- **Pricing section CTA optimization** (`web/components/PricingSection.tsx`)
+  - Pro tier: Changed "Start Pro Trial" → "Upgrade to Unlimited" (removes "trial" friction)
+  - Pro tagline: Changed "For serious portfolio managers" → "Analyze your entire portfolio in one click" (outcome-focused)
+  - Premium CTA: Changed "Contact Sales" → "Request API Access" (lowers barrier, self-service feel)
+  - Premium tagline: Changed "For professionals & teams" → "API access + white-label reports" (benefit-focused)
+  - Added value comparison: "£0.83/day • Less than your morning coffee" under Pro tier monthly pricing
+  - **Rationale**: Remove friction words ("trial", "sales"), focus on benefits vs. audience segments
+
+- **Final CTA section** (`web/app/page.tsx`)
+  - Changed headline from "Ready to Scan Your Portfolio?" to "Don't Let Your Portfolio Hold the Next Collapse"
+  - Changed CTA button from "Try Free Now" to "Scan My Portfolio Now" (more action-oriented)
+  - Updated copy to emphasize free tier value + Pro benefits
+  - **Rationale**: Fear-based urgency, direct action language
+
+### Added
+- **TrackableButton reusable component** (`web/components/TrackableButton.tsx` - 210 lines) - Task 46
+  - Unified CTA button component with automatic analytics tracking
+  - Three style variants:
+    * Primary: Gradient background (indigo → purple), white text, shadow on hover
+    * Secondary: White background, indigo border and text, subtle hover effect
+    * Outline: Transparent background, border only, fills on hover
+  - Supports both link buttons (Next.js Link) and action buttons (regular button)
+  - Integrated Plausible analytics tracking on every click:
+    * Event: `CTA_Clicked`
+    * Properties: `variant`, `label`, `location`
+  - Props interface:
+    * `variant`: Style variant (primary/secondary/outline)
+    * `label`: Analytics label (e.g., "Hero CTA - Get Started")
+    * `location`: Page context (e.g., "homepage", "pricing", "report")
+    * `href`: Optional Next.js Link destination
+    * `onClick`: Optional custom handler
+    * `isLoading`: Loading state with spinner
+    * `external`: Opens external links in new tab
+    * `disabled`: Disabled state (for action buttons)
+  - Loading state with animated spinner
+  - External link support with proper `target="_blank"` and `rel` attributes
+  - Full accessibility: ARIA labels, keyboard navigation, focus states
+  - TypeScript type safety with proper discriminated unions
+  - Usage examples:
+    ```tsx
+    <TrackableButton
+      variant="primary"
+      label="Hero - Get Started"
+      location="homepage"
+      href="/sign-up"
+    >
+      Get Started Free →
+    </TrackableButton>
+    ```
+- **Dynamic OG image generation** (`web/app/api/og-image/[ticker]/route.tsx` - 260 lines) - Task 48
+  - Edge runtime API route using `@vercel/og` for dynamic social cards
+  - Generates 1200x630px PNG images on-demand
+  - Signal-based gradient backgrounds:
+    * BUY: Emerald to Teal gradient
+    * SELL: Red to Rose gradient
+    * HOLD: Amber to Orange gradient
+  - Content layout: PE Scanner logo, ticker symbol (96px), signal badge with emoji, headline, key metric, URL
+  - Key metric display based on analysis mode:
+    * VALUE: P/E Compression percentage
+    * GROWTH: PEG Ratio
+    * HYPER_GROWTH: Price/Sales ratio
+  - Fetches live analysis data from backend API
+  - Caching: 1 hour at edge (Cache-Control: public, max-age=3600)
+  - Error handling: Falls back to generic branded card on API failure
+  - Typography: System fonts with proper sizing (96px ticker, 36px headline, 28px metrics)
+- **Landing page OG image** (`web/app/api/og-home/route.tsx` - 130 lines) - Task 48
+  - Static branded card for homepage social sharing
+  - Purple gradient background with radial pattern overlay
+  - Headline: "Spot Earnings Collapses Before Your Portfolio Does"
+  - Features checklist: 30 Second Analysis, No Credit Card, 10 Free Daily
+  - Cached for 1 week (immutable, static content)
+- **Metadata updates for dynamic images** (`web/lib/metadata.ts`) - Task 48
+  - Updated `generateReportMetadata()` to use `/api/og-image/{ticker}`
+  - Updated `generateLandingMetadata()` to use `/api/og-home`
+  - Fallback OG image uses home route for consistent branding
+- **Enhanced Plausible analytics** (`web/lib/analytics/plausible.ts`) - Task 46
+  - Added `CTA_Clicked` to PlausibleEvent type for tracking button interactions
+  - Extended PlausibleEventProps interface with CTA metadata:
+    * `variant`: Button style variant (primary/secondary/outline)
+    * `label`: Human-readable button identifier
+    * `location`: Page/section context where button was clicked
+  - Enables granular CTA performance tracking across the application
+
+- **Open Graph & Twitter Card meta tags** (`web/lib/metadata.ts` - 180 lines) - Task 47
+  - Comprehensive metadata generation helper for social sharing
+  - `generateReportMetadata()`: Dynamic OG tags for stock analysis pages
+  - `generateLandingMetadata()`: Landing page with keywords and rich previews
+  - `generateLegalMetadata()`: Privacy, Terms, Disclaimer pages
+  - Full Open Graph support: title, description, type, URL, images, site_name, locale (en_GB)
+  - Full Twitter Card support: summary_large_image, site (@PEScanner), title, description, images
+  - Dynamic OG images: `/api/og-image/{ticker}` (placeholder for Task 48)
+  - Fallback images: `/og-default.png`, `/og-home.png`
+  - Canonical URLs for SEO
+  - UK English locale (en_GB)
+- **Report page metadata enhancement** (`web/app/report/[ticker]/page.tsx`) - Task 47
+  - Replaced basic metadata with comprehensive OG/Twitter tags
+  - Uses headline as title when available
+  - Uses anchor statement as description (truncated to 150 chars)
+  - Dynamic OG image URL for each ticker
+  - Proper fallbacks when analysis unavailable
+- **Landing page metadata enhancement** (`web/app/layout.tsx`) - Task 47
+  - Updated with comprehensive OG/Twitter tags
+  - Keywords: P/E ratio analysis, stock valuation, portfolio analysis, ISA, SIPP, UK stocks
+  - Updated title: "Spot Earnings Collapses Before Your Portfolio Does"
+  - Updated description: Fear-based, outcome-focused copy
+  - OG image: `/og-home.png` (placeholder for Task 48)
+- **Legal pages metadata** - Task 47
+  - Privacy Policy: UK GDPR compliance emphasis
+  - Terms of Service: UK law jurisdiction
+  - Investment Disclaimer: Risk warnings highlight
+  - All with proper canonical URLs and robots tags
+
+- **FAQ Section** (`web/app/page.tsx`) - Objection handling & trust building
+  - 6 common questions addressing key objections (screener comparison, data trust, day trading use, cancellation policy, accuracy)
+  - Expandable accordion UI with smooth animations using HTML `<details>` element
+  - Direct, conversational answers that pre-empt user concerns
+  - Contact link for additional questions
+  - **Key change**: Replaced "Do you offer refunds?" with "Can I cancel anytime?" to avoid attracting refund exploiters while still building trust
+  - **Rationale**: Address objections before user churns, build trust through transparency, remove friction without financial risk exposure
+  - Recommended in lateral thinking analysis as high-impact conversion optimization
+
+- **Footer component** (`web/components/Footer.tsx` - 230 lines) - Task 43
+  - Four-column layout: Brand, Product, Resources, Legal
+  - Brand column: PE Scanner logo, tagline, description
+  - Product links: Features, Pricing, How It Works, Examples (coming soon), API Docs (coming soon)
+  - Resources: Blog (coming soon), Twitter, LinkedIn, GitHub with social icons
+  - Legal links: Privacy Policy, Terms of Service, Investment Disclaimer, Contact email
+  - Social media icons: Twitter/X, LinkedIn, GitHub (SVG icons inline)
+  - Dark slate background (bg-slate-900) with light gray text (text-slate-400)
+  - Hover effects: Links change to white on hover
+  - Bottom bar: Copyright, "Made in the UK 🇬🇧", trust indicators (Privacy-first, UK GDPR compliant)
+  - Responsive: 4 cols desktop → 2 cols tablet → 1 col mobile
+  - Mobile social links at bottom for accessibility
+  - Trust indicators with lock and shield icons
+- **Legal pages** - Task 43
+  - Privacy Policy page (`web/app/privacy/page.tsx` - 230 lines)
+    - UK GDPR compliant privacy policy
+    - Data collection explanation: emails, IPs, search history, analytics
+    - Data usage, retention, and security policies
+    - User rights: access, correction, deletion, export
+    - Third-party services: Resend, Plausible, Railway, Vercel
+    - No cookies policy (Plausible doesn't use cookies)
+    - Contact: privacy@pe-scanner.com
+  - Terms of Service page (`web/app/terms/page.tsx` - 300 lines)
+    - Comprehensive terms covering acceptable use, prohibited use
+    - Investment disclaimer prominently featured (amber warning box)
+    - Account tiers: Free, Pro (£25/mo), Premium (£49/mo)
+    - Payment, cancellation, and refund policies
+    - Data accuracy limitations and disclaimers
+    - Limitation of liability section
+    - UK law governing (England & Wales jurisdiction)
+    - Contact: legal@pe-scanner.com
+  - Investment Disclaimer page (`web/app/disclaimer/page.tsx` - 280 lines)
+    - Prominent "Not Financial Advice" warning
+    - Detailed investment risks explanation
+    - Data limitations from Yahoo Finance
+    - P/E methodology limitations
+    - No performance guarantees
+    - User responsibility section
+    - Jurisdiction-specific warnings (UK FCA, US SEC)
+    - Responsible usage guidelines
+- **Landing page footer integration** - Task 43
+  - Imported Footer component from `components/Footer.tsx`
+  - Removed old inline Footer function (60 lines removed)
+  - Footer now consistent across all pages via layout
+
+- **Navigation component** (`web/components/Navigation.tsx` - 270 lines) - Task 42
+  - Fixed header navigation with scroll detection
+  - Desktop navigation: Logo, Features/Pricing/How It Works links, Sign In + Get Started CTA
+  - Mobile navigation: Hamburger menu with slide-in panel from right
+  - Smooth scroll to anchor sections (#features, #pricing, #how-it-works)
+  - Responsive breakpoints (<768px mobile, 768-1024px tablet, >1024px desktop)
+  - Auth state support: Different UI for logged in/out users (ready for Clerk integration)
+  - User menu placeholder with plan badge (Free/Pro/Premium)
+  - Gradient CTA button for "Get Started Free"
+  - Mobile menu: Full-screen overlay with backdrop blur, stacked links, large touch targets
+  - Body scroll lock when mobile menu is open
+  - Accessibility: Skip to content link, ARIA labels, focus visible styles, keyboard navigation
+  - Transparent initially, white background + shadow after scroll >50px
+  - Analytics integration: trackEvent calls for pricing views and engagement
+  - Clean slide-in-right animation using Tailwind CSS
+- **Mobile menu animation** (`web/app/globals.css`) - Task 42
+  - slideInRight keyframe animation (0.3s ease-out)
+  - Added to CSS theme variables for reusability
+- **Navigation integration in layout** (`web/app/layout.tsx`) - Task 42
+  - Imported and rendered Navigation component globally
+  - Wrapped children in <main id="main-content"> for skip-to-content accessibility
+  - Navigation stays fixed across all pages
+- **Anchor IDs added to landing page sections** (`web/app/page.tsx`) - Task 42
+  - Removed old inline Navigation component (replaced by global Navigation)
+  - Changed container from <main> to <div> (main tag now in layout)
+  - Added id="how-it-works" to HowItWorksSection
+  - Maintained existing id="features" and id="pricing" (via PricingSection)
+  - All anchor links (#features, #pricing, #how-it-works) now work with smooth scrolling
+
+- **PricingSection component** (`web/components/PricingSection.tsx` - 330 lines) - Task 33
+  - Three-tier pricing display (Free, Pro £25/mo, Premium £49/mo)
+  - Monthly/Annual billing toggle with segmented control
+  - Dynamic price calculation and savings display (20% annual discount)
+  - Featured "Most Popular" badge on Pro tier
+  - Gradient background styling on featured tier with scale transform
+  - Responsive grid layout (stacks vertically on mobile)
+  - Feature lists with checkmark icons
+  - Trust indicators (cancel anytime, no credit card for free tier)
+  - Analytics integration (trackPricingViewed, trackUpgradeClicked)
+  - Accessible toggle switch with ARIA labels
+  - Links to /sign-up with plan parameters
+  - FAQ teaser with link
+- **Landing page pricing integration** - Task 33
+  - Replaced placeholder pricing section with PricingSection component
+  - Removed old inline pricing implementation
+  - Maintains proper section ID for anchor navigation
+
+- **Plausible Analytics integration** (`web/lib/analytics/plausible.ts` - 250 lines) - Task 44
+  - Privacy-friendly analytics (no cookies, GDPR compliant)
+  - Type-safe event tracking with custom properties
+  - 8 core event types: Ticker_Analyzed, Headline_Shared, Email_Captured, Portfolio_Uploaded, Upgrade_Clicked, Pricing_Viewed, Report_Viewed, Scroll_Depth
+  - Convenience functions for common tracking scenarios
+  - Development mode logging (console output instead of sending)
+  - Automatic detection of Plausible script availability
+  - Status checking utilities for debugging
+- **ScrollTracker component** (`web/components/ScrollTracker.tsx` - 110 lines) - Task 44
+  - Tracks scroll depth milestones (25%, 50%, 75%, 100%)
+  - Uses IntersectionObserver for performance
+  - Session-based deduplication (each milestone fires once per session)
+  - Stores fired milestones in sessionStorage
+  - Invisible markers with no visual impact
+  - Automatic cleanup on unmount
+- **ReportPageTracker component** (`web/components/ReportPageTracker.tsx` - 45 lines) - Task 44
+  - Client-side analytics for results pages
+  - Tracks full analysis details (ticker, signal, analysis_mode)
+  - Tracks report views for page view metrics
+  - Integrated into server component via client boundary
+- **Analytics integration in app layout** (`web/app/layout.tsx`) - Task 44
+  - Plausible script loaded conditionally (production only)
+  - data-domain from NEXT_PUBLIC_PLAUSIBLE_DOMAIN env var
+  - Deferred loading for performance
+  - ScrollTracker component added to body
+- **Analytics tracking in TickerSearchForm** - Task 44
+  - Tracks successful ticker analysis submissions
+  - Fires Ticker_Analyzed event with ticker prop
+  - Integrated into existing submit handler
+- **Analytics tracking in results page** - Task 44
+  - ReportPageTracker integrated into report page
+  - Tracks analysis with full context (signal, mode)
+  - Server component pattern with client tracker
+
+- **ShareButtons component** (`web/components/ShareButtons.tsx` - 380 lines) - Task 32
+  - Social sharing buttons for Twitter, LinkedIn, and copy-to-clipboard
+  - Pre-filled share text using API-provided URLs
+  - Toast notification on successful copy with auto-dismiss (2 seconds)
+  - Native share API support for mobile devices
+  - Clipboard fallback for older browsers
+  - Analytics tracking ready (Plausible event: `Headline_Shared`)
+  - ARIA labels and keyboard navigation for accessibility
+  - Responsive design with larger touch targets (44px min height)
+  - Smooth hover animations and scale transforms
+  - Grid layout (stacks vertically on mobile, 3 columns on desktop)
+- **Results page integration** - ShareButtons component added to report page
+  - Replaced placeholder buttons with functional ShareButtons
+  - Passes ticker, headline, and share_urls from API response
+  - Positioned between data quality flags and portfolio CTA
+
+### Documentation
+- **Agent handover document** (`.taskmaster/docs/agent_handover_2024_12_02.md`)
+  - Comprehensive session summary (Tasks 26-31 + Task 59)
+  - File structure overview with all new components
+  - Environment setup and local testing instructions
+  - Design patterns and common pitfalls
+  - Clear next steps for Task 32 (Share Buttons)
+  - Reference to Pirouette patterns
+  - Success criteria and useful commands
+- **API Integration** - Connected Next.js frontend to Flask backend
+  - Created API client (`web/lib/api/client.ts` - 360 lines) with type-safe methods
+  - Full TypeScript interfaces matching Flask API v2.0 schema
+  - Comprehensive error handling (429 rate limit, 404 not found, 422 data quality, 500 server errors, network errors)
+  - Rate limit info extraction from response headers (X-RateLimit-Remaining, X-RateLimit-Reset)
+  - Next.js ISR caching (1-hour revalidation for popular tickers)
+  - Helper functions: `formatRateLimitReset`, `isRateLimitError`, `isNotFoundError`, `getErrorMessage`
+  - Health check and API info methods
+- **ErrorDisplay component** (`web/components/ErrorDisplay.tsx` - 220 lines)
+  - User-friendly error messages for all error types
+  - Context-specific suggested actions (rate limit → upgrade, not found → check ticker, etc.)
+  - Rate limit info display with countdown
+  - Upgrade CTA for rate-limited users
+  - Support email link
+  - Responsive design with smooth animations
+- **Flask API CORS Configuration** - Updated for production security
+  - Whitelist: `https://pe-scanner.com`, `https://www.pe-scanner.com`, `http://localhost:3000`
+  - Exposed headers: `X-RateLimit-Remaining`, `X-RateLimit-Reset`
+  - Disabled credentials (no cookies needed for free tier)
+- **Results display page** (`web/app/report/[ticker]/page.tsx` - 420 lines)
+  - Dynamic Next.js route for stock analysis results
+  - Server-side data fetching with 1-hour cache revalidation
+  - Signal badge display (BUY/SELL/HOLD) with color coding and emojis
+  - Headline and anchoring statement display
+  - Comprehensive metrics grid (P/E, compression, PEG, Price/Sales, Rule of 40)
+  - Fair value scenarios (bear/bull cases) with upside/downside calculations
+  - Data quality indicators (UK corrections, warning flags)
+  - Analysis mode indicator (VALUE/GROWTH/HYPER_GROWTH)
+  - Share buttons placeholder (Task 32)
+  - Portfolio upload CTA
+  - Responsive design (mobile-first)
+  - Dynamic SEO metadata with Open Graph and Twitter cards
+  - Error handling with 404 fallback
+- **Intelligent ticker mapping system** for user-friendly stock search
+  - UK ticker database (`web/lib/ticker-mapping.json`) with 100+ FTSE companies
+  - Ticker mapper service (`web/lib/ticker-mapper.ts` - 230 lines)
+  - Auto-maps user input: "BAT" → "BATS.L", "BP" → "BP.L" (Yahoo Finance format)
+  - Case-insensitive matching
+  - Company name aliases (e.g., "BRITISHAMERICANTOBACCO" → "BATS.L")
+  - Visual indicators show mapped ticker (e.g., "BAT" displays "🇬🇧 BATS.L" badge)
+  - Updated popular ticker buttons to show user-friendly names (BAT, BP instead of BATS.L, BP.L)
+  - Simplified validation regex (no dots required, mapping handles suffixes)
+  - Benefits: UK investors don't need to know Yahoo Finance conventions
+- **TickerSearchForm component** (`web/components/TickerSearchForm.tsx` - 280 lines)
+  - Client-side React component with full form handling
+  - Auto-uppercase ticker input as user types
+  - Ticker format validation (supports US and UK tickers like BATS.L)
+  - Visual indicators (US/🇬🇧 UK badges)
+  - Loading states with animated spinner
+  - Error handling (validation, 404 not found, 422 data quality, 429 rate limit)
+  - Rate limit messaging with upgrade CTAs
+  - Popular ticker quick-select buttons (AAPL, MSFT, GOOGL, TSLA, META, NVDA, BATS.L, BP.L)
+  - Trust indicators (30 sec results, no signup, 3/day free)
+  - Integrated with Flask API (`GET /api/analyze/<ticker>`)
+  - Redirects to `/report/<ticker>` on success
+- **Landing page with hero section** (`web/app/page.tsx` - 600 lines)
+  - Hero section with gradient mesh background
+  - Ticker search placeholder (ready for Task 29)
+  - Social proof bar (10,000+ stocks analyzed, HOOD/BATS examples)
+  - "How It Works" section (3 steps)
+  - Features section (7 analysis features with VALUE/GROWTH/HYPER_GROWTH tiers)
+  - Pricing section (Free, Pro £25/mo, Premium £49/mo)
+  - Example results section (HOOD, META, BATS.L case studies)
+  - Final CTA section with gradient background
+  - Complete footer with product/company/legal links
+  - Fixed navigation bar with logo
+- **Next.js 15 frontend project** in `web/` directory with TypeScript and Tailwind CSS v4
+  - App Router structure for modern React development
+  - Design tokens ported from Pirouette (colors, typography, animations)
+  - Fluid typography for responsive sizing
+  - Environment variable configuration (env.example)
+  - Component and lib directory structure
+  - Comprehensive frontend README
+- Cursor skills directory with 5 AI-assisted development skills ported from Pirouette
+- AGENTS.md file following agents.md standard for AI coding assistant guidance
+- Updated pricing strategy: Pro £25/mo (was £20), Premium £49/mo, annual options with 20% discount
+- Rate limiting strategy documentation: 3/day anonymous, 10/day free, unlimited Pro/Premium
+- Web launch strategy documentation in `.taskmaster/docs/`
+
+### Changed
+- Updated `app/layout.tsx` with PE Scanner metadata (title, description, SEO keywords)
+- Simplified font loading to use system fonts instead of Google Fonts
+- Updated main README with frontend installation instructions
+- Project structure now includes both Python backend and Next.js frontend
 - **Comprehensive API Integration Tests** (`tests/integration/test_api.py`): 30 tests for v2.0 API
   - Tests for all endpoints (/, /health, /api/analyze, /api/compression)
   - Query parameter validation (include_anchor, include_headline, include_share_urls)

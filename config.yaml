@@ -9,8 +9,10 @@ data:
   timeout: 30  # Request timeout in seconds
   
   # Rate limiting for Yahoo Finance API
-  rate_limit_delay: 0.2    # Delay between API calls in seconds (default: 200ms)
-  max_concurrent: 5        # Maximum concurrent requests (for future async support)
+  # NOTE: Global throttling now handled by api_throttle.py (2 req/sec max)
+  # These settings are for local batching behavior only
+  rate_limit_delay: 0.5    # Delay between batch processing (500ms - CONSERVATIVE)
+  max_concurrent: 3        # Maximum concurrent requests (reduced from 5 for safety)
   
 validation:
   # Data quality validation settings

@@ -16,9 +16,11 @@ from pe_scanner.api.schema import (
     AnalysisResponse,
     ErrorResponse,
     DeprecatedEndpointResponse,
+    RateLimitErrorResponse,
     ShareURLs,
 )
 from pe_scanner.api.service import AnalysisService
+from pe_scanner.api.rate_limit import rate_limit_check, RedisClient
 from pe_scanner.data.fetcher import fetch_market_data
 
 logger = logging.getLogger(__name__)
@@ -52,8 +54,32 @@ def create_app(config: Optional[dict] = None) -> Flask:
     if config:
         app.config.update(config)
     
-    # Enable CORS for all routes
-    CORS(app)
+    # Enable CORS with specific configuration
+    # Allow Vercel domains in production, localhost in development
+    cors_origins = [
+        "https://pe-scanner.com",
+        "https://www.pe-scanner.com",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
+    
+    CORS(
+        app,
+        origins=cors_origins,
+        expose_headers=[
+            "X-RateLimit-Limit",
+            "X-RateLimit-Remaining", 
+            "X-RateLimit-Reset",
+            "Retry-After"
+        ],
+        supports_credentials=False,
+    )
+    
+    # Initialize Redis connection on startup
+    if RedisClient.is_available():
+        logger.info("Redis connection available for rate limiting")
+    else:
+        logger.warning("Redis unavailable - rate limiting will be disabled")
     
     # Initialize service
     analysis_service = AnalysisService()
@@ -90,13 +116,37 @@ def register_routes(app: Flask, service: AnalysisService) -> None:
     
     @app.route("/health")
     def health_check():
-        """Health check endpoint."""
-        return jsonify({
+        """
+        Health check endpoint for Railway monitoring.
+        
+        Returns service status, Redis connectivity, and basic stats.
+        """
+        health_data = {
             "status": "healthy",
-            "timestamp": datetime.utcnow().isoformat() + "Z"
-        })
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "version": "2.0",
+            "services": {
+                "api": "operational",
+                "redis": "unavailable",
+            }
+        }
+        
+        # Check Redis connectivity
+        try:
+            if RedisClient.is_available():
+                health_data["services"]["redis"] = "operational"
+        except Exception as e:
+            logger.warning(f"Redis health check failed: {e}")
+            health_data["services"]["redis"] = "error"
+        
+        # Overall status based on critical services
+        # API can run without Redis (graceful degradation)
+        # So we keep status "healthy" even if Redis is down
+        
+        return jsonify(health_data)
     
     @app.route("/api/analyze/<ticker>", methods=["GET"])
+    @rate_limit_check
     def analyze_stock(ticker: str):
         """
         Analyze a stock with v2.0 tiered analysis.
@@ -242,11 +292,24 @@ def register_error_handlers(app: Flask) -> None:
             "message": "The HTTP method is not allowed for this endpoint",
             "timestamp": datetime.utcnow().isoformat() + "Z"
         }), 405
+    
+    @app.errorhandler(429)
+    def rate_limit_exceeded(error):
+        """Handle 429 Too Many Requests errors."""
+        return jsonify({
+            "error": "RateLimitExceeded",
+            "message": "Rate limit exceeded. Please try again later.",
+            "timestamp": datetime.utcnow().isoformat() + "Z"
+        }), 429
 
 
 # =============================================================================
 # CLI Entry Point
 # =============================================================================
+
+
+# Create default app instance for gunicorn
+app = create_app()
 
 
 def main():

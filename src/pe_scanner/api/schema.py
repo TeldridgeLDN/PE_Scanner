@@ -164,6 +164,46 @@ class ErrorResponse(BaseModel):
 
 
 # =============================================================================
+# Rate Limit Error Response
+# =============================================================================
+
+
+class RateLimitErrorResponse(BaseModel):
+    """Response when rate limit is exceeded."""
+
+    error: str = Field(default="RateLimitExceeded", description="Error type")
+    message: str = Field(..., description="Human-readable rate limit message with urgency")
+    remaining: int = Field(..., description="Requests remaining (0 when exceeded)")
+    reset_at: str = Field(..., description="ISO 8601 timestamp when limit resets")
+    limit: int = Field(..., description="Total requests allowed per window")
+    tier: str = Field(..., description="User tier (anonymous, free, pro, premium)")
+    upgrade_url: Optional[str] = Field(None, description="URL to upgrade page")
+    signup_url: Optional[str] = Field(None, description="URL to signup page (for anonymous users)")
+    hint: str = Field(..., description="Conversion-optimized hint about market volatility")
+    timestamp: datetime = Field(
+        default_factory=datetime.utcnow,
+        description="Error timestamp (UTC)"
+    )
+    
+    class Config:
+        """Pydantic model configuration."""
+        json_schema_extra = {
+            "example": {
+                "error": "RateLimitExceeded",
+                "message": "You've hit your daily limit of 3 free analyses. Markets are moving—prices and signals update throughout the day. Sign up free for 10 daily analyses and never miss a signal shift!",
+                "remaining": 0,
+                "reset_at": "2025-12-03T00:00:00Z",
+                "limit": 3,
+                "tier": "anonymous",
+                "upgrade_url": "https://pe-scanner.com/pricing",
+                "signup_url": "https://pe-scanner.com/sign-up",
+                "hint": "Stock signals update throughout the day as prices move. Don't miss the next shift!",
+                "timestamp": "2025-12-02T14:30:00Z"
+            }
+        }
+
+
+# =============================================================================
 # Deprecation Warning Response
 # =============================================================================
 
