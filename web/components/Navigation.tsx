@@ -21,8 +21,8 @@ interface NavigationProps {
 
 const NAV_LINKS = [
   { label: 'Features', href: '#features' },
-  { label: 'Pricing', href: '#pricing' },
   { label: 'How It Works', href: '#how-it-works' },
+  { label: 'Pricing', href: '#pricing' },
 ] as const;
 
 // ============================================================================
