@@ -66,9 +66,9 @@ function HeroSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-4xl mx-auto">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border-2 border-primary/30 mb-8 animate-fade-in shadow-sm">
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-            <span className="text-sm font-medium text-primary-dark">Free analysis • No signup required</span>
+            <span className="text-sm font-semibold text-slate-900">Free analysis • No signup required</span>
           </div>
           
           {/* Headline */}
@@ -135,12 +135,12 @@ function SocialProofBar() {
           </div>
           <div className="hidden md:block w-px h-12 bg-slate-300"></div>
           <div className="flex items-center gap-3">
-            <div className="px-3 py-1 rounded-lg bg-sell/10 text-sell font-semibold">-113% SELL</div>
+            <div className="px-3 py-1 rounded-lg bg-sell text-white font-bold">-113% SELL</div>
             <div className="text-sm text-slate-600">HOOD predicted<br />(53% drop confirmed)</div>
           </div>
           <div className="hidden md:block w-px h-12 bg-slate-300"></div>
           <div className="flex items-center gap-3">
-            <div className="px-3 py-1 rounded-lg bg-buy/10 text-buy font-semibold">+62% BUY</div>
+            <div className="px-3 py-1 rounded-lg bg-buy text-white font-bold">+62% BUY</div>
             <div className="text-sm text-slate-600">BATS.L identified<br />(undervalued gem)</div>
           </div>
         </div>
@@ -159,19 +159,40 @@ function HowItWorksSection() {
       number: "1",
       title: "Enter Ticker Symbol",
       description: "Type any stock ticker (AAPL, HOOD, BATS.L). We support US and UK markets with automatic data corrections.",
-      icon: "🔍"
+      icon: (
+        <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="8" stroke="#0d9488" strokeWidth="2"/>
+          <path d="M21 21l-4.35-4.35" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
+        </svg>
+      )
     },
     {
       number: "2",
       title: "AI Analyzes in 30 Seconds",
       description: "Our engine classifies your stock into VALUE, GROWTH, or HYPER_GROWTH tiers and runs the appropriate analysis (P/E compression, PEG ratio, or Rule of 40).",
-      icon: "🤖"
+      icon: (
+        <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none">
+          <rect x="4" y="4" width="6" height="6" fill="#0369a1" rx="1"/>
+          <rect x="14" y="4" width="6" height="6" fill="#0d9488" rx="1"/>
+          <rect x="4" y="14" width="6" height="6" fill="#059669" rx="1"/>
+          <rect x="14" y="14" width="6" height="6" fill="#10b981" rx="1"/>
+        </svg>
+      )
     },
     {
       number: "3",
       title: "Get Shareable Results",
       description: "Receive a clear BUY/SELL/HOLD signal with a viral-optimised headline and 'What Would Have To Be True' anchoring statement. Share on Twitter or LinkedIn instantly.",
-      icon: "📊"
+      icon: (
+        <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none">
+          <path d="M3 3v18h18" stroke="#0d9488" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M7 16l4-4 3 3 7-7" stroke="#059669" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <circle cx="7" cy="16" r="2" fill="#10b981"/>
+          <circle cx="11" cy="12" r="2" fill="#0369a1"/>
+          <circle cx="14" cy="15" r="2" fill="#0d9488"/>
+          <circle cx="21" cy="8" r="2" fill="#059669"/>
+        </svg>
+      )
     }
   ];
 
@@ -199,7 +220,7 @@ function HowItWorksSection() {
               </div>
               
               {/* Icon */}
-              <div className="text-5xl mb-4">{step.icon}</div>
+              <div className="mb-4">{step.icon}</div>
               
               {/* Content */}
               <h3 className="font-heading text-xl font-bold text-slate-900 mb-3">
@@ -226,8 +247,8 @@ function FeaturesSection() {
       title: "P/E Compression Analysis",
       description: "Detect market expectations by comparing Trailing P/E vs Forward P/E. Negative compression = earnings collapse expected.",
       icon: (
-        <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+        <svg className="w-10 h-10" fill="none" stroke="#ef4444" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
         </svg>
       ),
       tier: "VALUE"
@@ -236,8 +257,8 @@ function FeaturesSection() {
       title: "Growth Stock (PEG) Support",
       description: "For stocks with P/E 25-50, we calculate PEG ratio to find undervalued growth opportunities. PEG < 1.0 = BUY signal.",
       icon: (
-        <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+        <svg className="w-10 h-10" fill="none" stroke="#10b981" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
         </svg>
       ),
       tier: "GROWTH"
@@ -246,8 +267,8 @@ function FeaturesSection() {
       title: "Hyper-Growth Analysis",
       description: "For unprofitable or P/E > 50 stocks, we use Price/Sales + Rule of 40 (Revenue Growth % + Profit Margin %).",
       icon: (
-        <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+        <svg className="w-10 h-10" fill="none" stroke="#f59e0b" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
         </svg>
       ),
       tier: "HYPER_GROWTH"
@@ -256,8 +277,8 @@ function FeaturesSection() {
       title: "Shareable Headlines",
       description: "Get viral-optimised headlines like '🚨 HOOD is priced like it's going bankrupt' that capture attention on social media.",
       icon: (
-        <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+        <svg className="w-10 h-10" fill="none" stroke="#0369a1" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
         </svg>
       ),
       tier: "ALL"
@@ -266,8 +287,8 @@ function FeaturesSection() {
       title: "Anchoring Context",
       description: "'What Would Have To Be True' statements make analysis memorable: 'HOOD would need to 2.5x profits to justify current price'.",
       icon: (
-        <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+        <svg className="w-10 h-10" fill="none" stroke="#8b5cf6" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
         </svg>
       ),
       tier: "ALL"
@@ -276,8 +297,8 @@ function FeaturesSection() {
       title: "Fair Value Scenarios",
       description: "Bear case (17.5x P/E) and Bull case (37.5x P/E) valuations show upside/downside potential from current price.",
       icon: (
-        <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <svg className="w-10 h-10" fill="none" stroke="#0d9488" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       ),
       tier: "VALUE"
@@ -286,8 +307,8 @@ function FeaturesSection() {
       title: "Data Quality Validation",
       description: "Auto-corrects UK stock data (pence→pounds), detects stock splits, flags suspicious analyst estimates.",
       icon: (
-        <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <svg className="w-10 h-10" fill="none" stroke="#059669" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       ),
       tier: "ALL"
@@ -552,7 +573,7 @@ function FAQSection() {
           </p>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 text-primary hover:text-primary-dark font-medium"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg transition-colors shadow-sm"
           >
             Contact us
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
