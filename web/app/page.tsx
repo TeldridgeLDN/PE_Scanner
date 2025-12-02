@@ -613,7 +613,7 @@ function FAQSection() {
           </p>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-accent hover:from-primary-dark hover:to-accent-dark text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105 text-lg"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#0f766e] via-[#075985] to-[#065f46] hover:from-[#134e4a] hover:via-[#0c4a6e] hover:to-[#064e3b] text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105 text-lg"
           >
             Contact us
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { trackPricingViewed, trackUpgradeClicked } from '@/lib/analytics/plausible';
+import UpgradeButton from '@/components/UpgradeButton';
 
 // ============================================================================
 // Types
@@ -15,12 +16,15 @@ interface PricingTier {
   tagline: string;
   monthlyPrice: number;
   annualPrice: number;
+  monthlyPriceId?: string;
+  annualPriceId?: string;
   badge?: string;
   features: string[];
   cta: string;
-  ctaHref: string;
+  ctaHref?: string;
   featured?: boolean;
   popular?: boolean;
+  plan?: 'pro' | 'premium';
 }
 
 // ============================================================================
@@ -49,6 +53,8 @@ const PRICING_TIERS: PricingTier[] = [
     tagline: 'Analyze your entire portfolio in one click',
     monthlyPrice: 25,
     annualPrice: 240, // Save £60/year (20% discount)
+    monthlyPriceId: process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID || 'price_pro_monthly',
+    annualPriceId: process.env.NEXT_PUBLIC_STRIPE_PRO_ANNUAL_PRICE_ID || 'price_pro_annual',
     badge: 'Most Popular',
     features: [
       'Unlimited ticker searches',
@@ -61,7 +67,7 @@ const PRICING_TIERS: PricingTier[] = [
       'Email support',
     ],
     cta: 'Upgrade to Unlimited',
-    ctaHref: '/sign-up?plan=pro',
+    plan: 'pro',
     featured: true,
     popular: true,
   },
@@ -70,6 +76,8 @@ const PRICING_TIERS: PricingTier[] = [
     tagline: 'API access + white-label reports',
     monthlyPrice: 49,
     annualPrice: 470, // Save £118/year (20% discount)
+    monthlyPriceId: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_MONTHLY_PRICE_ID || 'price_premium_monthly',
+    annualPriceId: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_ANNUAL_PRICE_ID || 'price_premium_annual',
     features: [
       'Everything in Pro',
       'Weekly opportunity digest',
@@ -81,7 +89,7 @@ const PRICING_TIERS: PricingTier[] = [
       'Priority support (24h response)',
     ],
     cta: 'Request API Access',
-    ctaHref: '/contact?plan=premium',
+    plan: 'premium',
   },
 ];
 
@@ -271,17 +279,31 @@ export default function PricingSection() {
                   </div>
 
                   {/* CTA Button */}
-                  <Link
-                    href={tier.ctaHref}
-                    onClick={() => handleUpgradeClick(tier.name)}
-                    className={`block w-full py-3 px-6 rounded-lg font-semibold text-center transition-all mb-8 ${
-                      tier.featured
-                        ? 'bg-white text-[#0d9488] hover:bg-slate-50 hover:text-[#0f766e]'
-                        : 'bg-[#0d9488] text-white hover:bg-[#0f766e]'
-                    }`}
-                  >
-                    {tier.cta}
-                  </Link>
+                  {tier.plan ? (
+                    <UpgradeButton
+                      plan={tier.plan}
+                      priceId={billingPeriod === 'monthly' ? tier.monthlyPriceId! : tier.annualPriceId!}
+                      className={`block w-full py-3 px-6 rounded-lg font-semibold text-center transition-all mb-8 ${
+                        tier.featured
+                          ? 'bg-white text-[#0d9488] hover:bg-slate-50 hover:text-[#0f766e]'
+                          : 'bg-[#0d9488] text-white hover:bg-[#0f766e]'
+                      }`}
+                    >
+                      {tier.cta}
+                    </UpgradeButton>
+                  ) : (
+                    <Link
+                      href={tier.ctaHref || '#'}
+                      onClick={() => handleUpgradeClick(tier.name)}
+                      className={`block w-full py-3 px-6 rounded-lg font-semibold text-center transition-all mb-8 ${
+                        tier.featured
+                          ? 'bg-white text-[#0d9488] hover:bg-slate-50 hover:text-[#0f766e]'
+                          : 'bg-[#0d9488] text-white hover:bg-[#0f766e]'
+                      }`}
+                    >
+                      {tier.cta}
+                    </Link>
+                  )}
 
                   {/* Features List */}
                   <ul className="space-y-3">
@@ -335,7 +357,7 @@ export default function PricingSection() {
           </p>
           <Link
             href="/faq"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-accent hover:from-primary-dark hover:to-accent-dark text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105 text-lg"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#0f766e] via-[#075985] to-[#065f46] hover:from-[#134e4a] hover:via-[#0c4a6e] hover:to-[#064e3b] text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105 text-lg"
           >
             View FAQ
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

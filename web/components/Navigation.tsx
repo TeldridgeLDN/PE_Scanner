@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { trackEvent } from '@/lib/analytics/plausible';
+import { useUser, useClerk } from '@clerk/nextjs';
 
 // ============================================================================
 // Types
@@ -29,9 +30,18 @@ const NAV_LINKS = [
 // Navigation Component
 // ============================================================================
 
-export default function Navigation({ isAuthenticated = false, userPlan }: NavigationProps = {}) {
+export default function Navigation({ isAuthenticated: _isAuthenticated, userPlan: _userPlan }: NavigationProps = {}) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  // Get auth state from Clerk
+  const { isSignedIn, user } = useUser();
+  const { signOut } = useClerk();
+  
+  // Use Clerk state, fall back to props for testing
+  const isAuthenticated = isSignedIn ?? _isAuthenticated ?? false;
+  const userPlan = (user?.publicMetadata?.plan as 'free' | 'pro' | 'premium') ?? _userPlan ?? 'free';
+  const userInitial = user?.firstName?.charAt(0)?.toUpperCase() || user?.emailAddresses[0]?.emailAddress?.charAt(0)?.toUpperCase() || 'U';
 
   // ============================================================================
   // Scroll Detection
@@ -183,15 +193,16 @@ export default function Navigation({ isAuthenticated = false, userPlan }: Naviga
                     Dashboard
                   </Link>
 
-                  {/* User Menu (Future: Avatar + Dropdown) */}
-                  <div className="flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full text-sm font-medium text-slate-700">
-                    <span className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs">
-                      U
+                  {/* User Menu */}
+                  <button
+                    onClick={() => signOut()}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full text-sm font-medium text-white transition-colors"
+                  >
+                    <span className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center text-xs font-bold">
+                      {userInitial}
                     </span>
-                    {userPlan && (
-                      <span className="capitalize">{userPlan}</span>
-                    )}
-                  </div>
+                    <span className="capitalize">{userPlan}</span>
+                  </button>
                 </>
               ) : (
                 <>
@@ -324,21 +335,24 @@ export default function Navigation({ isAuthenticated = false, userPlan }: Naviga
                   <>
                     {/* User Info */}
                     <div className="flex items-center gap-3 px-4 py-3 bg-slate-100 rounded-lg">
-                      <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold">
-                        U
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-bold text-lg">
+                        {userInitial}
                       </div>
                       <div className="flex-1">
-                        <div className="font-medium text-slate-900">Your Account</div>
-                        {userPlan && (
-                          <div className="text-sm text-slate-600 capitalize">
-                            {userPlan} Plan
-                          </div>
-                        )}
+                        <div className="font-medium text-slate-900">
+                          {user?.firstName || 'Your Account'}
+                        </div>
+                        <div className="text-sm text-slate-600 capitalize">
+                          {userPlan} Plan
+                        </div>
                       </div>
                     </div>
 
-                    {/* Sign Out Button (Future) */}
-                    <button className="px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-lg font-medium transition-colors">
+                    {/* Sign Out Button */}
+                    <button 
+                      onClick={() => signOut()}
+                      className="px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-lg font-medium transition-colors"
+                    >
                       Sign Out
                     </button>
                   </>

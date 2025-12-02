@@ -8,6 +8,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Clerk Authentication Integration** - Complete user account system
+  - User signup and signin pages with Clerk pre-built components
+  - Protected routes middleware (dashboard, portfolio endpoints)
+  - Navigation component with auth state (user avatar, sign out)
+  - Dashboard page showing user plan and account info
+  - Free tier: 10 analyses/day with account
+  - User metadata for plan tracking (free/pro/premium)
+  - OAuth support ready (Google, GitHub via Clerk)
+- **Stripe Payment Processing** - Revenue-ready subscription system
+  - Stripe checkout session creation API endpoint
+  - Webhook handler for subscription events (activated, updated, canceled)
+  - Automatic plan upgrade/downgrade via webhooks
+  - UpgradeButton component for seamless checkout flow
+  - Integration with Clerk for plan sync in user metadata
+  - Support for monthly and annual billing periods
+  - Pro plan: £25/mo or £240/year (save £60)
+  - Premium plan: £49/mo or £470/year (save £118)
+  - Pricing section updated with Stripe checkout buttons
+- **User Dashboard** - Authenticated user experience
+  - Welcome message with user's first name
+  - Plan status card showing current tier (Free/Pro/Premium)
+  - Upgrade CTA for free users
+  - Quick action cards for analyze, portfolio, history
+  - Account information panel with email and join date
+  - Placeholder for upcoming features (portfolio upload, history)
+
+### Fixed
+- **Button Contrast Enhancement** - Fixed visibility issues with CTA buttons
+  - Enhanced "View FAQ" button gradient (darker teal/blue/emerald shades) for better contrast
+  - Enhanced "Contact us" button gradient with matching darker color scheme
+  - Changed from lighter `from-primary to-accent` to darker `from-[#0f766e] via-[#075985] to-[#065f46]`
+  - Improved hover states with even darker gradients for better visual feedback
+  - Ensures white text is clearly visible on all button backgrounds
+  - Matches the working "Free analysis • No signup required" badge contrast standards
+
+### Added
 - **Premium Dark Navigation Bar** - Complete redesign with professional fintech aesthetic
   - Dark slate gradient background (slate-900/800) with 95% opacity + backdrop blur
   - Vibrant gradient accent line (teal → blue → green) at bottom
