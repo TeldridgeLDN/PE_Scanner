@@ -1,4 +1,4 @@
-"""Analysis modules for P/E compression, fair value, stock classification, and growth analysis."""
+"""Analysis modules for P/E compression, fair value, stock classification, growth, and hyper-growth analysis."""
 
 from pe_scanner.analysis.classification import (
     StockType,
@@ -38,6 +38,17 @@ from pe_scanner.analysis.growth import (
     interpret_peg_signal,
     rank_by_peg,
 )
+from pe_scanner.analysis.hyper_growth import (
+    HyperGrowthAnalysisResult,
+    HyperGrowthSignal,
+    analyze_hyper_growth_batch,
+    analyze_hyper_growth_stock,
+    calculate_price_to_sales,
+    calculate_rule_of_40,
+    interpret_hyper_growth_signal,
+    rank_by_price_to_sales,
+    rank_by_rule_of_40,
+)
 
 __all__ = [
     # Classification
@@ -74,4 +85,14 @@ __all__ = [
     "calculate_peg_ratio",
     "interpret_peg_signal",
     "rank_by_peg",
+    # Hyper-Growth (P/S + Rule of 40)
+    "HyperGrowthAnalysisResult",
+    "HyperGrowthSignal",
+    "analyze_hyper_growth_batch",
+    "analyze_hyper_growth_stock",
+    "calculate_price_to_sales",
+    "calculate_rule_of_40",
+    "interpret_hyper_growth_signal",
+    "rank_by_price_to_sales",
+    "rank_by_rule_of_40",
 ]

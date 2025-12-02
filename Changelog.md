@@ -33,6 +33,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Warnings for extreme PEG ratios and unsustainable growth rates
   - Comprehensive unit tests (50 tests, 94% coverage)
   - Example: CRM with P/E 35 and 25% growth → PEG 1.4 → HOLD
+- **Hyper-Growth Mode Analysis Module** (`analysis/hyper_growth.py`): Price/Sales + Rule of 40 for hyper-growth stocks
+  - `HyperGrowthSignal` enum: BUY, SELL, HOLD, DATA_ERROR classifications
+  - `calculate_price_to_sales()`: P/S = Market Cap ÷ Revenue
+  - `calculate_rule_of_40()`: Rule of 40 = Revenue Growth (%) + Profit Margin (%)
+  - `interpret_hyper_growth_signal()`: Dual-metric signal logic
+    - BUY: P/S < 5 AND Rule of 40 >= 40 (attractive valuation + strong fundamentals)
+    - SELL: P/S > 15 OR Rule of 40 < 20 (expensive OR weak fundamentals)
+    - HOLD: Otherwise (fairly valued or mixed signals)
+  - `analyze_hyper_growth_stock()`: Complete hyper-growth analysis with context-aware explanations
+  - `analyze_hyper_growth_batch()`: Batch processing for multiple hyper-growth stocks
+  - `rank_by_rule_of_40()` and `rank_by_price_to_sales()`: Multiple ranking options
+  - `HyperGrowthAnalysisResult` dataclass: Structured result with properties
+  - Handles loss-making companies (negative margins) and declining revenue
+  - Warnings for extreme P/S (>30x), negative Rule of 40, severe losses (<-50%)
+  - Comprehensive unit tests (60 tests, 95% coverage)
+  - Examples: 
+    - RIVN with P/S 12, Rule of 40 -40 → SELL (weak fundamentals)
+    - Attractive stock with P/S 4, Rule of 40 50 → BUY (strong value)
 - **Yahoo Finance Data Fetcher** (`data/fetcher.py`): Complete implementation
   - `fetch_market_data()`: Fetches current price, trailing/forward P/E, trailing/forward EPS, market cap
   - `batch_fetch()`: Efficient multi-ticker fetching with rate limiting
