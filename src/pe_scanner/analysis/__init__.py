@@ -1,4 +1,4 @@
-"""Analysis modules for P/E compression, fair value, stock classification, growth, and hyper-growth analysis."""
+"""Analysis modules for P/E compression, fair value, stock classification, growth, hyper-growth, and tiered routing."""
 
 from pe_scanner.analysis.classification import (
     StockType,
@@ -49,6 +49,14 @@ from pe_scanner.analysis.hyper_growth import (
     rank_by_price_to_sales,
     rank_by_rule_of_40,
 )
+from pe_scanner.analysis.router import (
+    AnalysisResult,
+    StockData,
+    analyze_batch as analyze_stocks_batch,
+    analyze_stock,
+    get_mode_name,
+    get_stock_type,
+)
 
 __all__ = [
     # Classification
@@ -95,4 +103,11 @@ __all__ = [
     "interpret_hyper_growth_signal",
     "rank_by_price_to_sales",
     "rank_by_rule_of_40",
+    # Tiered Analysis Router
+    "AnalysisResult",
+    "StockData",
+    "analyze_stocks_batch",
+    "analyze_stock",
+    "get_mode_name",
+    "get_stock_type",
 ]

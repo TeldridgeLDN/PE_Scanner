@@ -51,6 +51,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Examples: 
     - RIVN with P/S 12, Rule of 40 -40 → SELL (weak fundamentals)
     - Attractive stock with P/S 4, Rule of 40 50 → BUY (strong value)
+- **Tiered Analysis Router** (`analysis/router.py`): Unified interface connecting all analysis modes
+  - `StockData` dataclass: Universal input format for all stock metrics
+  - `analyze_stock()`: Main entry point - auto-routes to appropriate mode
+    - Classifies stock by trailing P/E
+    - Routes to VALUE, GROWTH, or HYPER_GROWTH analysis
+    - Returns mode-specific result (CompressionResult, GrowthAnalysisResult, or HyperGrowthAnalysisResult)
+  - `analyze_stocks_batch()`: Batch processing with automatic mode routing per stock
+  - Helper functions: `get_stock_type()`, `get_mode_name()`
+  - Graceful error handling with mode-appropriate error results
+  - Comprehensive integration tests (28 tests, 82% coverage)
+  - Tests include real-world examples (HOOD, CRM, PLTR) and boundary cases
+  - Example: Single function now analyzes any stock type automatically
 - **Yahoo Finance Data Fetcher** (`data/fetcher.py`): Complete implementation
   - `fetch_market_data()`: Fetches current price, trailing/forward P/E, trailing/forward EPS, market cap
   - `batch_fetch()`: Efficient multi-ticker fetching with rate limiting
