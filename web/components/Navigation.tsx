@@ -120,10 +120,24 @@ export default function Navigation({ isAuthenticated = false, userPlan }: Naviga
             {/* Logo */}
             <Link
               href="/"
-              className="flex items-center gap-2 font-bold text-xl text-slate-900 hover:text-primary transition-colors"
+              className="flex items-center gap-2 group"
             >
-              <span className="text-2xl">📊</span>
-              <span>StockSignal</span>
+              {/* Icon with gradient background */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent rounded-lg blur-sm opacity-70 group-hover:opacity-100 transition-opacity"></div>
+                <div className="relative bg-gradient-to-br from-primary to-accent p-2 rounded-lg">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                </div>
+              </div>
+              {/* Brand text with gradient */}
+              <span 
+                className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-buy"
+                style={{ fontWeight: 700, letterSpacing: '-0.02em' }}
+              >
+                StockSignal
+              </span>
             </Link>
 
             {/* Desktop Navigation */}

@@ -48,37 +48,77 @@ export default function Home() {
 function HeroSection() {
   return (
     <section id="analyze" className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden">
-      {/* Background Gradient Mesh */}
-      <div 
-        className="absolute inset-0 -z-10"
-        style={{
-          background: `
-            radial-gradient(at 40% 20%, hsla(238, 83%, 67%, 0.12) 0px, transparent 50%),
-            radial-gradient(at 80% 0%, hsla(155, 80%, 50%, 0.08) 0px, transparent 50%),
-            radial-gradient(at 0% 50%, hsla(0, 84%, 60%, 0.08) 0px, transparent 50%),
-            radial-gradient(at 80% 50%, hsla(43, 96%, 56%, 0.08) 0px, transparent 50%),
-            radial-gradient(at 0% 100%, hsla(180, 100%, 50%, 0.08) 0px, transparent 50%),
-            linear-gradient(to bottom, #FAFAFA, #F1F5F9)
-          `
-        }}
-      />
+      {/* Enhanced Animated Background */}
+      <div className="absolute inset-0 -z-10">
+        {/* Base gradient */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(135deg, #ffffff 0%, #f0fdfa 25%, #ecfeff 50%, #f0f9ff 75%, #ffffff 100%)`
+          }}
+        />
+        
+        {/* Animated gradient orbs */}
+        <div 
+          className="absolute inset-0 opacity-40"
+          style={{
+            background: `
+              radial-gradient(circle at 20% 30%, rgba(13, 148, 136, 0.15) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(3, 105, 161, 0.12) 0%, transparent 50%),
+              radial-gradient(circle at 40% 70%, rgba(5, 150, 105, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 40%)
+            `,
+            animation: 'float 20s ease-in-out infinite'
+          }}
+        />
+        
+        {/* Subtle grid pattern */}
+        <div 
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(13, 148, 136, 0.3) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(13, 148, 136, 0.3) 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px'
+          }}
+        />
+      </div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-4xl mx-auto">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border-2 border-primary/30 mb-8 animate-fade-in shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-            <span className="text-sm font-semibold text-slate-900">Free analysis • No signup required</span>
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border-2 border-primary/30 mb-8 animate-fade-in shadow-lg shadow-primary/10 hover:shadow-xl hover:shadow-primary/20 transition-all hover:scale-105">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+            </span>
+            <span className="text-sm font-bold text-slate-900 tracking-tight">Free analysis • No signup required</span>
           </div>
           
           {/* Headline */}
-          <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 mb-6 leading-tight animate-slide-up">
+          <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-slate-900 mb-6 leading-[1.1] animate-slide-up tracking-tight">
             Spot Earnings Collapses{' '}
             <span 
-              className="bg-clip-text text-transparent"
-              style={{ backgroundImage: 'linear-gradient(135deg, #0d9488 0%, #0369a1 50%, #059669 100%)' }}
+              className="relative inline-block"
             >
-              Before Your Portfolio Does
+              <span 
+                className="bg-clip-text text-transparent relative z-10"
+                style={{ 
+                  backgroundImage: 'linear-gradient(135deg, #0d9488 0%, #0369a1 50%, #059669 100%)',
+                  fontWeight: 900
+                }}
+              >
+                Before Your Portfolio Does
+              </span>
+              {/* Subtle glow effect */}
+              <span 
+                className="absolute inset-0 blur-2xl opacity-30"
+                style={{ 
+                  background: 'linear-gradient(135deg, #0d9488 0%, #0369a1 50%, #059669 100%)',
+                }}
+                aria-hidden="true"
+              />
             </span>
           </h1>
           
