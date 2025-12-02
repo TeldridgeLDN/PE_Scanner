@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Stripe API Version** - Updated to 2025-11-17.clover to fix deployment build errors
+- **Stripe Client Initialization** - Changed to lazy loading pattern to prevent build-time env var issues
+
 ### Added
 - **Social Media Card System** - Reddit/WSB-optimized shareable stock analysis cards
   - SocialMediaCard component with clean, non-promotional design
