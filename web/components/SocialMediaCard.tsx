@@ -28,6 +28,7 @@ interface SocialMediaCardProps {
   };
   reasoning: string; // Short, punchy explanation (1-2 lines max)
   confidence: 'high' | 'medium' | 'low';
+  anchor?: string; // Optional: "What Would Have To Be True" statement
   compact?: boolean; // For smaller contexts
 }
 
@@ -40,6 +41,7 @@ export default function SocialMediaCard({
   keyMetric,
   reasoning,
   confidence,
+  anchor,
   compact = false
 }: SocialMediaCardProps) {
   // Signal styling
@@ -164,6 +166,18 @@ export default function SocialMediaCard({
           {reasoning}
         </p>
 
+        {/* Anchor Statement - "What Would Have To Be True" */}
+        {anchor && !compact && (
+          <div className="mt-3 p-3 bg-slate-50 rounded-lg border-l-4 border-primary/30">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">
+              What Would Have To Be True
+            </p>
+            <p className="text-sm text-slate-700 font-medium">
+              {anchor}
+            </p>
+          </div>
+        )}
+
         {/* Analysis Mode Tag */}
         <div className="mt-3 pt-3 border-t border-slate-100">
           <span className="text-xs text-slate-500 font-medium">
@@ -175,7 +189,7 @@ export default function SocialMediaCard({
       {/* Footer - Subtle Branding */}
       <div className="px-4 py-2 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
         <span className="text-xs text-slate-500 font-medium">
-          StockSignal Analysis
+          stocksignal.app
         </span>
         <span className="text-xs text-slate-400">
           Free • No signup required

@@ -8,6 +8,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Social Media Card System** - Reddit/WSB-optimized shareable stock analysis cards
+  - SocialMediaCard component with clean, non-promotional design
+  - Visual card layout showing ticker, price, signal, key metric, and reasoning
+  - **"What Would Have To Be True" anchoring** - Makes abstract metrics tangible
+    - Profit multiplication anchors (e.g., "TSLA would need to 2.4x profits")
+    - Growth requirement anchors (e.g., "NVDA needs 65% growth for 5 years")
+    - Mega-cap comparison anchors (e.g., "valued at $120B profit vs Apple's $100B")
+    - Profitability gap anchors for hyper-growth stocks
+    - Highlighted callout box in visual cards
+    - Bold section in Reddit comments
+    - Automatic generation from backend analysis
+  - Confidence indicator with visual bars
+  - Support for all signal types (STRONG_BUY, BUY, HOLD, SELL, STRONG_SELL)
+  - Compact mode for smaller contexts (mobile, tight spaces)
+  - Reddit markdown comment generator with formatted text
+  - Discord embed data generator with rich formatting
+  - Social card API endpoint (`/api/social-card?ticker=X&format=json|reddit|discord`)
+  - Automatic conversion from backend analysis results to card format
+  - Demo page (`/demo/social-cards`) showcasing all card formats
+  - Design principles focused on value-first, not promotional
+  - Subtle branding ("stocksignal.app • Free • No signup required")
+  - Optimized for screenshot sharing in WSB, Discord, Twitter contexts
+  - Support for VALUE, GROWTH, and HYPER_GROWTH analysis modes
+  - Reasoning text generator tailored to each analysis mode
+  - Key metric extraction (P/E compression, PEG ratio, P/S ratio)
 - **Clerk Authentication Integration** - Complete user account system
   - User signup and signin pages with Clerk pre-built components
   - Protected routes middleware (dashboard, portfolio endpoints)
