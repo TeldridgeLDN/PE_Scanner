@@ -1,5 +1,10 @@
-"""Analysis modules for P/E compression and fair value calculations."""
+"""Analysis modules for P/E compression, fair value, and stock classification."""
 
+from pe_scanner.analysis.classification import (
+    StockType,
+    classify_stock_type,
+    get_analysis_mode_name,
+)
 from pe_scanner.analysis.compression import (
     CompressionConfig,
     CompressionResult,
@@ -26,6 +31,10 @@ from pe_scanner.analysis.fair_value import (
 )
 
 __all__ = [
+    # Classification
+    "StockType",
+    "classify_stock_type",
+    "get_analysis_mode_name",
     # Compression
     "CompressionConfig",
     "CompressionResult",

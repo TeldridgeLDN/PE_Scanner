@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Stock Classification Module** (`analysis/classification.py`): Foundation for v2.0 tiered analysis
+  - `StockType` enum: VALUE, GROWTH, HYPER_GROWTH categories
+  - `classify_stock_type()`: Automatic classification based on trailing P/E ratio
+    - VALUE: P/E < 25 (traditional value stocks)
+    - GROWTH: P/E 25-50 (high but not extreme)
+    - HYPER_GROWTH: P/E > 50, negative, zero, or None (extreme valuations or loss-making)
+  - `get_analysis_mode_name()`: Human-readable mode names for display
+  - Comprehensive unit tests (59 tests) covering all ranges, boundaries, and edge cases
+  - 100% test coverage on classification logic
+  - Handles edge cases: None, zero, negative, extreme values
 - **Yahoo Finance Data Fetcher** (`data/fetcher.py`): Complete implementation
   - `fetch_market_data()`: Fetches current price, trailing/forward P/E, trailing/forward EPS, market cap
   - `batch_fetch()`: Efficient multi-ticker fetching with rate limiting

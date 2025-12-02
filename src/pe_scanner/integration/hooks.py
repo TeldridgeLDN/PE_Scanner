@@ -527,3 +527,4 @@ def run_hooks(
 
     return results, manager.has_blocking_failures()
 
+
