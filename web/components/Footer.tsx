@@ -14,11 +14,32 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Brand Column */}
           <div className="space-y-4">
-            <Link href="/" className="flex items-center gap-2 group">
-              <span className="text-2xl">📊</span>
-              <span className="font-heading font-bold text-xl text-white group-hover:text-primary transition-colors">
-                StockSignal
-              </span>
+            <Link href="/" className="flex items-center gap-3 group">
+              {/* Gradient Icon matching nav */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-buy rounded-xl blur-md opacity-60 group-hover:opacity-100 transition-all duration-300"></div>
+                <div className="relative bg-gradient-to-br from-primary via-accent to-buy p-2.5 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                </div>
+              </div>
+              {/* Bold brand text matching nav */}
+              <div className="flex flex-col">
+                <span 
+                  className="font-black text-2xl text-white group-hover:scale-105 transition-transform duration-300"
+                  style={{ 
+                    fontWeight: 900, 
+                    letterSpacing: '-0.03em',
+                    lineHeight: '1.2'
+                  }}
+                >
+                  StockSignal
+                </span>
+                <span className="text-[10px] text-primary-light font-semibold tracking-widest uppercase group-hover:text-accent transition-colors duration-300">
+                  By Investors, For Investors
+                </span>
+              </div>
             </Link>
             
             <p className="text-sm leading-relaxed">

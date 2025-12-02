@@ -134,10 +134,10 @@ export default function Navigation({ isAuthenticated = false, userPlan }: Naviga
                   </svg>
                 </div>
               </div>
-              {/* Brand text - NOW VISIBLE with white/gradient */}
+              {/* Brand text - ALWAYS VISIBLE */}
               <div className="flex flex-col">
                 <span 
-                  className="font-black text-2xl text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-primary group-hover:via-accent group-hover:to-buy transition-all duration-300"
+                  className="font-black text-2xl text-white group-hover:scale-105 transition-transform duration-300"
                   style={{ 
                     fontWeight: 900, 
                     letterSpacing: '-0.03em',
@@ -146,7 +146,7 @@ export default function Navigation({ isAuthenticated = false, userPlan }: Naviga
                 >
                   StockSignal
                 </span>
-                <span className="text-[10px] text-primary-light font-semibold tracking-widest uppercase">
+                <span className="text-[10px] text-primary-light font-semibold tracking-widest uppercase group-hover:text-accent transition-colors duration-300">
                   By Investors, For Investors
                 </span>
               </div>
