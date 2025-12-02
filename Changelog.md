@@ -18,6 +18,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Comprehensive unit tests (59 tests) covering all ranges, boundaries, and edge cases
   - 100% test coverage on classification logic
   - Handles edge cases: None, zero, negative, extreme values
+- **Growth Mode Analysis Module** (`analysis/growth.py`): PEG ratio analysis for growth stocks
+  - `GrowthSignal` enum: BUY, SELL, HOLD, DATA_ERROR classifications
+  - `calculate_peg_ratio()`: PEG = Trailing P/E ÷ Earnings Growth (%)
+  - `interpret_peg_signal()`: Signal logic based on PEG thresholds
+    - BUY: PEG < 1.0 (paying less than 1x for each % of growth)
+    - SELL: PEG > 2.0 (paying more than 2x for each % of growth)
+    - HOLD: 1.0 ≤ PEG ≤ 2.0 (fairly valued)
+  - `analyze_growth_stock()`: Complete growth stock analysis with explanations
+  - `analyze_growth_batch()`: Batch processing for multiple growth stocks
+  - `rank_by_peg()`: Sort stocks by PEG ratio for prioritization
+  - `GrowthAnalysisResult` dataclass: Structured result with properties (is_buy, is_sell, is_actionable)
+  - Graceful error handling for missing/invalid data, zero/negative growth
+  - Warnings for extreme PEG ratios and unsustainable growth rates
+  - Comprehensive unit tests (50 tests, 94% coverage)
+  - Example: CRM with P/E 35 and 25% growth → PEG 1.4 → HOLD
 - **Yahoo Finance Data Fetcher** (`data/fetcher.py`): Complete implementation
   - `fetch_market_data()`: Fetches current price, trailing/forward P/E, trailing/forward EPS, market cap
   - `batch_fetch()`: Efficient multi-ticker fetching with rate limiting

@@ -1,4 +1,4 @@
-"""Analysis modules for P/E compression, fair value, and stock classification."""
+"""Analysis modules for P/E compression, fair value, stock classification, and growth analysis."""
 
 from pe_scanner.analysis.classification import (
     StockType,
@@ -29,6 +29,15 @@ from pe_scanner.analysis.fair_value import (
     get_config as get_fair_value_config,
     rank_by_upside,
 )
+from pe_scanner.analysis.growth import (
+    GrowthAnalysisResult,
+    GrowthSignal,
+    analyze_growth_batch,
+    analyze_growth_stock,
+    calculate_peg_ratio,
+    interpret_peg_signal,
+    rank_by_peg,
+)
 
 __all__ = [
     # Classification
@@ -57,4 +66,12 @@ __all__ = [
     "calculate_upside",
     "get_fair_value_config",
     "rank_by_upside",
+    # Growth (PEG)
+    "GrowthAnalysisResult",
+    "GrowthSignal",
+    "analyze_growth_batch",
+    "analyze_growth_stock",
+    "calculate_peg_ratio",
+    "interpret_peg_signal",
+    "rank_by_peg",
 ]
