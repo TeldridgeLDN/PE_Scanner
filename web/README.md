@@ -1,6 +1,6 @@
-# PE Scanner Frontend
+# StockSignal Frontend
 
-Next.js 15 frontend for PE Scanner - Stock Valuation Made Simple.
+Next.js 15 frontend for StockSignal - Stock Valuation Made Simple.
 
 ## Tech Stack
 
@@ -73,9 +73,9 @@ See `env.example` for required variables.
 - `NEXT_PUBLIC_APP_URL`: Frontend URL (default: http://localhost:3000)
 
 **Production (Vercel):**
-- `NEXT_PUBLIC_API_URL`: https://pe-scanner-api.railway.app
-- `NEXT_PUBLIC_APP_URL`: https://pe-scanner.com
-- `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`: pe-scanner.com
+- `NEXT_PUBLIC_API_URL`: https://stocksignal-api.railway.app
+- `NEXT_PUBLIC_APP_URL`: https://stocksignal.com
+- `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`: stocksignal.com
 - `RESEND_API_KEY`: Email service key
 
 ## Design Tokens

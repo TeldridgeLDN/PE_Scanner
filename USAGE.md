@@ -1,6 +1,6 @@
-# PE Scanner Usage Guide
+# StockSignal Usage Guide
 
-Complete guide to using PE Scanner for portfolio analysis and stock screening.
+Complete guide to using StockSignal for portfolio analysis and stock screening.
 
 ## Table of Contents
 - [Installation](#installation)
@@ -20,7 +20,7 @@ Complete guide to using PE Scanner for portfolio analysis and stock screening.
 
 ### Setup
 ```bash
-cd /Users/tomeldridge/PE_Scanner
+cd /Users/tomeldridge/StockSignal
 python3 -m venv venv
 source venv/bin/activate
 pip install -e .
@@ -350,7 +350,7 @@ pe-scanner fetch --ticker AAPL --no-cache
 ### Integration with Momentum_Squared
 
 ```bash
-# PE Scanner supports Momentum_Squared CSV format
+# StockSignal supports Momentum_Squared CSV format
 # Copy your master portfolio:
 cp ~/Momentum_Squared/portfolios/master.csv portfolios/isa.csv
 
@@ -465,6 +465,6 @@ pe-scanner verify --ticker HOOD
 
 **Version**: 0.1.0  
 **Last Updated**: December 1, 2025  
-**Repository**: https://github.com/TeldridgeLDN/PE_Scanner
+**Repository**: https://github.com/TeldridgeLDN/StockSignal
 
 

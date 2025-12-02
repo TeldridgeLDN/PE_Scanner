@@ -57,8 +57,8 @@ def create_app(config: Optional[dict] = None) -> Flask:
     # Enable CORS with specific configuration
     # Allow Vercel domains in production, localhost in development
     cors_origins = [
-        "https://pe-scanner.com",
-        "https://www.pe-scanner.com",
+        "https://stocksignal.app",
+        "https://www.stocksignal.app",
         "http://localhost:3000",
         "http://127.0.0.1:3000",
     ]

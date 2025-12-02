@@ -14,7 +14,7 @@ const getBaseUrl = (): string => {
     return process.env.NEXT_PUBLIC_APP_URL;
   }
   return process.env.NODE_ENV === 'production'
-    ? 'https://pe-scanner.com'
+    ? 'https://stocksignal.app'
     : 'http://localhost:3000';
 };
 
@@ -38,7 +38,7 @@ export function generateReportMetadata(
   const url = `${baseUrl}/report/${ticker}`;
   
   // Default metadata (used while loading or on error)
-  const defaultTitle = `${ticker} Stock Analysis - PE Scanner`;
+  const defaultTitle = `${ticker} Stock Analysis - StockSignal`;
   const defaultDescription = `Real-time P/E compression analysis for ${ticker}. Get instant BUY/SELL/HOLD signals with shareable headlines.`;
   
   // If analysis data is available, use it for rich previews
@@ -62,7 +62,7 @@ export function generateReportMetadata(
         description,
         type: 'website',
         url,
-        siteName: 'PE Scanner',
+        siteName: 'StockSignal',
         locale: 'en_GB',
         images: [
           {
@@ -75,8 +75,8 @@ export function generateReportMetadata(
       },
       twitter: {
         card: 'summary_large_image',
-        site: '@PEScanner',
-        creator: '@PEScanner',
+        site: '@StockSignalApp',
+        creator: '@StockSignalApp',
         title,
         description,
         images: [ogImage],
@@ -99,21 +99,21 @@ export function generateReportMetadata(
       description: defaultDescription,
       type: 'website',
       url,
-      siteName: 'PE Scanner',
+      siteName: 'StockSignal',
       locale: 'en_GB',
       images: [
         {
           url: fallbackImage,
           width: 1200,
           height: 630,
-          alt: 'PE Scanner - Stock Valuation Made Simple',
+          alt: 'StockSignal - Stock Valuation Made Simple',
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      site: '@PEScanner',
-      creator: '@PEScanner',
+      site: '@StockSignalApp',
+      creator: '@StockSignalApp',
       title: defaultTitle,
       description: defaultDescription,
       images: [fallbackImage],
@@ -129,7 +129,7 @@ export function generateReportMetadata(
  */
 export function generateLandingMetadata(): Metadata {
   const baseUrl = getBaseUrl();
-  const title = 'PE Scanner - Spot Earnings Collapses Before Your Portfolio Does';
+  const title = 'StockSignal - Spot Earnings Collapses Before Your Portfolio Does';
   const description = 'Free P/E compression analysis reveals which stocks are priced for disaster. Get clear BUY/SELL/HOLD signals in 30 seconds. No credit card required.';
   
   // Use dynamic OG image generation
@@ -150,27 +150,27 @@ export function generateLandingMetadata(): Metadata {
       'earnings analysis',
       'overvalued stocks',
     ],
-    authors: [{ name: 'PE Scanner' }],
+    authors: [{ name: 'StockSignal' }],
     openGraph: {
       title,
       description,
       type: 'website',
       url: baseUrl,
-      siteName: 'PE Scanner',
+      siteName: 'StockSignal',
       locale: 'en_GB',
       images: [
         {
           url: ogImage,
           width: 1200,
           height: 630,
-          alt: 'PE Scanner - Stock Valuation Made Simple',
+          alt: 'StockSignal - Stock Valuation Made Simple',
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      site: '@PEScanner',
-      creator: '@PEScanner',
+      site: '@StockSignalApp',
+      creator: '@StockSignalApp',
       title,
       description,
       images: [ogImage],
@@ -190,15 +190,15 @@ export function generateLegalMetadata(
   const baseUrl = getBaseUrl();
   
   const titles = {
-    privacy: 'Privacy Policy - PE Scanner',
-    terms: 'Terms of Service - PE Scanner',
-    disclaimer: 'Investment Disclaimer - PE Scanner',
+    privacy: 'Privacy Policy - StockSignal',
+    terms: 'Terms of Service - StockSignal',
+    disclaimer: 'Investment Disclaimer - StockSignal',
   };
   
   const descriptions = {
-    privacy: 'Privacy policy and data protection information for PE Scanner users. UK GDPR compliant.',
-    terms: 'Terms of service and usage conditions for PE Scanner. UK law applies.',
-    disclaimer: 'Important investment disclaimer and risk warnings for PE Scanner users. Not financial advice.',
+    privacy: 'Privacy policy and data protection information for StockSignal users. UK GDPR compliant.',
+    terms: 'Terms of service and usage conditions for StockSignal. UK law applies.',
+    disclaimer: 'Important investment disclaimer and risk warnings for StockSignal users. Not financial advice.',
   };
   
   return {

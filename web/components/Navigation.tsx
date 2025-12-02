@@ -123,7 +123,7 @@ export default function Navigation({ isAuthenticated = false, userPlan }: Naviga
               className="flex items-center gap-2 font-bold text-xl text-slate-900 hover:text-primary transition-colors"
             >
               <span className="text-2xl">📊</span>
-              <span>PE Scanner</span>
+              <span>StockSignal</span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -237,7 +237,7 @@ export default function Navigation({ isAuthenticated = false, userPlan }: Naviga
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <span className="text-2xl">📊</span>
-                <span>PE Scanner</span>
+                <span>StockSignal</span>
               </Link>
 
               <button

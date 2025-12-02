@@ -1,8 +1,8 @@
-# PE Scanner
+# StockSignal
 
 **P/E Compression Analysis Tool for Portfolio Management**
 
-PE Scanner is a Python-based investment analysis tool that identifies opportunities through P/E (Price-to-Earnings) compression analysis. It automatically screens portfolios to find stocks where market expectations diverge significantly from current valuations.
+StockSignal is a Python-based investment analysis tool that identifies opportunities through P/E (Price-to-Earnings) compression analysis. It automatically screens portfolios to find stocks where market expectations diverge significantly from current valuations.
 
 ## 🎯 What It Does
 
@@ -33,7 +33,7 @@ Based on actual November 2024 analysis that identified:
 ## 🏗️ Architecture
 
 ### Full Stack Architecture
-PE Scanner consists of two main components:
+StockSignal consists of two main components:
 
 **Backend (Python + Flask):**
 - REST API v2.0 for stock analysis
@@ -48,14 +48,14 @@ PE Scanner consists of two main components:
 - Shareable analysis headlines
 
 ### PAI/diet103 Integration
-PE Scanner follows the Orchestrator_Project architecture patterns:
+StockSignal follows the Orchestrator_Project architecture patterns:
 - **PAI Global Layer**: Cross-project template sharing and orchestration
 - **diet103 Local Layer**: Project-specific hooks and validation
 - **Shared Patterns**: Data pipeline consistency with Momentum_Squared
 
 ### Project Structure
 ```
-PE_Scanner/
+StockSignal/
 ├── src/
 │   └── pe_scanner/
 │       ├── analysis/          # P/E compression, fair value calculations
@@ -80,8 +80,8 @@ PE_Scanner/
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/PE_Scanner.git
-cd PE_Scanner
+git clone https://github.com/yourusername/StockSignal.git
+cd StockSignal
 
 # Install Python backend
 python -m venv venv
@@ -267,7 +267,7 @@ Signal: SELL ✅ (confirmed with actual financials)
 
 ## 🤝 Contributing
 
-PE Scanner is in active development. See `.taskmaster/tasks/` for current development priorities.
+StockSignal is in active development. See `.taskmaster/tasks/` for current development priorities.
 
 ---
 

@@ -104,7 +104,7 @@ export async function GET(
             fontFamily: 'system-ui, -apple-system, sans-serif',
           }}
         >
-          {/* Header: PE Scanner Logo */}
+          {/* Header: StockSignal Logo */}
           <div
             style={{
               display: 'flex',
@@ -128,7 +128,7 @@ export async function GET(
                 display: 'flex',
               }}
             >
-              PE Scanner
+              StockSignal
             </div>
           </div>
 
@@ -268,7 +268,7 @@ export async function GET(
               display: 'flex',
             }}
           >
-            PE Scanner
+            StockSignal
           </div>
           <div
             style={{

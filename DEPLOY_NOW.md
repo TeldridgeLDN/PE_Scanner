@@ -1,4 +1,4 @@
-# 🚀 Deploy PE Scanner Backend to Railway - Quick Start
+# 🚀 Deploy StockSignal Backend to Railway - Quick Start
 
 **Time**: 15 minutes | **Cost**: $5/month (FREE with Railway credits!)
 
@@ -8,7 +8,7 @@
 
 1. Go to **https://railway.app/new**
 2. Click **"Deploy from GitHub repo"**
-3. Select your **PE_Scanner** repository
+3. Select your **StockSignal** repository
 4. Railway auto-detects Python and uses Nixpacks ✅
 
 **Note**: Railway will automatically use the `Procfile` or `railway.json` start command
@@ -29,7 +29,7 @@ In Railway → **Variables** tab, add these:
 
 ```bash
 FLASK_ENV=production
-ALLOWED_ORIGINS=https://pe-scanner.com,https://www.pe-scanner.com,http://localhost:3000
+ALLOWED_ORIGINS=https://stocksignal.app,https://www.stocksignal.app,http://localhost:3000
 REDIS_ENABLED=true
 YAHOO_FINANCE_RATE_LIMIT=0.5
 MAX_CONCURRENT_REQUESTS=3
@@ -76,7 +76,7 @@ Your API is live at: `https://your-app.railway.app`
 
 ## Next Steps
 
-1. **Optional**: Configure custom domain `api.pe-scanner.com`
+1. **Optional**: Configure custom domain `api.stocksignal.app`
    - Railway Settings → Domains → Custom Domain
    - Add CNAME: `api` → `your-app.railway.app`
 

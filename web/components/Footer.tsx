@@ -17,7 +17,7 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-2 group">
               <span className="text-2xl">📊</span>
               <span className="font-heading font-bold text-xl text-white group-hover:text-primary transition-colors">
-                PE Scanner
+                StockSignal
               </span>
             </Link>
             
@@ -182,7 +182,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
             <div className="text-center md:text-left">
               <p>
-                © {currentYear} PE Scanner. All rights reserved.
+                © {currentYear} StockSignal. All rights reserved.
               </p>
               <p className="text-xs text-slate-500 mt-1">
                 Made in the UK 🇬🇧 • Not financial advice

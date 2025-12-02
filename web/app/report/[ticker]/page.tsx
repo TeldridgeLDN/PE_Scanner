@@ -73,7 +73,7 @@ export default async function ReportPage({ params }: PageProps) {
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0d9488] to-[#0369a1] flex items-center justify-center">
                 <span className="text-white font-bold text-lg">PE</span>
               </div>
-              <span className="font-heading font-bold text-xl text-slate-900">PE Scanner</span>
+              <span className="font-heading font-bold text-xl text-slate-900">StockSignal</span>
             </Link>
             <Link 
               href="/"

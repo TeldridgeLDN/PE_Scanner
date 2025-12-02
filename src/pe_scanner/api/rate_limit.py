@@ -411,8 +411,8 @@ def rate_limit_check(f):
                 "reset_at": result.reset_at.isoformat() + "Z",
                 "limit": result.limit,
                 "tier": result.tier,
-                "upgrade_url": "https://pe-scanner.com/pricing" if tier != "pro" else None,
-                "signup_url": "https://pe-scanner.com/sign-up" if result.suggest_upgrade else None,
+                "upgrade_url": "https://stocksignal.app/pricing" if tier != "pro" else None,
+                "signup_url": "https://stocksignal.app/sign-up" if result.suggest_upgrade else None,
                 "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
                 "hint": "Stock signals update throughout the day as prices move. Don't miss the next shift!" if result.suggest_upgrade else "Markets don't wait. Upgrade for unlimited real-time analysis.",
             }

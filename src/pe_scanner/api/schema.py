@@ -195,8 +195,8 @@ class RateLimitErrorResponse(BaseModel):
                 "reset_at": "2025-12-03T00:00:00Z",
                 "limit": 3,
                 "tier": "anonymous",
-                "upgrade_url": "https://pe-scanner.com/pricing",
-                "signup_url": "https://pe-scanner.com/sign-up",
+                "upgrade_url": "https://stocksignal.app/pricing",
+                "signup_url": "https://stocksignal.app/sign-up",
                 "hint": "Stock signals update throughout the day as prices move. Don't miss the next shift!",
                 "timestamp": "2025-12-02T14:30:00Z"
             }

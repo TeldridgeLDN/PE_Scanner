@@ -1,4 +1,4 @@
-# Railway Deployment Guide - PE Scanner Backend API
+# Railway Deployment Guide - StockSignal Backend API
 
 **Status**: Task 39 - Deploy Flask API to Railway  
 **Date**: 2024-12-02  
@@ -10,7 +10,7 @@
 
 ### **Prerequisites**
 1. Railway account (sign up at [railway.app](https://railway.app))
-2. GitHub repository with PE Scanner code
+2. GitHub repository with StockSignal code
 3. Redis service (will be added in Railway)
 
 ### **Deployment Steps**
@@ -25,7 +25,7 @@ railway up
 # Option B: Using Railway Dashboard (Recommended)
 1. Go to https://railway.app/new
 2. Select "Deploy from GitHub repo"
-3. Choose: tomeldridge/PE_Scanner (or your fork)
+3. Choose: tomeldridge/StockSignal (or your fork)
 4. Railway will auto-detect the Dockerfile
 ```
 
@@ -45,7 +45,7 @@ FLASK_ENV=production
 PORT=8000  # Railway auto-provides this
 
 # CORS Origins (comma-separated)
-ALLOWED_ORIGINS=https://pe-scanner.com,https://www.pe-scanner.com,http://localhost:3000
+ALLOWED_ORIGINS=https://stocksignal.app,https://www.stocksignal.app,http://localhost:3000
 
 # Redis (auto-provided by Railway Redis service)
 REDIS_URL=${REDIS_URL}
@@ -132,12 +132,12 @@ curl https://your-app.railway.app/api/analyze/HOOD
 ## 🔧 Custom Domain Setup
 
 ### **Option A: Subdomain (Recommended)**
-Set up `api.pe-scanner.com`:
+Set up `api.stocksignal.app`:
 
 1. **Railway Settings**:
    - Go to project → Settings → Domains
    - Click "Generate Domain" → Gets: `xxx.railway.app`
-   - Click "Custom Domain" → Enter: `api.pe-scanner.com`
+   - Click "Custom Domain" → Enter: `api.stocksignal.app`
 
 2. **DNS Configuration** (your domain registrar):
    ```
@@ -148,10 +148,10 @@ Set up `api.pe-scanner.com`:
    ```
 
 3. **Update CORS Origins**:
-   - Add `https://api.pe-scanner.com` to `ALLOWED_ORIGINS`
+   - Add `https://api.stocksignal.app` to `ALLOWED_ORIGINS`
 
 ### **Option B: Main Domain Path**
-Use `pe-scanner.com/api`:
+Use `stocksignal.app/api`:
 
 1. Deploy frontend to Vercel (Task 40)
 2. Add Vercel rewrite:
@@ -232,12 +232,12 @@ done
 ### **4. CORS Headers**
 ```bash
 curl -i -X OPTIONS \
-  -H "Origin: https://pe-scanner.com" \
+  -H "Origin: https://stocksignal.app" \
   -H "Access-Control-Request-Method: GET" \
   https://your-app.railway.app/api/analyze/HOOD
 
 # Should include:
-# Access-Control-Allow-Origin: https://pe-scanner.com
+# Access-Control-Allow-Origin: https://stocksignal.app
 # Access-Control-Expose-Headers: X-RateLimit-Limit, ...
 ```
 
@@ -327,7 +327,7 @@ railway variables set MAX_CONCURRENT_REQUESTS=2
 railway variables get ALLOWED_ORIGINS
 
 # Add if missing:
-railway variables set ALLOWED_ORIGINS=https://pe-scanner.com,https://www.pe-scanner.com
+railway variables set ALLOWED_ORIGINS=https://stocksignal.app,https://www.stocksignal.app
 ```
 
 ---
@@ -402,7 +402,7 @@ After Railway deployment:
 
 - **Railway Docs**: https://docs.railway.app
 - **Railway Discord**: https://discord.gg/railway
-- **PE Scanner Issues**: Check logs first, then create GitHub issue
+- **StockSignal Issues**: Check logs first, then create GitHub issue
 
 ---
 

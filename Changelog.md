@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to PE Scanner will be documented in this file.
+All notable changes to StockSignal will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -63,7 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Redis dependency added** (`requirements.txt`) - Task 34
   - Added `redis>=5.0.0` for rate limiting and API throttling
-  - Installed in PE_Scanner virtual environment
+  - Installed in StockSignal virtual environment
 
 - **Flask API CORS headers updated** (`src/pe_scanner/api/app.py`) - Task 34
   - Added `X-RateLimit-Limit`, `X-RateLimit-Reset`, `Retry-After` to exposed headers
@@ -189,7 +189,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     * BUY: Emerald to Teal gradient
     * SELL: Red to Rose gradient
     * HOLD: Amber to Orange gradient
-  - Content layout: PE Scanner logo, ticker symbol (96px), signal badge with emoji, headline, key metric, URL
+  - Content layout: StockSignal logo, ticker symbol (96px), signal badge with emoji, headline, key metric, URL
   - Key metric display based on analysis mode:
     * VALUE: P/E Compression percentage
     * GROWTH: PEG Ratio
@@ -256,7 +256,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Footer component** (`web/components/Footer.tsx` - 230 lines) - Task 43
   - Four-column layout: Brand, Product, Resources, Legal
-  - Brand column: PE Scanner logo, tagline, description
+  - Brand column: StockSignal logo, tagline, description
   - Product links: Features, Pricing, How It Works, Examples (coming soon), API Docs (coming soon)
   - Resources: Blog (coming soon), Twitter, LinkedIn, GitHub with social icons
   - Legal links: Privacy Policy, Terms of Service, Investment Disclaimer, Contact email
@@ -275,7 +275,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - User rights: access, correction, deletion, export
     - Third-party services: Resend, Plausible, Railway, Vercel
     - No cookies policy (Plausible doesn't use cookies)
-    - Contact: privacy@pe-scanner.com
+    - Contact: privacy@stocksignal.app
   - Terms of Service page (`web/app/terms/page.tsx` - 300 lines)
     - Comprehensive terms covering acceptable use, prohibited use
     - Investment disclaimer prominently featured (amber warning box)
@@ -284,7 +284,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Data accuracy limitations and disclaimers
     - Limitation of liability section
     - UK law governing (England & Wales jurisdiction)
-    - Contact: legal@pe-scanner.com
+    - Contact: legal@stocksignal.app
   - Investment Disclaimer page (`web/app/disclaimer/page.tsx` - 280 lines)
     - Prominent "Not Financial Advice" warning
     - Detailed investment risks explanation
@@ -421,7 +421,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Support email link
   - Responsive design with smooth animations
 - **Flask API CORS Configuration** - Updated for production security
-  - Whitelist: `https://pe-scanner.com`, `https://www.pe-scanner.com`, `http://localhost:3000`
+  - Whitelist: `https://stocksignal.app`, `https://www.stocksignal.app`, `http://localhost:3000`
   - Exposed headers: `X-RateLimit-Remaining`, `X-RateLimit-Reset`
   - Disabled credentials (no cookies needed for free tier)
 - **Results display page** (`web/app/report/[ticker]/page.tsx` - 420 lines)
@@ -485,7 +485,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Web launch strategy documentation in `.taskmaster/docs/`
 
 ### Changed
-- Updated `app/layout.tsx` with PE Scanner metadata (title, description, SEO keywords)
+- Updated `app/layout.tsx` with StockSignal metadata (title, description, SEO keywords)
 - Simplified font loading to use system fonts instead of Google Fonts
 - Updated main README with frontend installation instructions
 - Project structure now includes both Python backend and Next.js frontend

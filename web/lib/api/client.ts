@@ -1,5 +1,5 @@
 /**
- * PE Scanner API Client
+ * StockSignal API Client
  * 
  * Handles communication with the Flask backend API.
  * Provides type-safe methods for fetching stock analysis.

@@ -165,7 +165,7 @@ export default function ShareButtons({ ticker, headline, shareUrls }: ShareButto
 
     try {
       await navigator.share({
-        title: `${ticker} Analysis - PE Scanner`,
+        title: `${ticker} Analysis - StockSignal`,
         text: headline,
         url: window.location.href,
       });

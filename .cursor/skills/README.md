@@ -1,4 +1,4 @@
-# Cursor Skills for PE Scanner
+# Cursor Skills for StockSignal
 
 This directory contains AI-assisted development skills ported from the Pirouette sibling project.
 
@@ -33,5 +33,5 @@ For detailed documentation of each skill, see the individual `.md` files or the 
 ---
 
 **Source:** Ported from Pirouette project (November 2025)
-**Maintained By:** PE Scanner development team
+**Maintained By:** StockSignal development team
 

@@ -1,11 +1,11 @@
-# PE_Scanner Quick Start Guide
+# StockSignal Quick Start Guide
 
 **For AI Agents starting work on this project**
 
 ## Project Context
 
-**Name**: PE_Scanner  
-**Location**: `/Users/tomeldridge/PE_Scanner`  
+**Name**: StockSignal  
+**Location**: `/Users/tomeldridge/StockSignal`  
 **Type**: Python-based P/E Compression Analysis Tool  
 **Architecture**: PAI Global Layer + diet103 Local Layer  
 **Status**: Initialized, ready for Task #1
@@ -15,7 +15,7 @@
 ### 1. Setup Development Environment (Task #1)
 
 ```bash
-cd /Users/tomeldridge/PE_Scanner
+cd /Users/tomeldridge/StockSignal
 
 # Create virtual environment
 python3 -m venv venv

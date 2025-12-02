@@ -387,7 +387,7 @@ function ExampleResultsSection() {
             Real Analysis Examples
           </h2>
           <p className="text-lg text-slate-600">
-            See how PE Scanner caught major moves in November 2024
+            See how StockSignal caught major moves in November 2024
           </p>
         </div>
 
@@ -479,7 +479,7 @@ function FAQSection() {
   const faqs = [
     {
       question: "How is this different from a stock screener?",
-      answer: "Screeners show current P/E ratios. We show market expectations via P/E compression. Screeners are backward-looking—they tell you what the stock has done. PE Scanner is forward-looking—it reveals what the market expects to happen. That's the difference between looking in the rearview mirror and seeing what's ahead."
+      answer: "Screeners show current P/E ratios. We show market expectations via P/E compression. Screeners are backward-looking—they tell you what the stock has done. StockSignal is forward-looking—it reveals what the market expects to happen. That's the difference between looking in the rearview mirror and seeing what's ahead."
     },
     {
       question: "Why should I trust AI-generated headlines?",
@@ -491,7 +491,7 @@ function FAQSection() {
     },
     {
       question: "Can I use this for day trading?",
-      answer: "Yes. Pro users get unlimited analyses—check multiple tickers, spot momentum shifts, and act fast. P/E compression reveals when market sentiment is changing, which creates volatility you can trade. Many day traders use PE Scanner to find oversold bounces or catch breakdown signals early."
+      answer: "Yes. Pro users get unlimited analyses—check multiple tickers, spot momentum shifts, and act fast. P/E compression reveals when market sentiment is changing, which creates volatility you can trade. Many day traders use StockSignal to find oversold bounces or catch breakdown signals early."
     },
     {
       question: "Can I cancel anytime?",
@@ -511,7 +511,7 @@ function FAQSection() {
             Common Questions
           </h2>
           <p className="text-lg text-slate-600">
-            Everything you need to know about PE Scanner
+            Everything you need to know about StockSignal
           </p>
         </div>
 

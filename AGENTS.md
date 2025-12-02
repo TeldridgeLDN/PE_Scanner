@@ -4,7 +4,7 @@ This file provides guidance to AI coding assistants (Claude Code, Cursor, Copilo
 
 ## Project Overview
 
-**PE Scanner** - Stock Valuation Made Simple
+**StockSignal** - Stock Valuation Made Simple
 
 A free tool (with Pro tier) that analyzes stocks using P/E compression to identify overvalued positions. Features tiered analysis (VALUE, GROWTH, HYPER_GROWTH), shareable headlines, and portfolio scanning.
 
@@ -63,11 +63,11 @@ task-master update-subtask --id=<id> --prompt="notes"  # Add notes
 - **Railway**: Backend API hosting (~£5/mo)
 - **Redis**: Rate limiting (Railway free tier)
 - **Vercel**: Frontend hosting (free hobby plan)
-- **Domain**: pe-scanner.com (~£10/year)
+- **Domain**: stocksignal.app (~£10/year)
 
 ### Directory Structure
 ```
-PE_Scanner/
+StockSignal/
 ├── src/pe_scanner/
 │   ├── analysis/              # Analysis engines
 │   │   ├── anchoring.py      # "What Would Have To Be True" engine
@@ -228,7 +228,7 @@ The core analysis engine uses a **3-tier approach** based on P/E ratios:
 ### Deployment (Not Started)
 - [ ] Railway backend deployment
 - [ ] Vercel frontend deployment
-- [ ] Custom domain setup (pe-scanner.com)
+- [ ] Custom domain setup (stocksignal.app)
 - [ ] Rate limiting with Redis
 
 ## Environment Variables
@@ -243,7 +243,7 @@ PERPLEXITY_API_KEY=pplx-...
 # Railway Production
 REDIS_URL=redis://...
 RESEND_API_KEY=re_...
-ALLOWED_ORIGINS=https://pe-scanner.com,https://www.pe-scanner.com
+ALLOWED_ORIGINS=https://stocksignal.app,https://www.stocksignal.app
 ```
 
 See `assets/env.example` for template.
@@ -260,7 +260,7 @@ Available in `.cursor/skills/` (ported from Pirouette):
 ## Success Metrics
 
 ### Launch Goals (6 weeks)
-- **Week 2**: Frontend MVP live at pe-scanner.com
+- **Week 2**: Frontend MVP live at stocksignal.app
 - **Week 4**: Email capture + portfolio upload functional
 - **Week 6**: Public launch (Product Hunt, Reddit, Twitter)
 

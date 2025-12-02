@@ -1,4 +1,4 @@
-# PE_Scanner Project Initialization Summary
+# StockSignal Project Initialization Summary
 
 **Date**: November 29, 2025  
 **Created By**: AI Agent following PAI/diet103 architecture patterns  
@@ -12,7 +12,7 @@
 
 **Project Structure**:
 ```
-PE_Scanner/
+StockSignal/
 ├── .taskmaster/              # Task Master AI integration
 │   ├── config.json          # AI model configuration
 │   ├── tasks/
@@ -97,7 +97,7 @@ PE_Scanner/
 ### Immediate (Task #1 - Setup Environment)
 
 ```bash
-cd /Users/tomeldridge/PE_Scanner
+cd /Users/tomeldridge/StockSignal
 
 # Create virtual environment
 python3 -m venv venv
@@ -242,7 +242,7 @@ Signal: BUY (best ISA opportunity)
 
 ## 🎉 Status: READY FOR DEVELOPMENT
 
-The PE_Scanner project is fully initialized and ready for active development. All foundational elements are in place:
+The StockSignal project is fully initialized and ready for active development. All foundational elements are in place:
 
 - ✅ Project structure created
 - ✅ Configuration files set up
@@ -254,7 +254,7 @@ The PE_Scanner project is fully initialized and ready for active development. Al
 
 **First Command to Run**:
 ```bash
-cd /Users/tomeldridge/PE_Scanner
+cd /Users/tomeldridge/StockSignal
 python3 -m venv venv
 source venv/bin/activate
 pip install -e ".[dev]"
@@ -266,4 +266,4 @@ This will set up the Python environment and show you the first task to work on.
 ---
 
 **Handover Complete** 🚀  
-PE_Scanner is now a fully-configured sibling project to Orchestrator_Project and Momentum_Squared, following PAI/diet103 architecture patterns and ready for task-driven development.
+StockSignal is now a fully-configured sibling project to Orchestrator_Project and Momentum_Squared, following PAI/diet103 architecture patterns and ready for task-driven development.

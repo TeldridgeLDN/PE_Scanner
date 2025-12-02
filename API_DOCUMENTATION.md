@@ -1,4 +1,4 @@
-# PE Scanner API v2.0 Documentation
+# StockSignal API v2.0 Documentation
 
 REST API for stock analysis with tiered modes, anchors, and viral-optimized headlines.
 
@@ -19,14 +19,14 @@ Returns API information and available endpoints.
 **Response:**
 ```json
 {
-  "name": "PE Scanner API v2.0",
+  "name": "StockSignal API v2.0",
   "version": "2.0.0",
   "description": "Stock analysis API with tiered modes, anchors, and headlines",
   "endpoints": {
     "analyze": "/api/analyze/<ticker>",
     "deprecated_compression": "/api/compression/<ticker> (redirects to /api/analyze)"
   },
-  "documentation": "https://github.com/yourusername/PE_Scanner",
+  "documentation": "https://github.com/yourusername/StockSignal",
   "timestamp": "2025-12-02T12:00:00Z"
 }
 ```
@@ -228,7 +228,7 @@ CORS is enabled for all origins. Suitable for development and simple web applica
 ### Development Server
 
 ```bash
-cd /Users/tomeldridge/PE_Scanner
+cd /Users/tomeldridge/StockSignal
 source venv/bin/activate
 python -m pe_scanner.api.app
 ```

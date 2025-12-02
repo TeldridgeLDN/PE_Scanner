@@ -1,7 +1,7 @@
 /**
  * Plausible Analytics Integration
  * 
- * Privacy-friendly analytics for PE Scanner.
+ * Privacy-friendly analytics for StockSignal.
  * No cookies, GDPR compliant, lightweight.
  */
 
