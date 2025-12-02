@@ -306,8 +306,9 @@
         "dependencies": [
           "19"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-02T08:18:46.269Z"
       },
       {
         "id": "21",
@@ -319,8 +320,74 @@
         "dependencies": [
           "19"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "in-progress",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Design Headline Templates for SELL, BUY, and HOLD Signals",
+            "description": "Create clear and specific headline templates tailored for SELL, BUY, and HOLD signals incorporating severity metrics such as compression %, PEG, and P/S ratios.",
+            "dependencies": [],
+            "details": "Research and define headline templates that include concise language, relevant emojis, and are optimized for social media platforms like Twitter and LinkedIn. Ensure templates reflect different severity levels of signals to capture attention effectively.\n<info added on 2025-12-02T08:15:15.926Z>\nDesign headline templates for SELL, BUY, and HOLD signals with severity metrics and emojis optimized for Twitter (280 chars) and LinkedIn. Templates should incorporate analysis modes (VALUE, GROWTH, HYPER_GROWTH) with corresponding key metrics (compression_pct, peg_ratio, price_to_sales, rule_of_40_score). Use action-oriented language with power words to capture attention. Include ticker symbol, signal type, severity level indicator, and primary metric in each template. Create separate templates for each signal type within each analysis mode, plus a DATA_ERROR template. Ensure emoji selection provides quick visual identification of signal direction and severity. Templates must be concise, shareable, and optimized for viral engagement on social platforms.\n</info added on 2025-12-02T08:15:15.926Z>",
+            "status": "done",
+            "testStrategy": "Review templates for clarity, specificity, and social media optimization; validate emoji usage and tone.",
+            "parentId": "undefined",
+            "updatedAt": "2025-12-02T08:16:15.227Z"
+          },
+          {
+            "id": 2,
+            "title": "Implement generate_headline Function Using Defined Templates",
+            "description": "Develop the generate_headline function that applies the designed templates to input signals and metrics to produce optimized headlines.",
+            "dependencies": [
+              1
+            ],
+            "details": "Code the function to select appropriate templates based on signal type (SELL, BUY, HOLD) and severity checks (compression %, PEG, P/S). Integrate emoji insertion and ensure headlines are concise and shareable on Twitter and LinkedIn.\n<info added on 2025-12-02T08:16:35.808Z>\nImplementation of generate_headline function completed successfully. Created `/Users/tomeldridge/PE_Scanner/src/pe_scanner/analysis/headlines.py` with full headline generation functionality supporting VALUE, GROWTH, and HYPER_GROWTH analysis modes. Implemented three private helper functions (_generate_value_headline, _generate_growth_headline, _generate_hyper_growth_headline) handling all signal types with appropriate emoji indicators (🚀 for strong buy, 📈 for buy, ⚖️ for hold, 📉 for sell, 🔴 for strong sell/errors, ⚠️ for warnings). Main entry point generate_headline auto-detects result type and routes to correct template. All headlines kept under 280 characters for Twitter compatibility with key metrics included (compression_pct, peg_ratio, price_to_sales, rule_of_40_score). Used action-oriented language and added ticker with $ symbol for searchability. Special logic implemented for HYPER_GROWTH SELL signals to identify triggering metric (P/S or Rule of 40). Code structure includes type alias for Union handling, comprehensive docstrings with examples, and no linter errors. Ready for unit testing phase.\n</info added on 2025-12-02T08:16:35.808Z>",
+            "status": "done",
+            "testStrategy": "Unit tests covering all signal types and severity levels; verify headline format and content correctness.",
+            "parentId": "undefined",
+            "updatedAt": "2025-12-02T08:16:45.577Z"
+          },
+          {
+            "id": 3,
+            "title": "Develop generate_share_urls Function for Social Media Sharing",
+            "description": "Create the generate_share_urls function to produce pre-formatted URLs for sharing headlines on Twitter, LinkedIn, and for copying text.",
+            "dependencies": [
+              2
+            ],
+            "details": "Implement URL encoding and formatting for Twitter and LinkedIn share links, and generate a copyable text version of the headline. Ensure URLs are correctly encoded and functional.\n<info added on 2025-12-02T08:17:05.154Z>\nImplementation of URL encoding and formatting for social media sharing completed successfully. The generate_share_urls function creates platform-specific URLs using urllib.parse.quote() for proper character encoding, handling special characters like spaces, ampersands, and accented characters safely. Twitter share links use the intent/tweet endpoint with encoded headline text, ticker hashtag, and stock market hashtags. LinkedIn share links implement conditional logic: when a base_url is provided, the function uses the share-offsite endpoint for URL sharing; without a base_url, it uses the feed endpoint with text parameters. Both platforms receive properly encoded parameters to ensure URL validity and functionality. The copyable text version preserves line breaks and includes the full headline with optional URL and hashtags for manual clipboard pasting. The HeadlineResult dataclass encapsulates all generated content (ticker, headline, twitter_url, linkedin_url, copy_text) in a single reusable object. The convenience function generate_shareable_headline combines headline generation and URL creation in one call, reducing boilerplate code. All functions include comprehensive docstrings with usage examples. URL encoding implementation follows Python best practices using urllib.parse module functions to handle UTF-8 encoding and special character conversion, ensuring cross-platform compatibility and preventing URL injection issues.\n</info added on 2025-12-02T08:17:05.154Z>",
+            "status": "done",
+            "testStrategy": "Test URL correctness, encoding, and functionality with example headlines and tickers such as HOOD, CRM, and PLTR.",
+            "parentId": "undefined",
+            "updatedAt": "2025-12-02T08:17:10.029Z"
+          },
+          {
+            "id": 4,
+            "title": "Integrate Headline Generation and Sharing Functions into Module",
+            "description": "Combine generate_headline and generate_share_urls functions into a cohesive headline generator module ready for use in the application.",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "Structure the module to expose a clean API for generating headlines and share URLs. Ensure modularity and maintainability for future enhancements.",
+            "status": "done",
+            "testStrategy": "Integration tests to confirm seamless interaction between headline generation and sharing functions.",
+            "parentId": "undefined",
+            "updatedAt": "2025-12-02T08:17:10.036Z"
+          },
+          {
+            "id": 5,
+            "title": "Create Unit Tests Covering All Signal Types and Sharing Scenarios",
+            "description": "Develop comprehensive unit tests to validate headline generation accuracy and share URL correctness across all signal types and severity levels.",
+            "dependencies": [
+              4
+            ],
+            "details": "Write tests that cover SELL, BUY, HOLD signals with varying severity metrics, emoji inclusion, and social media optimization. Include tests for URL encoding and sharing functionality using sample tickers.",
+            "status": "in-progress",
+            "testStrategy": "Execute unit tests to verify headline content, format, emoji usage, and share URL correctness; ensure coverage of edge cases.",
+            "parentId": "undefined",
+            "updatedAt": "2025-12-02T08:17:14.676Z"
+          }
+        ],
+        "updatedAt": "2025-12-02T08:17:14.676Z"
       },
       {
         "id": "22",
@@ -384,9 +451,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-02T08:12:46.902Z",
+      "lastModified": "2025-12-02T08:18:46.273Z",
       "taskCount": 25,
-      "completedCount": 19,
+      "completedCount": 20,
       "tags": [
         "master"
       ]

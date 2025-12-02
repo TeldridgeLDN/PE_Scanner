@@ -1,4 +1,4 @@
-"""Analysis modules for P/E compression, fair value, stock classification, growth, hyper-growth, and tiered routing."""
+"""Analysis modules for P/E compression, fair value, stock classification, growth, hyper-growth, tiered routing, and anchoring."""
 
 from pe_scanner.analysis.classification import (
     StockType,
@@ -57,6 +57,10 @@ from pe_scanner.analysis.router import (
     get_mode_name,
     get_stock_type,
 )
+from pe_scanner.analysis.anchoring import (
+    generate_anchor,
+    generate_anchors_batch,
+)
 
 __all__ = [
     # Classification
@@ -110,4 +114,7 @@ __all__ = [
     "analyze_stock",
     "get_mode_name",
     "get_stock_type",
+    # Anchoring
+    "generate_anchor",
+    "generate_anchors_batch",
 ]

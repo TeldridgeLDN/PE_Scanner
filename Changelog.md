@@ -63,6 +63,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Comprehensive integration tests (28 tests, 82% coverage)
   - Tests include real-world examples (HOOD, CRM, PLTR) and boundary cases
   - Example: Single function now analyzes any stock type automatically
+- **Anchoring Engine** (`analysis/anchoring.py`): Transforms abstract metrics into memorable, concrete statements
+  - `generate_anchor()`: Main entry point for creating "What Would Have To Be True" statements
+  - **VALUE mode anchors**:
+    - Profit multiplication for severe negative compression (<-30%)
+    - Example: "Market expects profits to DROP 70%. To return to fair value, HOOD would need to grow profits 3.3x"
+  - **GROWTH mode anchors**:
+    - Growth requirement for high P/E stocks (>30)
+    - Example: "To justify P/E of 65, NVDA needs 65% annual earnings growth for 5 years. Only 5% of companies achieve this."
+    - Attractive/expensive PEG interpretations for moderate P/E
+  - **HYPER_GROWTH mode anchors**:
+    - Profitability gap calculation for expensive stocks (P/S > 10)
+    - Severe challenges warning for declining revenue + heavy losses
+    - Example: "At 12.0x sales, PLTR needs to achieve 35 points higher profitability to justify valuation"
+  - **MEGA-CAP anchors** (market cap > $500B):
+    - Apple profit comparison for trillion-dollar companies
+    - Example: "At current price, MEGA is valued as if it will generate $120B in annual profit — more than Apple's $100B"
+  - Priority system ensures most relevant anchor is shown (loss warnings > mega-cap > profitability gaps)
+  - `generate_anchors_batch()`: Batch anchor generation with error handling
+  - Comprehensive unit tests (21 tests, 90% coverage)
+  - Tests include real-world examples (HOOD, NVDA, RIVN) and all anchor types
 - **Yahoo Finance Data Fetcher** (`data/fetcher.py`): Complete implementation
   - `fetch_market_data()`: Fetches current price, trailing/forward P/E, trailing/forward EPS, market cap
   - `batch_fetch()`: Efficient multi-ticker fetching with rate limiting
