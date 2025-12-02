@@ -607,17 +607,17 @@ function FAQSection() {
           ))}
         </div>
 
-        <div className="mt-12 text-center">
-          <p className="text-slate-600 mb-4">
+        <div className="mt-12 text-center p-8 rounded-2xl bg-gradient-to-br from-primary/5 via-accent/5 to-buy/5 border border-primary/10">
+          <p className="text-slate-700 mb-6 font-medium text-lg">
             Still have questions?
           </p>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-accent hover:from-primary-dark hover:to-accent-dark text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105 text-lg"
           >
             Contact us
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
             </svg>
           </Link>
         </div>
