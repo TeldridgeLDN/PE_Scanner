@@ -109,35 +109,47 @@ export default function Navigation({ isAuthenticated = false, userPlan }: Naviga
 
       {/* Navigation Bar */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? 'bg-white shadow-md'
-            : 'bg-white/80 backdrop-blur-md'
+            ? 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 shadow-xl'
+            : 'bg-gradient-to-r from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-xl'
         }`}
       >
+        {/* Subtle gradient line at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-accent to-buy opacity-80"></div>
+        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link
               href="/"
-              className="flex items-center gap-2 group"
+              className="flex items-center gap-3 group"
             >
-              {/* Icon with gradient background */}
+              {/* Icon with enhanced gradient */}
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent rounded-lg blur-sm opacity-70 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative bg-gradient-to-br from-primary to-accent p-2 rounded-lg">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-buy rounded-xl blur-md opacity-60 group-hover:opacity-100 transition-all duration-300"></div>
+                <div className="relative bg-gradient-to-br from-primary via-accent to-buy p-2.5 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                   </svg>
                 </div>
               </div>
-              {/* Brand text with gradient */}
-              <span 
-                className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-buy"
-                style={{ fontWeight: 700, letterSpacing: '-0.02em' }}
-              >
-                StockSignal
-              </span>
+              {/* Brand text - NOW VISIBLE with white/gradient */}
+              <div className="flex flex-col">
+                <span 
+                  className="font-black text-2xl text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-primary group-hover:via-accent group-hover:to-buy transition-all duration-300"
+                  style={{ 
+                    fontWeight: 900, 
+                    letterSpacing: '-0.03em',
+                    lineHeight: '1.2'
+                  }}
+                >
+                  StockSignal
+                </span>
+                <span className="text-[10px] text-primary-light font-semibold tracking-widest uppercase">
+                  By Investors, For Investors
+                </span>
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
@@ -151,9 +163,10 @@ export default function Navigation({ isAuthenticated = false, userPlan }: Naviga
                     e.preventDefault();
                     handleNavLinkClick(link.label, link.href);
                   }}
-                  className="text-slate-700 hover:text-primary font-medium transition-colors"
+                  className="text-slate-300 hover:text-white font-semibold transition-colors relative group"
                 >
                   {link.label}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary via-accent to-buy group-hover:w-full transition-all duration-300"></span>
                 </a>
               ))}
             </div>
@@ -185,7 +198,7 @@ export default function Navigation({ isAuthenticated = false, userPlan }: Naviga
                   {/* Sign In Link (Future) */}
                   <Link
                     href="/sign-in"
-                    className="text-slate-700 hover:text-primary font-medium transition-colors"
+                    className="text-slate-300 hover:text-white font-semibold transition-colors"
                   >
                     Sign In
                   </Link>
@@ -193,9 +206,11 @@ export default function Navigation({ isAuthenticated = false, userPlan }: Naviga
                   {/* Get Started Button */}
                   <button
                     onClick={handleGetStartedClick}
-                    className="px-6 py-2 bg-gradient-to-r from-[#0d9488] to-[#0369a1] text-white font-semibold rounded-lg hover:shadow-lg transition-all"
+                    className="relative px-8 py-3 bg-gradient-to-r from-primary via-accent to-buy text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-primary/50 transition-all hover:scale-105 overflow-hidden group"
                   >
-                    Get Started Free
+                    <span className="relative z-10">Get Started Free</span>
+                    {/* Animated shine effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
                   </button>
                 </>
               )}
@@ -204,12 +219,12 @@ export default function Navigation({ isAuthenticated = false, userPlan }: Naviga
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="md:hidden p-2 text-slate-700 hover:text-primary transition-colors"
+              className="md:hidden p-2 text-slate-300 hover:text-white transition-colors"
               aria-label="Open menu"
               aria-expanded={isMobileMenuOpen}
             >
               <svg
-                className="w-6 h-6"
+                className="w-7 h-7"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -217,7 +232,7 @@ export default function Navigation({ isAuthenticated = false, userPlan }: Naviga
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                   d="M4 6h16M4 12h16M4 18h16"
                 />
               </svg>
