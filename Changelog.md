@@ -8,6 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Headline Generator Module** (`analysis/headlines.py`): Viral-optimized headlines for stock analysis signals
+  - `generate_headline()`: Auto-detects analysis mode and creates shareable headlines
+  - `generate_share_urls()`: Pre-formatted URLs for Twitter, LinkedIn, and copy text
+  - `generate_shareable_headline()`: Convenience function combining headline and URL generation
+  - `HeadlineResult` dataclass: Structured result with headline and all share URLs
+  - Template support for all analysis modes:
+    - VALUE mode: 6 signal types (STRONG_BUY, BUY, HOLD, SELL, STRONG_SELL, DATA_ERROR)
+    - GROWTH mode: 4 signal types (BUY, HOLD, SELL, DATA_ERROR)
+    - HYPER_GROWTH mode: 4 signal types with intelligent SELL trigger detection
+  - Emoji integration for quick visual identification (🚀 📈 ⚖️ 📉 🔴 ⚠️)
+  - Twitter-optimized: All headlines ≤ 280 characters
+  - Automatic hashtag generation ($TICKER #stocks #investing #stockmarket)
+  - URL encoding for special characters using urllib.parse
+  - Optional base URL parameter for "Learn more" links
+  - Platform-specific formatting (Twitter gets hashtags, LinkedIn optimized separately)
+  - Comprehensive unit tests (27 tests, 97% coverage)
+  - Examples: HOOD (VALUE), CRM (GROWTH), PLTR (HYPER_GROWTH)
 - **Stock Classification Module** (`analysis/classification.py`): Foundation for v2.0 tiered analysis
   - `StockType` enum: VALUE, GROWTH, HYPER_GROWTH categories
   - `classify_stock_type()`: Automatic classification based on trailing P/E ratio
