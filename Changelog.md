@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Comprehensive API Integration Tests** (`tests/integration/test_api.py`): 30 tests for v2.0 API
+  - Tests for all endpoints (/, /health, /api/analyze, /api/compression)
+  - Query parameter validation (include_anchor, include_headline, include_share_urls)
+  - Error handling tests (404, 405, 500)
+  - Response schema validation
+  - Deprecation header verification
+  - Integration with v2.0 modules (anchoring, headlines, share URLs)
+  - Performance and reliability tests
+  - Coverage: API module 76-85%, overall v2.0 features 36%
+  - Total: 275 passing tests for v2.0 features
 - **REST API v2.0** (`api/` module): Flask-based REST API for stock analysis
   - `create_app()`: Flask app factory with full v2.0 support
   - `AnalysisService`: Business logic layer coordinating data fetching and analysis
