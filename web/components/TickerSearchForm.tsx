@@ -259,27 +259,61 @@ export default function TickerSearchForm({ className = '' }: TickerSearchFormPro
           </div>
         )}
         
-        {/* Rate Limit Message */}
+        {/* Rate Limit Message - Conversion-Focused Design */}
         {rateLimitInfo && (
-          <div className="mt-3 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-            <p className="text-sm text-amber-800 text-center mb-2 font-medium">
-              {rateLimitInfo.message}
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="mt-4 p-6 bg-gradient-to-br from-slate-50 to-slate-100 border-2 border-slate-200 rounded-2xl shadow-lg">
+            {/* Icon + Headline */}
+            <div className="flex items-start gap-3 mb-4">
+              <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
+                <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h4 className="font-heading text-lg font-bold text-slate-900 mb-1">
+                  Daily Limit Reached
+                </h4>
+                <p className="text-sm text-slate-600">
+                  {rateLimitInfo.message}
+                </p>
+              </div>
+            </div>
+
+            {/* CTA Buttons - Visual Hierarchy */}
+            <div className="space-y-3">
+              {/* Primary CTA - Sign Up (Most Prominent) */}
               <Link 
-                href="#pricing"
-                className="text-sm font-medium text-primary hover:text-primary-dark underline"
+                href="/sign-up"
+                className="block w-full px-6 py-4 bg-gradient-to-r from-primary via-accent to-buy text-white font-bold rounded-xl hover:shadow-xl hover:scale-105 transition-all"
+                onClick={() => trackEvent('rate_limit_signup_clicked', { source: 'ticker_search_form' })}
               >
-                Sign up for 10 free analyses per day →
+                <div className="flex flex-col items-center gap-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">🎉</span>
+                    <span className="text-base">Sign Up Free - Get 10 Per Day</span>
+                  </div>
+                  <div className="text-xs opacity-90">No credit card required</div>
+                </div>
               </Link>
-              <span className="hidden sm:inline text-slate-300">|</span>
+
+              {/* Secondary CTA - Go Pro (Clear Value) */}
               <a 
                 href="#pricing"
-                className="text-sm font-medium text-slate-600 hover:text-slate-700"
+                className="block w-full px-6 py-3 bg-white border-2 border-slate-200 text-slate-900 font-bold text-center rounded-xl hover:border-primary hover:shadow-md transition-all"
+                onClick={() => trackEvent('rate_limit_pro_clicked', { source: 'ticker_search_form' })}
               >
-                Go Pro for unlimited (£25/mo)
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-lg">⚡</span>
+                  <span>Go Pro - Unlimited Analyses</span>
+                  <span className="text-primary ml-1">£25/mo</span>
+                </div>
               </a>
             </div>
+
+            {/* Social Proof Micro-Copy */}
+            <p className="mt-4 text-xs text-center text-slate-500">
+              Join 2,000+ investors using StockSignal
+            </p>
           </div>
         )}
       </form>

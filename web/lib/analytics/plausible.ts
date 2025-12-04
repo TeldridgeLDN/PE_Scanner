@@ -24,7 +24,9 @@ export type PlausibleEvent =
   | 'Scroll_Depth_25'
   | 'Scroll_Depth_50'
   | 'Scroll_Depth_75'
-  | 'Scroll_Depth_100';
+  | 'Scroll_Depth_100'
+  | 'rate_limit_signup_clicked'
+  | 'rate_limit_pro_clicked';
 
 /**
  * Event properties for custom dimensions
@@ -34,7 +36,7 @@ export interface PlausibleEventProps {
   signal?: 'BUY' | 'SELL' | 'HOLD';
   analysis_mode?: 'VALUE' | 'GROWTH' | 'HYPER_GROWTH';
   platform?: 'twitter' | 'linkedin' | 'copy';
-  source?: 'rate_limit' | 'portfolio_gate' | 'footer' | 'hero' | 'nav';
+  source?: 'rate_limit' | 'portfolio_gate' | 'footer' | 'hero' | 'nav' | 'ticker_search_form';
   positions?: number;
   type?: 'ISA' | 'SIPP' | 'GENERAL' | 'WISHLIST';
   tier?: 'pro' | 'premium';

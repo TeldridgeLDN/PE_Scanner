@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **Conversion-Focused Rate Limit UI** - Redesigned rate limit message for better visibility and conversion:
+  - Clear visual hierarchy with icon, headline, and description
+  - Primary CTA: "Sign Up Free - Get 10 Per Day" with gradient button (most prominent)
+  - Secondary CTA: "Go Pro - Unlimited Analyses" with clear pricing (£25/mo)
+  - Added social proof: "Join 2,000+ investors using StockSignal"
+  - Fixed poor contrast issue (teal text on amber background)
+  - Added event tracking for signup and pro clicks from rate limit
+  - Improved spacing and visual prominence to move users down the conversion funnel
 - **Prominent "Analyze Another Stock" CTA** - Added centered button between Key Metrics and Share Analysis sections:
   - Brand gradient styling with search icon
   - Encouraging subtext: "Check more stocks to find the best opportunities"
