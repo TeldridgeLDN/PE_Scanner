@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - **Shareable Headlines Feature Card** - Removed from Features section to focus on core analysis capabilities
+- **30-day Money-Back Guarantee** - Removed from pricing section below plans
 
 ### Changed
 - **Conversion-Focused Rate Limit UI** - Redesigned rate limit message for better visibility and conversion:

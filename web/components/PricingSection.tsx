@@ -346,7 +346,7 @@ export default function PricingSection() {
             ✓ Cancel anytime • No credit card required for free tier
           </p>
           <p className="text-slate-600">
-            ✓ 30-day money-back guarantee • Email support included
+            ✓ Email support included
           </p>
         </div>
 
