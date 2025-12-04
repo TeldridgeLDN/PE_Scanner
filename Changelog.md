@@ -7,11 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Friendly Data Error Messages** - Made error messages human and polite instead of technical:
+  - Headlines: "We couldn't find the revenue data needed for this stock. Try a more established company."
+  - Anchors: "Sorry, we don't have enough financial data... This often happens with smaller or newer companies."
+  - Removed blame-like language ("Cannot perform", "Insufficient data", "Data quality issues")
+  - Added helpful suggestions ("Try a larger company", "Try a more established company")
+- **Removed Financial Jargon** - Simplified language throughout:
+  - "Rule of 40" → "Growth + Profit" with "Healthy (40+)" indicator
+  - Anchor statements now explain in plain terms (e.g., "needs 35% revenue growth" instead of "63 points higher profitability")
+  - Headlines simplified (e.g., "Weak growth + profit combination" instead of "Rule of 40 score shows weak fundamentals")
+- **Signal Badge Icons** - Replaced emoji circles (🔴🟢🟡) with SVG icons for signals:
+  - BUY: Upward trending arrow (📈)
+  - SELL: Downward trending arrow (📉)
+  - HOLD: Horizontal line (➖)
+  - DATA ERROR: Warning triangle (⚠️)
+- **Headline Emojis Removed** - Removed emoji prefixes from analysis headlines since the SVG badge provides the visual signal
+
 ### Fixed
+- **Portfolio CTA Button Text** - Changed "Upload Portfolio CSV" button text from `text-primary` to `text-slate-900` for better visibility on white background
+- **HYPER_GROWTH Mode Data Fetching** - Fixed missing revenue/growth metrics in data fetcher
+  - Added `revenue`, `revenue_growth_pct`, `profit_margin_pct`, `earnings_growth_pct` to `MarketData` class
+  - Now correctly extracts `totalRevenue`, `revenueGrowth`, `profitMargins`, `earningsGrowth` from yfinance
+  - Fixes "DATA ERROR" for TSLA and other hyper-growth stocks (P/E > 50)
+  - HYPER_GROWTH analysis now shows proper P/S ratio, Rule of 40 score, and signals
+- **Report Page Null Reference** - Fixed crash when `data_quality.flags` is undefined
+  - Added optional chaining for `data_quality.flags?.length` and `data_quality.flags?.map()`
 - **Stripe API Version** - Updated to 2025-11-17.clover to fix deployment build errors
 - **Stripe Client Initialization** - Changed to lazy loading pattern to prevent build-time env var issues
 
 ### Added
+- **Playwright E2E Test Suite** - Comprehensive end-to-end testing for key user journeys
+  - Landing page tests: Hero section, social proof, how-it-works, features, pricing, FAQ, footer
+  - Stock analysis flow: Ticker search, popular ticker shortcuts, UK stock mapping, report display
+  - Authentication pages: Sign-in/sign-up page structure, navigation between auth pages
+  - Dashboard tests: Access control, page structure (requires auth setup for full tests)
+  - Legal pages: Privacy, terms, disclaimer page content and navigation
+  - Mobile responsiveness tests across all pages
+  - Share functionality tests (Twitter, LinkedIn, copy to clipboard)
+  - Test scripts: `npm run test:e2e`, `test:e2e:ui`, `test:e2e:headed`, `test:e2e:debug`
+- **Paid Marketing Strategy (£10/week)** - Budget-conscious growth plan
+  - Reddit Promoted Posts strategy for r/UKInvesting (£5/week)
+  - Twitter/X boost strategy for FinTwit audience (£3/week)
+  - LinkedIn sponsored content for B2B audience (£2/week)
+  - "Organic-first, paid-second" amplification approach
+  - Weekly execution playbook with content calendar
+  - UTM tracking templates for attribution
+  - Scaling plan from £10 → £40/week
+  - Break-even analysis: 2 Pro subscribers covers costs
+- **Comprehensive SEO Audit & Improvements** - Following Orchestrator SEO best practices
+  - Added `robots.txt` - Search engine directives with sitemap reference
+  - Added `sitemap.ts` - Dynamic sitemap generation via Next.js App Router
+  - Improved legal page descriptions to optimal 120-158 characters
+  - Added Open Graph and Twitter Card tags to legal pages
+  - Added metadata to dashboard page (noindex for private pages)
+  - Added metadata to sign-in/sign-up pages with OG images
+  - Added `generateDashboardMetadata()` and `generateAuthMetadata()` helpers
+  - SEO documentation comments in metadata.ts
 - **Social Media Card System** - Reddit/WSB-optimized shareable stock analysis cards
   - SocialMediaCard component with clean, non-promotional design
   - Visual card layout showing ticker, price, signal, key metric, and reasoning

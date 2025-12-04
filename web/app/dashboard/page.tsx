@@ -1,6 +1,10 @@
+import { Metadata } from 'next';
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { generateDashboardMetadata } from '@/lib/metadata';
+
+export const metadata: Metadata = generateDashboardMetadata();
 
 export default async function DashboardPage() {
   const user = await currentUser();

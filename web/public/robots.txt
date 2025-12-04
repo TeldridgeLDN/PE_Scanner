@@ -1,0 +1,14 @@
+# StockSignal Robots.txt
+# https://stocksignal.app
+
+User-agent: *
+Allow: /
+
+# Disallow demo/test pages
+Disallow: /demo/
+Disallow: /api/
+
+# Sitemap reference
+Sitemap: https://stocksignal.app/sitemap.xml
+
+

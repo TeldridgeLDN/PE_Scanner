@@ -285,3 +285,4 @@ In Plausible, you can now analyze:
 
 The TrackableButton component provides a robust, reusable foundation for tracking CTA performance across the PE Scanner application. It combines analytics, accessibility, and developer experience into a single, well-designed component.
 
+

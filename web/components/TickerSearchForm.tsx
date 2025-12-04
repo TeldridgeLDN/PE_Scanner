@@ -215,15 +215,10 @@ export default function TickerSearchForm({ className = '' }: TickerSearchFormPro
           <button
             type="submit"
             disabled={isLoading || !ticker.trim()}
-            className={`
-              px-8 py-3 rounded-xl font-semibold text-lg text-white
-              transition-all duration-200
-              whitespace-nowrap
-              ${isLoading || !ticker.trim()
-                ? 'bg-slate-300 cursor-not-allowed'
-                : 'bg-primary hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0'
-              }
-            `}
+            className="px-8 py-3 rounded-xl font-semibold text-lg text-white transition-all duration-200 whitespace-nowrap hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: isLoading || !ticker.trim() ? '#cbd5e1' : '#0d9488',
+            }}
           >
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">

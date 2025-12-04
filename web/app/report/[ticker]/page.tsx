@@ -44,16 +44,46 @@ export default async function ReportPage({ params }: PageProps) {
     return <ErrorDisplay error={{ status: 500, message: 'No data returned' }} ticker={ticker} />;
   }
 
-  const signalColors = {
-    BUY: 'bg-buy text-white',
-    SELL: 'bg-sell text-white',
-    HOLD: 'bg-hold text-white',
+  // Signal styles with inline colors to ensure visibility
+  const signalStyles: Record<string, { bg: string; text: string }> = {
+    BUY: { bg: '#10b981', text: '#ffffff' },      // Emerald/Green
+    SELL: { bg: '#ef4444', text: '#ffffff' },     // Red
+    HOLD: { bg: '#f59e0b', text: '#ffffff' },     // Amber
+    'DATA ERROR': { bg: '#f59e0b', text: '#ffffff' },
   };
 
-  const signalEmoji = {
-    BUY: '🟢',
-    SELL: '🔴',
-    HOLD: '🟡',
+  // SVG icons for each signal type
+  const SignalIcon = ({ signal }: { signal: string }) => {
+    switch (signal) {
+      case 'BUY':
+        // Upward trending arrow
+        return (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+          </svg>
+        );
+      case 'SELL':
+        // Downward trending arrow
+        return (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6" />
+          </svg>
+        );
+      case 'HOLD':
+        // Horizontal line / pause
+        return (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 12h14" />
+          </svg>
+        );
+      default:
+        // Warning/error icon
+        return (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        );
+    }
   };
 
   return (
@@ -77,9 +107,12 @@ export default async function ReportPage({ params }: PageProps) {
             </Link>
             <Link 
               href="/"
-              className="text-sm font-medium text-primary hover:text-primary-dark transition-colors"
+              className="text-sm font-semibold text-slate-700 hover:text-primary transition-colors flex items-center gap-1"
             >
-              ← Analyze Another
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Analyze Another
             </Link>
           </div>
         </div>
@@ -92,8 +125,15 @@ export default async function ReportPage({ params }: PageProps) {
           {/* Signal Badge */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-200">
             <div className="flex items-center gap-3">
-              <div className={`px-6 py-3 rounded-xl font-bold text-2xl ${signalColors[analysis.signal]}`}>
-                {signalEmoji[analysis.signal]} {analysis.signal}
+              <div 
+                className="px-6 py-3 rounded-xl font-bold text-2xl flex items-center gap-2"
+                style={{ 
+                  backgroundColor: signalStyles[analysis.signal]?.bg || signalStyles['DATA ERROR'].bg,
+                  color: signalStyles[analysis.signal]?.text || signalStyles['DATA ERROR'].text
+                }}
+              >
+                <SignalIcon signal={analysis.signal} />
+                {analysis.signal}
               </div>
               <div className="text-sm">
                 <div className="font-semibold text-slate-900">{analysis.ticker}</div>
@@ -148,6 +188,21 @@ export default async function ReportPage({ params }: PageProps) {
                   <div className="text-xl font-bold text-slate-900">
                     {analysis.metrics.trailing_pe.toFixed(2)}
                   </div>
+                  <div className={`text-xs font-semibold mt-1 ${
+                    analysis.metrics.trailing_pe < 15 
+                      ? 'text-emerald-600' 
+                      : analysis.metrics.trailing_pe < 25 
+                        ? 'text-slate-500' 
+                        : 'text-amber-600'
+                  }`}>
+                    {analysis.metrics.trailing_pe < 15 
+                      ? '✓ Cheap (under 15)' 
+                      : analysis.metrics.trailing_pe < 25 
+                        ? '• Fair (15-25)' 
+                        : analysis.metrics.trailing_pe < 50 
+                          ? '⚠ Expensive (25-50)' 
+                          : '⚠ Very expensive (50+)'}
+                  </div>
                 </div>
               )}
 
@@ -165,11 +220,27 @@ export default async function ReportPage({ params }: PageProps) {
               {analysis.metrics.compression_pct !== undefined && (
                 <div className="p-4 bg-slate-50 rounded-lg">
                   <div className="text-xs text-slate-500 mb-1">P/E Compression</div>
-                  <div className={`text-xl font-bold ${
-                    analysis.metrics.compression_pct > 0 ? 'text-buy' : 'text-sell'
-                  }`}>
+                  <div 
+                    className="text-xl font-bold"
+                    style={{ color: analysis.metrics.compression_pct > 0 ? '#059669' : '#dc2626' }}
+                  >
                     {analysis.metrics.compression_pct > 0 ? '+' : ''}
                     {analysis.metrics.compression_pct.toFixed(1)}%
+                  </div>
+                  <div className={`text-xs font-semibold mt-1 ${
+                    analysis.metrics.compression_pct > 10 
+                      ? 'text-emerald-600' 
+                      : analysis.metrics.compression_pct > 0 
+                        ? 'text-slate-500' 
+                        : 'text-amber-600'
+                  }`}>
+                    {analysis.metrics.compression_pct > 10 
+                      ? '✓ Strong growth expected' 
+                      : analysis.metrics.compression_pct > 0 
+                        ? '• Mild growth expected' 
+                        : analysis.metrics.compression_pct > -10 
+                          ? '⚠ Mild decline expected' 
+                          : '⚠ Sharp decline expected'}
                   </div>
                 </div>
               )}
@@ -180,6 +251,19 @@ export default async function ReportPage({ params }: PageProps) {
                   <div className="text-xs text-slate-500 mb-1">PEG Ratio</div>
                   <div className="text-xl font-bold text-slate-900">
                     {analysis.metrics.peg_ratio.toFixed(2)}
+                  </div>
+                  <div className={`text-xs font-semibold mt-1 ${
+                    analysis.metrics.peg_ratio < 1 
+                      ? 'text-emerald-600' 
+                      : analysis.metrics.peg_ratio < 2 
+                        ? 'text-slate-500' 
+                        : 'text-amber-600'
+                  }`}>
+                    {analysis.metrics.peg_ratio < 1 
+                      ? '✓ Undervalued (under 1)' 
+                      : analysis.metrics.peg_ratio < 2 
+                        ? '• Fair value (1-2)' 
+                        : '⚠ Overvalued (2+)'}
                   </div>
                 </div>
               )}
@@ -199,17 +283,37 @@ export default async function ReportPage({ params }: PageProps) {
                 <div className="p-4 bg-slate-50 rounded-lg">
                   <div className="text-xs text-slate-500 mb-1">Price/Sales</div>
                   <div className="text-xl font-bold text-slate-900">
-                    {analysis.metrics.price_to_sales.toFixed(2)}
+                    {analysis.metrics.price_to_sales.toFixed(2)}x
+                  </div>
+                  <div className={`text-xs font-semibold mt-1 ${
+                    analysis.metrics.price_to_sales < 5 
+                      ? 'text-emerald-600' 
+                      : analysis.metrics.price_to_sales < 10 
+                        ? 'text-slate-500' 
+                        : 'text-amber-600'
+                  }`}>
+                    {analysis.metrics.price_to_sales < 5 
+                      ? '✓ Cheap (under 5x)' 
+                      : analysis.metrics.price_to_sales < 10 
+                        ? '• Fair (5-10x)' 
+                        : analysis.metrics.price_to_sales < 15 
+                          ? '⚠ Expensive (10-15x)' 
+                          : '⚠ Very expensive (15x+)'}
                   </div>
                 </div>
               )}
 
-              {/* Rule of 40 (HYPER_GROWTH mode) */}
-              {analysis.metrics.rule_of_40 && (
+              {/* Growth + Profit Score (HYPER_GROWTH mode) */}
+              {analysis.metrics.rule_of_40 !== undefined && (
                 <div className="p-4 bg-slate-50 rounded-lg">
-                  <div className="text-xs text-slate-500 mb-1">Rule of 40</div>
+                  <div className="text-xs text-slate-500 mb-1">Growth + Profit</div>
                   <div className="text-xl font-bold text-slate-900">
-                    {analysis.metrics.rule_of_40.toFixed(1)}
+                    {analysis.metrics.rule_of_40.toFixed(0)}
+                  </div>
+                  <div className={`text-xs font-semibold mt-1 ${
+                    analysis.metrics.rule_of_40 >= 40 ? 'text-emerald-600' : 'text-amber-600'
+                  }`}>
+                    {analysis.metrics.rule_of_40 >= 40 ? '✓ Healthy (40+)' : '⚠ Below healthy (40+)'}
                   </div>
                 </div>
               )}
@@ -269,7 +373,7 @@ export default async function ReportPage({ params }: PageProps) {
           )}
 
           {/* Data Quality Flags */}
-          {analysis.data_quality && (analysis.data_quality.flags.length > 0 || analysis.data_quality.uk_corrected) && (
+          {analysis.data_quality && ((analysis.data_quality.flags?.length ?? 0) > 0 || analysis.data_quality.uk_corrected) && (
             <div className="mb-6">
               <h2 className="text-lg font-bold text-slate-900 mb-4">Data Quality</h2>
               <div className="space-y-2">
@@ -281,7 +385,7 @@ export default async function ReportPage({ params }: PageProps) {
                     <span>UK stock data automatically corrected (pence → pounds)</span>
                   </div>
                 )}
-                {analysis.data_quality.flags.map((flag, index) => (
+                {analysis.data_quality.flags?.map((flag, index) => (
                   <div key={index} className="flex items-start gap-2 text-sm text-amber-700">
                     <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -311,7 +415,7 @@ export default async function ReportPage({ params }: PageProps) {
           <p className="text-primary-light mb-6">
             Upload your portfolio CSV and get ranked analysis for all your holdings
           </p>
-          <button className="px-8 py-4 bg-white text-primary rounded-xl font-bold text-lg hover:bg-slate-100 transition-colors">
+          <button className="px-8 py-4 bg-white text-slate-900 rounded-xl font-bold text-lg hover:bg-slate-100 transition-colors">
             Upload Portfolio CSV
           </button>
           <p className="text-sm text-primary-light mt-4">

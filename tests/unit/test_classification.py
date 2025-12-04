@@ -310,3 +310,4 @@ def test_classify_stock_type_parametrized(pe, expected):
     result = classify_stock_type(pe)
     assert result == expected, f"P/E {pe} should classify as {expected.value}"
 
+

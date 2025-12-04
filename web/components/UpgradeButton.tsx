@@ -74,3 +74,4 @@ export default function UpgradeButton({ plan, priceId, className, children }: Up
   );
 }
 
+

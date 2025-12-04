@@ -420,3 +420,4 @@ def test_stock_data_full():
     assert data.market_cap == 100e9
     assert len(data.data_quality_flags) == 1
 
+

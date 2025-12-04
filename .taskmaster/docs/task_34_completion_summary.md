@@ -259,3 +259,4 @@ with app.test_client() as client:
 - Global throttling prevents the exact Yahoo lockout issue user experienced
 - System is Railway production-ready with proper multi-instance coordination
 
+

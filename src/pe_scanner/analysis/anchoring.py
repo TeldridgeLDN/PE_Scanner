@@ -115,6 +115,11 @@ def _anchor_value_mode(
     
     # Fallback for VALUE mode
     signal_word = result.signal.value.replace('_', ' ')
+    
+    # Friendly message for data errors
+    if signal_word.lower() in ('data_error', 'data error'):
+        return f"Sorry, we don't have enough financial data for {result.ticker} to provide a meaningful analysis. This often happens with smaller or newer companies."
+    
     return f"At current valuation, {result.ticker} is priced for {signal_word} conditions"
 
 
@@ -155,45 +160,57 @@ def _anchor_growth_mode(result: GrowthAnalysisResult) -> str:
 
 def _anchor_hyper_growth_mode(result: HyperGrowthAnalysisResult) -> str:
     """
-    Generate anchor for HYPER_GROWTH mode (Price/Sales + Rule of 40).
+    Generate anchor for HYPER_GROWTH mode (Price/Sales + Growth/Profit).
     
-    Strategy: Profitability improvement needed or benchmark comparison.
+    Strategy: Simple language about what needs to improve.
     """
-    # PRIORITY 1: For loss-making companies with declining revenue (check first)
-    if result.revenue_growth_pct < 0 and result.profit_margin_pct < -20:
+    growth = result.revenue_growth_pct
+    margin = result.profit_margin_pct
+    combined = result.rule_of_40_score  # Growth + Profit combined
+    
+    # PRIORITY 1: For loss-making companies with declining revenue
+    if growth < 0 and margin < -20:
         return (
-            f"{result.ticker} faces severe challenges: revenue declining "
-            f"{abs(result.revenue_growth_pct):.0f}% with {abs(result.profit_margin_pct):.0f}% losses"
+            f"{result.ticker} faces challenges: revenue declining "
+            f"{abs(growth):.0f}% while losing {abs(margin):.0f}% on every sale"
         )
     
-    # PRIORITY 2: Benchmark comparison for expensive stocks (P/S > 10)
+    # PRIORITY 2: Expensive stocks need better fundamentals
     if result.price_to_sales > 10:
-        # Calculate profitability gap to reach Rule of 40 target of 80
-        profitability_gap = 80 - result.rule_of_40_score
-        
-        if profitability_gap > 0:
-            return (
-                f"At {result.price_to_sales:.1f}x sales, {result.ticker} needs to achieve "
-                f"{profitability_gap:.0f} points higher profitability to justify valuation "
-                f"(current Rule of 40: {result.rule_of_40_score:.0f})"
-            )
+        if combined < 40:
+            # Show what needs to improve
+            if margin < 0:
+                return (
+                    f"At {result.price_to_sales:.1f}x sales, {result.ticker} needs to turn its "
+                    f"{abs(margin):.0f}% losses into profits to justify this price"
+                )
+            else:
+                needed_growth = 40 - margin
+                return (
+                    f"At {result.price_to_sales:.1f}x sales, {result.ticker} needs "
+                    f"{needed_growth:.0f}% revenue growth (currently {growth:.0f}%) to justify valuation"
+                )
         else:
-            # Already exceeds target, but still expensive
             return (
                 f"At {result.price_to_sales:.1f}x sales, {result.ticker} is expensive "
-                f"despite strong Rule of 40 score of {result.rule_of_40_score:.0f}"
+                f"but has strong {growth:.0f}% growth and {margin:.0f}% margins"
             )
     
     # PRIORITY 3: For attractive hyper-growth stocks
-    if result.price_to_sales < 5 and result.rule_of_40_score >= 40:
+    if result.price_to_sales < 5 and combined >= 40:
         return (
-            f"{result.ticker} offers strong value: {result.price_to_sales:.1f}x sales "
-            f"with Rule of 40 score of {result.rule_of_40_score:.0f}"
+            f"{result.ticker} offers good value: only {result.price_to_sales:.1f}x sales "
+            f"with {growth:.0f}% growth and {margin:.0f}% profit margins"
         )
     
     # Fallback for HYPER_GROWTH mode
     signal_word = result.signal.value
-    return f"At current valuation, {result.ticker} is priced for {signal_word} conditions"
+    
+    # Friendly message for data errors
+    if signal_word.lower() in ('data_error', 'data error'):
+        return f"Sorry, we don't have enough financial data for {result.ticker} to provide a meaningful analysis. This often happens with smaller or newer companies."
+    
+    return f"At current valuation, {result.ticker} is priced for {signal_word.lower()} conditions"
 
 
 def _anchor_mega_cap(
@@ -229,6 +246,10 @@ def _anchor_fallback(ticker: str, signal: str) -> str:
     """
     Generate fallback anchor when no specific strategy applies.
     """
+    # Friendly message for data errors
+    if signal.lower() in ('data_error', 'data error'):
+        return f"Sorry, we don't have enough financial data for {ticker} to provide a meaningful analysis. This often happens with smaller or newer companies."
+    
     return f"At current valuation, {ticker} is priced for {signal} conditions"
 
 

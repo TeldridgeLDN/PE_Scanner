@@ -62,22 +62,22 @@ def _generate_value_headline(result: CompressionResult) -> str:
     compression = result.compression_pct
     
     if result.signal == CompressionSignal.STRONG_BUY:
-        return f"🚀 ${ticker}: STRONG BUY signal! {compression:+.1f}% P/E compression suggests massive earnings growth ahead. Market underpricing this opportunity."
+        return f"${ticker}: STRONG BUY signal! {compression:+.1f}% P/E compression suggests massive earnings growth ahead. Market underpricing this opportunity."
     
     elif result.signal == CompressionSignal.BUY:
-        return f"📈 ${ticker}: BUY signal detected. {compression:+.1f}% P/E compression indicates solid earnings growth potential. Value opportunity."
+        return f"${ticker}: BUY signal detected. {compression:+.1f}% P/E compression indicates solid earnings growth potential. Value opportunity."
     
     elif result.signal == CompressionSignal.HOLD:
-        return f"⚖️ ${ticker}: HOLD signal. {compression:+.1f}% P/E compression shows neutral outlook. Fairly valued at current levels."
+        return f"${ticker}: HOLD signal. {compression:+.1f}% P/E compression shows neutral outlook. Fairly valued at current levels."
     
     elif result.signal == CompressionSignal.SELL:
-        return f"📉 ${ticker}: SELL signal. {compression:+.1f}% P/E expansion warns of earnings decline. Consider reducing exposure."
+        return f"${ticker}: SELL signal. {compression:+.1f}% P/E expansion warns of earnings decline. Consider reducing exposure."
     
     elif result.signal == CompressionSignal.STRONG_SELL:
-        return f"🔴 ${ticker}: STRONG SELL! {compression:+.1f}% P/E expansion signals major earnings deterioration ahead. High risk."
+        return f"${ticker}: STRONG SELL! {compression:+.1f}% P/E expansion signals major earnings deterioration ahead. High risk."
     
     else:  # DATA_ERROR
-        return f"⚠️ ${ticker}: Data quality issues detected. Analysis inconclusive. Verify metrics before trading."
+        return f"${ticker}: We couldn't find enough data to analyse this stock right now. Try a larger company or check back later."
 
 
 def _generate_growth_headline(result: GrowthAnalysisResult) -> str:
@@ -94,16 +94,16 @@ def _generate_growth_headline(result: GrowthAnalysisResult) -> str:
     peg = result.peg_ratio
     
     if result.signal == GrowthSignal.BUY:
-        return f"🚀 ${ticker}: GROWTH BUY! PEG ratio of {peg:.2f} means you're paying less than ${peg:.2f} for every 1% of growth. Strong value."
+        return f"${ticker}: GROWTH BUY! PEG ratio of {peg:.2f} means you're paying less than ${peg:.2f} for every 1% of growth. Strong value."
     
     elif result.signal == GrowthSignal.HOLD:
-        return f"⚖️ ${ticker}: HOLD signal. PEG ratio of {peg:.2f} suggests fair valuation for current growth rate. Watch and wait."
+        return f"${ticker}: HOLD signal. PEG ratio of {peg:.2f} suggests fair valuation for current growth rate. Watch and wait."
     
     elif result.signal == GrowthSignal.SELL:
-        return f"🔴 ${ticker}: GROWTH SELL. PEG ratio of {peg:.2f} means you're overpaying for growth. Valuation stretched."
+        return f"${ticker}: GROWTH SELL. PEG ratio of {peg:.2f} means you're overpaying for growth. Valuation stretched."
     
     else:  # DATA_ERROR
-        return f"⚠️ ${ticker}: Insufficient growth data for PEG analysis. Unable to generate reliable signal."
+        return f"${ticker}: We couldn't find the growth data needed for this stock. It may be too small or newly listed."
 
 
 def _generate_hyper_growth_headline(result: HyperGrowthAnalysisResult) -> str:
@@ -121,20 +121,20 @@ def _generate_hyper_growth_headline(result: HyperGrowthAnalysisResult) -> str:
     ro40 = result.rule_of_40_score
     
     if result.signal == HyperGrowthSignal.BUY:
-        return f"🚀 ${ticker}: HYPER-GROWTH BUY! P/S of {ps:.1f} + Rule of 40 score {ro40:.0f} = strong fundamentals at attractive valuation."
+        return f"${ticker}: HYPER-GROWTH BUY! Strong growth and profits at attractive valuation."
     
     elif result.signal == HyperGrowthSignal.HOLD:
-        return f"⚖️ ${ticker}: HOLD. P/S {ps:.1f} and Rule of 40 score {ro40:.0f} show mixed signals. Fairly valued for now."
+        return f"${ticker}: HOLD. Mixed signals on growth vs valuation. Fairly valued for now."
     
     elif result.signal == HyperGrowthSignal.SELL:
         # Determine which metric triggered the sell
         if ps > 15:
-            return f"🔴 ${ticker}: HYPER-GROWTH SELL. P/S ratio of {ps:.1f} is excessive. Valuation too rich even for high growth."
+            return f"${ticker}: HYPER-GROWTH SELL. Price-to-Sales of {ps:.1f}x is too expensive. Valuation stretched."
         else:
-            return f"🔴 ${ticker}: HYPER-GROWTH SELL. Rule of 40 score {ro40:.0f} shows weak fundamentals. Growth + margins concerning."
+            return f"${ticker}: HYPER-GROWTH SELL. Weak growth + profit combination. Fundamentals concerning."
     
     else:  # DATA_ERROR
-        return f"⚠️ ${ticker}: Missing revenue/growth data. Cannot perform hyper-growth analysis."
+        return f"${ticker}: We couldn't find the revenue data needed for this stock. Try a more established company."
 
 
 # =============================================================================

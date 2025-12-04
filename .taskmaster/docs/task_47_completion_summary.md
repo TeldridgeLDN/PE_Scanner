@@ -417,3 +417,4 @@ When links are shared on Twitter, LinkedIn, or Facebook, they'll display profess
 
 Ready for **Task 48: Generate Dynamic OG Images**! 🎨
 
+

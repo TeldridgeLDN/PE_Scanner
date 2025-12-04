@@ -353,3 +353,4 @@ def rank_by_peg(
     """
     return sorted(results, key=lambda r: r.peg_ratio, reverse=not ascending)
 
+

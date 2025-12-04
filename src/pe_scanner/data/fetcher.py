@@ -129,6 +129,15 @@ class MarketData:
     last_updated: datetime = field(default_factory=datetime.now)
     data_source: str = "yahoo_finance"
     fetch_errors: list[str] = field(default_factory=list)
+    
+    # GROWTH mode metrics
+    earnings_growth_pct: Optional[float] = None
+    
+    # HYPER_GROWTH mode metrics
+    revenue: Optional[float] = None
+    revenue_growth_pct: Optional[float] = None
+    profit_margin_pct: Optional[float] = None
+    price_to_sales: Optional[float] = None
 
     @property
     def fetched_at(self) -> datetime:
@@ -323,6 +332,18 @@ def _extract_market_data(ticker_symbol: str, yf_ticker: yf.Ticker) -> MarketData
     market_cap = _safe_get(info, "marketCap")
     company_name = info.get("shortName") or info.get("longName")
     currency = info.get("currency", "USD")
+    
+    # Extract GROWTH mode metrics
+    earnings_growth = _safe_get(info, "earningsGrowth")
+    earnings_growth_pct = earnings_growth * 100 if earnings_growth is not None else None
+    
+    # Extract HYPER_GROWTH mode metrics
+    revenue = _safe_get(info, "totalRevenue")
+    revenue_growth = _safe_get(info, "revenueGrowth")
+    revenue_growth_pct = revenue_growth * 100 if revenue_growth is not None else None
+    profit_margins = _safe_get(info, "profitMargins")
+    profit_margin_pct = profit_margins * 100 if profit_margins is not None else None
+    price_to_sales = _safe_get(info, "priceToSalesTrailing12Months")
 
     # Log missing critical data
     if trailing_pe is None:
@@ -345,6 +366,11 @@ def _extract_market_data(ticker_symbol: str, yf_ticker: yf.Ticker) -> MarketData
         last_updated=datetime.now(),
         data_source="yahoo_finance",
         fetch_errors=errors,
+        earnings_growth_pct=earnings_growth_pct,
+        revenue=revenue,
+        revenue_growth_pct=revenue_growth_pct,
+        profit_margin_pct=profit_margin_pct,
+        price_to_sales=price_to_sales,
     )
 
 

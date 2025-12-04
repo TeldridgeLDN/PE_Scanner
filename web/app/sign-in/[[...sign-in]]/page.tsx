@@ -1,4 +1,8 @@
+import { Metadata } from 'next';
 import { SignIn } from '@clerk/nextjs';
+import { generateAuthMetadata } from '@/lib/metadata';
+
+export const metadata: Metadata = generateAuthMetadata('sign-in');
 
 export default function SignInPage() {
   return (

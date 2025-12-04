@@ -1,0 +1,196 @@
+---
+description: SEO implementation patterns and verification requirements for meta tags and search optimization
+globs: web/app/**/*.tsx, web/lib/metadata.ts
+alwaysApply: false
+---
+
+# SEO Implementation Rules for StockSignal
+
+## When to Apply This Rule
+
+This rule applies when:
+- Creating new pages in the Next.js frontend
+- Editing page layouts or components
+- Modifying meta tags or SEO-related content
+- Working with title/description content
+- Adding Open Graph or Twitter Card metadata
+
+---
+
+## Core Requirements
+
+### 1. Every Page Must Have SEO Metadata
+
+**CRITICAL:** Every production page MUST have title and description.
+
+#### ✅ CORRECT Pattern (Using Metadata Generator):
+
+```tsx
+import type { Metadata } from 'next';
+import { generateAuthMetadata } from '@/lib/metadata';
+
+export const metadata: Metadata = generateAuthMetadata('sign-in');
+
+export default function SignInPage() {
+  // ...
+}
+```
+
+#### ✅ CORRECT Pattern (Dynamic Metadata):
+
+```tsx
+import type { Metadata } from 'next';
+import { generateReportMetadata } from '@/lib/metadata';
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { ticker } = await params;
+  const { data: analysis } = await fetchAnalysis(ticker);
+  return generateReportMetadata(ticker, analysis || undefined);
+}
+```
+
+---
+
+### 2. Title Optimization
+
+**Length Requirements:**
+- Minimum: 30 characters
+- Optimal: 50-60 characters
+- Maximum: 60 characters (Google truncates beyond this)
+
+**Title Format:**
+```
+Page Name - StockSignal (50-60 chars)
+```
+
+---
+
+### 3. Description Optimization
+
+**Length Requirements:**
+- Minimum: 70 characters
+- Optimal: 120-158 characters
+- Maximum: 158 characters (Google truncates beyond this)
+
+**Description Format:**
+```
+Value proposition. Key benefits or content summary. Call to action. (120-158 chars)
+```
+
+---
+
+### 4. Metadata Generators Available
+
+StockSignal has these metadata generators in `lib/metadata.ts`:
+
+- `generateLandingMetadata()` - Home page
+- `generateReportMetadata(ticker, analysis?)` - Stock report pages
+- `generateLegalMetadata('privacy' | 'terms' | 'disclaimer')` - Legal pages
+- `generateDashboardMetadata()` - Dashboard (noindex)
+- `generateAuthMetadata('sign-in' | 'sign-up')` - Auth pages
+
+---
+
+### 5. Open Graph & Twitter Cards
+
+All pages should have OG and Twitter meta tags. Use the generators which include:
+
+```tsx
+openGraph: {
+  title,
+  description,
+  type: 'website',
+  url,
+  siteName: 'StockSignal',
+  locale: 'en_GB',
+  images: [{ url: ogImage, width: 1200, height: 630, alt }],
+},
+twitter: {
+  card: 'summary_large_image', // or 'summary' for smaller cards
+  site: '@StockSignalApp',
+  title,
+  description,
+  images: [ogImage],
+},
+```
+
+**Image Requirements:**
+- Size: 1200x630px
+- Format: JPG or PNG
+- Use absolute URLs
+- OG images generated via `/api/og-home` and `/api/og-image/[ticker]`
+
+---
+
+### 6. Canonical URLs
+
+All pages must have canonical URLs:
+
+```tsx
+alternates: {
+  canonical: `${baseUrl}/page-path`,
+},
+```
+
+**Rules:**
+- Always HTTPS
+- Full absolute URL
+- No trailing slash (unless you're consistent everywhere)
+
+---
+
+### 7. robots.txt & Sitemap
+
+**robots.txt** (`public/robots.txt`):
+```
+User-agent: *
+Allow: /
+Disallow: /demo/
+Disallow: /api/
+Sitemap: https://stocksignal.app/sitemap.xml
+```
+
+**Sitemap** (`app/sitemap.ts`):
+- Automatically generated via Next.js App Router
+- Includes all public pages
+- Excludes private/demo pages
+
+---
+
+### 8. Private Pages
+
+Pages that shouldn't be indexed (dashboard, etc.):
+
+```tsx
+robots: {
+  index: false,
+  follow: false,
+},
+```
+
+---
+
+## Quick Reference
+
+| Page Type | Title Format | Description Length | Index? |
+|-----------|--------------|-------------------|--------|
+| Landing | Brand - Tagline | 120-158 chars | Yes |
+| Report | TICKER Analysis - StockSignal | 120-158 chars | Yes |
+| Legal | Policy Name - StockSignal | 120-158 chars | Yes |
+| Auth | Action - StockSignal | 120-158 chars | Yes |
+| Dashboard | Dashboard - StockSignal | Any | No |
+| Demo | - | - | No |
+
+---
+
+## Related Files
+
+- `web/lib/metadata.ts` - All metadata generators
+- `web/public/robots.txt` - Search engine directives
+- `web/app/sitemap.ts` - Dynamic sitemap
+- `web/app/api/og-home/route.tsx` - Home OG image generator
+- `web/app/api/og-image/[ticker]/route.tsx` - Dynamic OG images
+
+---
+
+*Imported from Orchestrator SEO Rule - 3 December 2024*

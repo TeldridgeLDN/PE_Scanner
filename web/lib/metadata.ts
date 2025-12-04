@@ -2,7 +2,13 @@ import type { Metadata } from 'next';
 import type { AnalysisResponse } from './api/client';
 
 // ============================================================================
-// Metadata Generation Helpers
+// Metadata Generation Helpers for StockSignal SEO
+// Following best practices from Orchestrator SEO Rule:
+// - Title: 50-60 characters optimal
+// - Description: 120-158 characters optimal
+// - Open Graph: og:title, og:description, og:image, og:url
+// - Twitter Cards: twitter:card, twitter:title, twitter:description, twitter:image
+// - Canonical URLs: Always HTTPS, full URLs
 // ============================================================================
 
 /**
@@ -183,6 +189,7 @@ export function generateLandingMetadata(): Metadata {
 
 /**
  * Generate metadata for legal pages
+ * Descriptions optimized to 120-158 characters per SEO best practices
  */
 export function generateLegalMetadata(
   page: 'privacy' | 'terms' | 'disclaimer'
@@ -195,21 +202,125 @@ export function generateLegalMetadata(
     disclaimer: 'Investment Disclaimer - StockSignal',
   };
   
+  // Optimized descriptions: 120-158 characters for better SEO
   const descriptions = {
-    privacy: 'Privacy policy and data protection information for StockSignal users. UK GDPR compliant.',
-    terms: 'Terms of service and usage conditions for StockSignal. UK law applies.',
-    disclaimer: 'Important investment disclaimer and risk warnings for StockSignal users. Not financial advice.',
+    privacy: 'How StockSignal protects your data. UK GDPR compliant privacy policy covering data collection, retention, and your rights. No cookies required.',
+    terms: 'Terms of service for StockSignal stock analysis tool. Usage conditions, subscription terms, and UK law compliance. Read before using our service.',
+    disclaimer: 'Important investment disclaimer for StockSignal. Our analysis is educational, not financial advice. Understand the risks before investing.',
   };
   
+  const title = titles[page];
+  const description = descriptions[page];
+  const url = `${baseUrl}/${page}`;
+  const ogImage = `${baseUrl}/api/og-home`;
+  
   return {
-    title: titles[page],
-    description: descriptions[page],
+    title,
+    description,
     robots: {
       index: true,
       follow: true,
     },
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url,
+      siteName: 'StockSignal',
+      locale: 'en_GB',
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: `${title} | StockSignal`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary',
+      site: '@StockSignalApp',
+      title,
+      description,
+    },
     alternates: {
-      canonical: `${baseUrl}/${page}`,
+      canonical: url,
+    },
+  };
+}
+
+/**
+ * Generate metadata for the dashboard page
+ */
+export function generateDashboardMetadata(): Metadata {
+  const baseUrl = getBaseUrl();
+  const title = 'Dashboard - StockSignal';
+  const description = 'Your StockSignal dashboard. View analysis history, manage your portfolio, and track your subscription. Analyse stocks with P/E compression.';
+  const url = `${baseUrl}/dashboard`;
+  
+  return {
+    title,
+    description,
+    robots: {
+      index: false, // Dashboard is private, don't index
+      follow: false,
+    },
+    alternates: {
+      canonical: url,
+    },
+  };
+}
+
+/**
+ * Generate metadata for authentication pages
+ */
+export function generateAuthMetadata(
+  page: 'sign-in' | 'sign-up'
+): Metadata {
+  const baseUrl = getBaseUrl();
+  
+  const titles = {
+    'sign-in': 'Sign In - StockSignal',
+    'sign-up': 'Create Account - StockSignal',
+  };
+  
+  const descriptions = {
+    'sign-in': 'Sign in to your StockSignal account. Access your dashboard, analysis history, and Pro features. Free P/E compression analysis for investors.',
+    'sign-up': 'Create your free StockSignal account. Get 10 stock analyses per day, shareable reports, and portfolio insights. No credit card required.',
+  };
+  
+  const title = titles[page];
+  const description = descriptions[page];
+  const url = `${baseUrl}/${page}`;
+  const ogImage = `${baseUrl}/api/og-home`;
+  
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url,
+      siteName: 'StockSignal',
+      locale: 'en_GB',
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: `${title} | StockSignal`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary',
+      site: '@StockSignalApp',
+      title,
+      description,
+    },
+    alternates: {
+      canonical: url,
     },
   };
 }

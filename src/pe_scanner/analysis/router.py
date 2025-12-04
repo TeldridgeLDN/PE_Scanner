@@ -300,3 +300,4 @@ def get_mode_name(trailing_pe: Optional[float]) -> str:
     stock_type = classify_stock_type(trailing_pe)
     return get_analysis_mode_name(stock_type)
 
+
