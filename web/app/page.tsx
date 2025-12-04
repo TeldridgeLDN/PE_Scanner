@@ -171,7 +171,7 @@ function SocialProofBar() {
         <div className="flex flex-col md:flex-row items-center justify-center gap-8 text-center md:text-left">
           <div className="flex items-center gap-3">
             <div className="text-3xl font-bold text-slate-900">10,000+</div>
-            <div className="text-sm text-slate-600">Stocks analyzed<br />in November 2024</div>
+            <div className="text-sm text-slate-600">Stocks analyzed<br />in November 2025</div>
           </div>
           <div className="hidden md:block w-px h-12 bg-slate-300"></div>
           <div className="flex items-center gap-3">
@@ -438,7 +438,7 @@ function ExampleResultsSection() {
             Real Analysis Examples
           </h2>
           <p className="text-lg text-slate-600">
-            See how StockSignal caught major moves in November 2024
+            See how StockSignal caught major moves in November 2025
           </p>
         </div>
 
@@ -550,7 +550,7 @@ function FAQSection() {
     },
     {
       question: "How accurate are your predictions?",
-      answer: "We don't predict—we reveal market expectations. In November 2024, we flagged HOOD at -113% compression (market expected collapse). HOOD dropped 53%. We flagged BATS.L at +62% compression (market was pessimistic). It was undervalued. The accuracy comes from reading what Wall Street analysts already believe, not from guessing."
+      answer: "We don't predict—we reveal market expectations. In November 2025, we flagged HOOD at -113% compression (market expected collapse). HOOD dropped 53%. We flagged BATS.L at +62% compression (market was pessimistic). It was undervalued. The accuracy comes from reading what Wall Street analysts already believe, not from guessing."
     }
   ];
 
