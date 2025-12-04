@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+- **Shareable Headlines Feature Card** - Removed from Features section to focus on core analysis capabilities
+
 ### Changed
 - **Conversion-Focused Rate Limit UI** - Redesigned rate limit message for better visibility and conversion:
   - Clear visual hierarchy with headline and description
