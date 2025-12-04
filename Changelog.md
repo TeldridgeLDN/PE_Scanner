@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **Prominent "Analyze Another Stock" CTA** - Added centered button between Key Metrics and Share Analysis sections:
+  - Brand gradient styling with search icon
+  - Encouraging subtext: "Check more stocks to find the best opportunities"
+  - Positioned to encourage users to cycle through more stocks before sharing/leaving
+  - Funnels users towards free tier limit and eventual signup
 - **Friendly Data Error Messages** - Made error messages human and polite instead of technical:
   - Headlines: "We couldn't find the revenue data needed for this stock. Try a more established company."
   - Anchors: "Sorry, we don't have enough financial data... This often happens with smaller or newer companies."

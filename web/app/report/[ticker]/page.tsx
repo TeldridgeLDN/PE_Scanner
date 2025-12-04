@@ -397,6 +397,22 @@ export default async function ReportPage({ params }: PageProps) {
             </div>
           )}
 
+          {/* Analyze Another CTA - Centered between metrics and share */}
+          <div className="py-6 border-t border-slate-200 text-center">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#0d9488] to-[#0369a1] text-white font-bold text-lg rounded-xl hover:shadow-lg hover:scale-105 transition-all"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              Analyze Another Stock
+            </Link>
+            <p className="text-sm text-slate-500 mt-3">
+              Check more stocks to find the best opportunities
+            </p>
+          </div>
+
           {/* Share Buttons */}
           <div className="border-t border-slate-200 pt-6">
             <ShareButtons 
