@@ -284,15 +284,12 @@ export default function TickerSearchForm({ className = '' }: TickerSearchFormPro
               {/* Primary CTA - Sign Up (Most Prominent) */}
               <Link 
                 href="/sign-up"
-                className="block w-full px-6 py-4 bg-gradient-to-r from-primary via-accent to-buy text-white font-bold rounded-xl hover:shadow-xl hover:scale-105 transition-all"
+                className="block w-full px-6 py-3 bg-gradient-to-r from-primary via-accent to-buy text-white font-bold text-center rounded-xl hover:shadow-xl hover:scale-105 transition-all"
                 onClick={() => trackEvent('rate_limit_signup_clicked', { source: 'ticker_search_form' })}
               >
-                <div className="flex flex-col items-center gap-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">🎉</span>
-                    <span className="text-base">Sign Up Free - Get 10 Per Day</span>
-                  </div>
-                  <div className="text-xs opacity-90">No credit card required</div>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-lg">🎉</span>
+                  <span>Sign Up Free - Get 10 Per Day</span>
                 </div>
               </Link>
 
