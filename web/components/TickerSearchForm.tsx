@@ -277,7 +277,7 @@ export default function TickerSearchForm({ className = '' }: TickerSearchFormPro
               {/* Primary CTA - Sign Up (Most Prominent) */}
               <Link 
                 href="/sign-up" 
-                className="block w-full px-6 py-3 bg-gradient-to-r from-primary via-accent to-buy text-white font-bold text-center rounded-xl hover:shadow-xl hover:scale-105 transition-all"
+                className="block w-full px-6 py-3 bg-gradient-to-r from-primary/10 via-accent/10 to-buy/10 border-2 border-primary text-slate-900 font-bold text-center rounded-xl hover:shadow-xl hover:scale-105 transition-all"
                 onClick={() => trackEvent('rate_limit_signup_clicked', { source: 'ticker_search_form' })}
               >
                 🎉 Sign Up Free - Get 10 Per Day
