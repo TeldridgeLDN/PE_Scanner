@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+- **CRITICAL: Patched CVE-2025-55182 (React2Shell)** - Updated Next.js from 16.0.6 to 16.0.7 to address remote code execution vulnerability in React Server Components. Threat actors are actively exploiting this vulnerability. See [Vercel advisory](https://vercel.com/blog/resources-for-protecting-against-react2shell).
+
 ### Changed
 - **Date References** - Updated all "November 2024" references to "November 2025" across landing page
 

@@ -17,7 +17,7 @@
     "@clerk/nextjs": "^6.35.5",
     "@stripe/stripe-js": "^8.5.3",
     "@vercel/og": "^0.8.5",
-    "next": "16.0.6",
+    "next": "^16.0.7",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "stripe": "^20.0.0"
